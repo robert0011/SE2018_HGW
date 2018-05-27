@@ -5,13 +5,14 @@
  */
 class Edge 
 	{
-		Vertex start;
-		Vertex end;
 		double weight;
+		// normal constructor for unweighted edges
 		public Edge(Vertex start, Vertex end) 
 		{
 
+		
 		}
+		// overload constructor for weighted edges
 		public Edge(Vertex start, Vertex end, double weight) 
 		{
 			if(weight < 0)
@@ -24,4 +25,3 @@ class Edge
 			}
 		}
 	}
-/* Test */

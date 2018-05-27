@@ -33,7 +33,4 @@ public interface GraphInterface
 	 * @return true if the deletion of the given edge was successful
 	 */
 	public boolean removeEdge(Edge e); // removes edge e from graph
-	
-	class Vertex();
-	class Edge();
 }

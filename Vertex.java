@@ -9,6 +9,13 @@ class Vertex
 	int x; // x-coordinate
 	int y; // y-coordinate
 	String color; // for later vertex coloring
+	
+	// constructor for uncolored vertices
+	public Vertex(int x, int y)
+	{
+		
+	}
+	// overload constructor for colored graphes
 	public Vertex(int x, int y, String color) 
 	{
 		int label;
