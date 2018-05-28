@@ -43,7 +43,7 @@ public class GUI
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				// here needs to be the remove edge function
+				createRemoveEdgeFrame();
 			}
 		});
 
@@ -133,7 +133,7 @@ public class GUI
 	public static void createRemoveEdgeFrame() 
 	{
 		JFrame frame = new JFrame();
-		frame.setSize(200, 80);
+		frame.setSize(225, 80);
 		frame.setLayout(new FlowLayout());
 		
 		JTextField txtC1 = new JTextField(1);
