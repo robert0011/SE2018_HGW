@@ -183,9 +183,10 @@ public class GUI
 		//save the number of vertices
 		writer.println(vertexSet.size());
 		//save the number of edges
-		writer.println(edges.size());
+		writer.println(edgeSet.size());
 		//save the edges (Format: start end)
-		while(int i != (edges.size()+2))
+		int i = 2;
+		while(i != (edgeSet.size()))
 		{
 			writer.println("start end");
 			i = i++;

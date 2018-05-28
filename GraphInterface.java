@@ -1,7 +1,10 @@
 	/**
-	 * This documentation is the description of the structur of our implemented graph.
+	 * This documentation is the description of the structure of our implemented graph.
 	 * 
 	 */
+
+
+
 public interface GraphInterface
 {
 	/**
@@ -25,7 +28,7 @@ public interface GraphInterface
 	 * @param v a vertex, which shall be deleted from the graph (incl. all adjacent edges)
 	 * @return true if the deletion was successful 
 	 */
-	public boolean removeVertex(Vertex v); // removes vertex s from graph
+	public boolean removeVertex(int remove); // removes vertex s from graph
 	
 	/**
 	 * 

@@ -86,9 +86,9 @@ public class DrawPanel extends JPanel {
 			throw new IllegalArgumentException("Ids must be valid");
 		}
 		// want to remove the element from the arraylist lines
-		// lines.clear(); removes all lines 
-		int index = lines.indexOf(line<cid1,cid2>);
-		lines.remove(index);
+		lines.clear(); //removes all lines 
+		//int index = lines.indexOf(line<cid1,cid2>);
+		//lines.remove(index);
 		repaint();
 	}
 		

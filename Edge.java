@@ -3,13 +3,13 @@
  * @author Bruckmann C., Wagner R.
  *
  */
-class Edge 
+class Edge
 	{
 		double weight;
 		// normal constructor for unweighted edges
-		public Edge(Vertex start, Vertex end) 
+		public Edge(int start, int end) 
 		{
-
+			
 		
 		}
 		// overload constructor for weighted edges
