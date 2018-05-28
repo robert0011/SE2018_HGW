@@ -77,6 +77,7 @@ public class DrawPanel extends JPanel {
 		}
 		lines.add(new Line(circles.get(cid1), circles.get(cid2)));
 		repaint();
+		
 	}
 	public void removeEdge(int cid1, int cid2)
 	{
@@ -84,11 +85,13 @@ public class DrawPanel extends JPanel {
 		{
 			throw new IllegalArgumentException("Ids must be valid");
 		}
-		lines.add(new Line(circles.get(cid1), circles.get(cid2)));
+		// want to remove the element from the arraylist lines
+		// lines.clear(); removes all lines 
+		int index = lines.indexOf(line<cid1,cid2>);
+		lines.remove(index);
 		repaint();
 	}
-	
-	
+		
 	@Override
     protected void paintComponent (Graphics g)
 	{
