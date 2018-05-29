@@ -4,17 +4,26 @@ import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import javafx.scene.image.Image;
 
 public class DrawPanel extends JPanel {
 	private ArrayList<Circle> circles;
 	private ArrayList<Line> lines;
 	private final int WIDTH = 500;
 	private final int HEIGHT = 300;
+	
+	public Graph g;
 	
 	public int mouseX, mouseY;
 	public JLabel lblMouseCoords;
@@ -24,6 +33,10 @@ public class DrawPanel extends JPanel {
 		circles = new ArrayList<Circle>();
 		lines = new ArrayList<Line>();
 		this.setBorder(BorderFactory.createLineBorder(Color.black, 2, false));
+		
+		
+		
+		
 		
 		this.addMouseMotionListener(new MouseMotionListener() 
 		{
@@ -40,14 +53,17 @@ public class DrawPanel extends JPanel {
 			{
 				mouseX = e.getX();
 				mouseY = e.getY();
+				
 				lblMouseCoords.setText("coords: (" + mouseX + ", " + mouseY + ")");
 				lblMouseCoords.repaint();
 			}
 			
 		});
 		
-		lblMouseCoords = new JLabel("TEST");
-		this.add(lblMouseCoords, BorderLayout.NORTH);
+		lblMouseCoords = new JLabel("move mouse for coords");
+		this.add(lblMouseCoords);
+		
+		
 		
 		this.addMouseListener(new MouseAdapter() 
 		{
@@ -57,7 +73,8 @@ public class DrawPanel extends JPanel {
             public void mousePressed(MouseEvent e) 
             {
             	circles.add(new Circle(10, mouseX, mouseY));
-            	// add vertex(mouseX, mouseY) to vertexSet
+            	//add vertex(mouseX, mouseY) to vertexSet
+            	//g.addVertex(new Vertex(mouseX,mouseY));
             	repaint();
             }
 
@@ -95,8 +112,21 @@ public class DrawPanel extends JPanel {
 	@Override
     protected void paintComponent (Graphics g)
 	{
+	
 		super.paintComponent(g);
 		
+		BufferedImage image;
+		try {
+			image = ImageIO.read(new File("C:\\\\Users\\\\user\\\\eclipse-workspace\\\\proj2805\\\\backgroundImage.jpg"));
+			g.drawImage(image,
+					0, 0, null);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		
+		//lblMouseCoords.setText("coords: (" + mouseX + ", " + mouseY + ")");
 		for (Line l: lines) 
 		{
 			l.draw(g);
@@ -110,5 +140,13 @@ public class DrawPanel extends JPanel {
 			g.drawString(String.valueOf(i), c.getX() - 3, c.getY() + 3);
 			i += 1;
 		}
+	}
+	
+	public void reset()
+	{
+		
+		lines.clear(); //removes all lines
+		circles.clear(); // removes all circles
+		repaint();
 	}
 }

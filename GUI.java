@@ -1,3 +1,5 @@
+// do not use this
+
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -9,6 +11,10 @@ import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
 import java.util.Scanner; //for graph read
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
 public class GUI
 {
 	
@@ -16,10 +22,18 @@ public class GUI
 	
 	public static void initGUI() 
 	{
-		JFrame frame = new JFrame("Graph-Toolbox v0.1");
+		
+		
+		JFrame frame = new JFrame("Graph-Toolbox");
 		frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setSize(900, 900);
         frame.setLayout(new BorderLayout(5, 5));
+        
+        // new background
+        /*JLabel background = new JLabel(new ImageIcon("C:\\Users\\user\\eclipse-workspace\\proj2805\\backgroundImage.jpg"));
+        frame.setContentPane(background);
+		background.setLayout(new FlowLayout());*/
+		
         
         drawPanel = new DrawPanel();
 		frame.add(drawPanel);

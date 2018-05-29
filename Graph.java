@@ -15,6 +15,9 @@ public class Graph implements GraphInterface
 	public Set<Pair<Integer,Vertex>> vertexSet;
 	public Set<Edge> edgeSet;
 	
+	public Hashtable<Integer, List<Integer>> outEdges;
+	public Hashtable<Integer, List<Integer>> inEdges;
+	
 	/**
 	 * 
 	 */
@@ -35,12 +38,71 @@ public class Graph implements GraphInterface
 		
 	}
 	
+	
+	
 	/**
 	 * 
 	 */
-	public boolean addEdge(Vertex start, Vertex end, double weight)
+	public boolean addEdge(int start, int end, double weight)
 	{
-		return true;
+		Edge edgeToAdd = new Edge(start,end,weight);
+		
+		// first check whether this edge already exists
+		Iterator<Edge> iterator = edgeSet.iterator();
+		
+		while(iterator.hasNext())
+		{
+			Edge curEdge = iterator.next();
+			if(curEdge.start == start && curEdge.end == end)
+			{
+				return false;
+			}
+			
+		}
+		
+		//check whether the vertices exist
+		boolean foundStart = false;
+		boolean foundEnd = false;
+		Iterator<Pair<Integer,Vertex>> iterator2 = vertexSet.iterator();
+		while(iterator2.hasNext())
+		{
+			Pair<Integer,Vertex> current = iterator2.next();
+			int curVertexLable = current.getKey();
+			if(start == curVertexLable)
+			{
+				foundStart = true;
+			}
+			if(end == curVertexLable)
+			{
+				foundEnd = true;
+			}
+		}
+		
+		
+		if(foundStart & foundEnd)
+		{
+			// both vertices exist, an edge can be constructed
+			edgeSet.add(edgeToAdd);
+			
+			// add the edge from start to end to outEdges of start
+			List<Integer> curList = outEdges.get(start);
+			curList.add(end);
+			outEdges.put(start, curList);
+			
+			// add the edge from start to end to inEdges of end
+			List<Integer> curList2 = inEdges.get(end);
+			curList2.add(start);
+			inEdges.put(end, curList2);
+			
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		
+		
+		
 
 	}
 	
@@ -71,8 +133,34 @@ public class Graph implements GraphInterface
 		
 	}
 	
-	public boolean removeEdge(Edge e)
+	public boolean removeEdge(int start, int end)
 	{
-		return true;
+		// first check whether this edge exists
+				Iterator<Edge> iterator = edgeSet.iterator();
+				boolean removed = false;
+				
+				while(iterator.hasNext())
+				{
+					Edge curEdge = iterator.next();
+					if(curEdge.start == start && curEdge.end == end)
+					{
+						edgeSet.remove(curEdge);
+						// remove outgoing and incoming edges
+						List<Integer> curList = outEdges.get(start);
+						int indexOfEnd = curList.indexOf(end);
+						curList.remove(indexOfEnd);
+						outEdges.put(start, curList);
+						
+						List<Integer> curList2 = inEdges.get(end);
+						int indexOfStart = curList2.indexOf(start);
+						curList2.remove(indexOfStart);
+						inEdges.put(end, curList2);
+						
+						removed = true;
+						return true;
+					}
+					
+				}
+				return removed;
 	}
 }
