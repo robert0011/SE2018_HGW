@@ -78,16 +78,30 @@ public class firstFrame {
 		drawPanel.setForeground(Color.CYAN);
 		//drawPanel.setBackground(Color.WHITE);
 		drawPanel.lblMouseCoords.setText("COORD");
-		drawPanel.setLocation(-35, 40);
+		drawPanel.setLocation(0, 40);
 		drawPanel.setSize(1200, 800);
 		//drawPanel.add(lblBackgroundlable);
 		frame.getContentPane().add(drawPanel);
 		
 		JButton btnAddEdge = new JButton("add edge");
+		btnAddEdge.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent addEdgeAction) 
+			{
+				createAddEdgeFrame();
+			}
+		});
 		btnAddEdge.setBounds(9, 11, 114, 23);
 		frame.getContentPane().add(btnAddEdge);
 		
 		JButton btnRemoveEdge = new JButton("remove edge");
+		btnRemoveEdge.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent removeEdgeAction) 
+			{
+				createRemoveEdgeFrame();
+			}
+		});
 		btnRemoveEdge.setBounds(133, 11, 109, 23);
 		frame.getContentPane().add(btnRemoveEdge);
 		
@@ -96,8 +110,97 @@ public class firstFrame {
 		frame.getContentPane().add(btnLoadGraph);
 		
 		JButton btnResetWindow = new JButton("reset window");
+		btnResetWindow.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent resetAction) 
+			{
+				drawPanel.reset();
+			}
+		});
 		btnResetWindow.setBounds(1061, 0, 104, 34);
 		frame.getContentPane().add(btnResetWindow);
 		//drawPanel.setOpaque(false);
+	}
+	
+	public static void createAddEdgeFrame() 
+	{
+		JFrame frame = new JFrame();
+		frame.setSize(200, 80);
+		frame.getContentPane().setLayout(new FlowLayout());
+		
+		JTextField txtC1 = new JTextField(1);
+		JTextField txtC2 = new JTextField(1);
+		
+		JButton btnCancel = new JButton("cancel");
+		btnCancel.addActionListener(new ActionListener() 
+		{
+			
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				frame.dispose();
+			}
+		});
+		
+		JButton btnAddLine = new JButton("add");
+		btnAddLine.addActionListener(new ActionListener() 
+		{
+			
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				int cid1 = Integer.parseInt(txtC1.getText());
+				int cid2 = Integer.parseInt(txtC2.getText());
+				drawPanel.addEdge(cid1, cid2);
+				frame.dispose();
+			}
+		});
+		
+		frame.getContentPane().add(txtC1);
+		frame.getContentPane().add(txtC2);
+		frame.getContentPane().add(btnCancel);
+		frame.getContentPane().add(btnAddLine);
+		frame.setVisible(true);
+	}
+	
+	public static void createRemoveEdgeFrame() 
+	{
+		JFrame frame = new JFrame();
+		frame.setSize(225, 80);
+		frame.getContentPane().setLayout(new FlowLayout());
+		
+		JTextField txtC1 = new JTextField(1);
+		JTextField txtC2 = new JTextField(1);
+		
+		JButton btnCancel = new JButton("cancel");
+		btnCancel.addActionListener(new ActionListener() 
+		{
+			
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				frame.dispose();
+			}
+		});
+		
+		JButton btnRemoveEdge = new JButton("remove");
+		btnRemoveEdge.addActionListener(new ActionListener() 
+		{
+			
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				int cid1 = Integer.parseInt(txtC1.getText());
+				int cid2 = Integer.parseInt(txtC2.getText());
+				drawPanel.removeEdge(cid1, cid2);
+				frame.dispose();
+			}
+		});
+		
+		frame.getContentPane().add(txtC1);
+		frame.getContentPane().add(txtC2);
+		frame.getContentPane().add(btnCancel);
+		frame.getContentPane().add(btnRemoveEdge);
+		frame.setVisible(true);
 	}
 }
