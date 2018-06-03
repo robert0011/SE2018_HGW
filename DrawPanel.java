@@ -1,4 +1,4 @@
-import java.awt.BorderLayout;
+//import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
@@ -17,13 +17,14 @@ import javax.swing.JPanel;
 
 import javafx.scene.image.Image;
 
-public class DrawPanel extends JPanel {
+public class DrawPanel extends JPanel 
+{
 	private ArrayList<Circle> circles;
 	private ArrayList<Line> lines;
-	private final int WIDTH = 500;
-	private final int HEIGHT = 300;
+	//private final int WIDTH = 800;
+	//private final int HEIGHT = 1200;
 	
-	public Graph g;
+	public Graph graph;
 	
 	public int mouseX, mouseY;
 	public JLabel lblMouseCoords;
@@ -32,12 +33,8 @@ public class DrawPanel extends JPanel {
 	{
 		circles = new ArrayList<Circle>();
 		lines = new ArrayList<Line>();
-		this.setBorder(BorderFactory.createLineBorder(Color.black, 2, false));
-		
-		
-		
-		
-		
+		graph = new Graph();
+		this.setBorder(BorderFactory.createLineBorder(Color.black, 2, false));	
 		this.addMouseMotionListener(new MouseMotionListener() 
 		{
 
@@ -72,10 +69,32 @@ public class DrawPanel extends JPanel {
             @Override
             public void mousePressed(MouseEvent e) 
             {
-            	circles.add(new Circle(10, mouseX, mouseY));
-            	//add vertex(mouseX, mouseY) to vertexSet
-            	//g.addVertex(new Vertex(mouseX,mouseY));
-            	repaint();
+            	Circle actualCircle = new Circle(10, mouseX, mouseY);
+            	
+            	// test for painting only unique circles
+            	boolean circleTester = false;
+            	for(Circle c : circles)
+            	{
+            		// checks whether the x coordinate is taken or not
+            		if(mouseX <= c.getX()+20 & mouseX>=c.getX()-20 & mouseY <= c.getY()+20 & mouseY >=c.getY()-20)
+            		{
+            			circleTester = true;
+            		}
+            	}
+            	if(circleTester == true)
+            	{
+            		
+            	}
+            	// draw only new circles
+            	else
+            	{
+                	circles.add(actualCircle);
+                	//add vertex(mouseX, mouseY) to vertexSet
+                	Vertex newVertex = new Vertex(mouseX, mouseY);
+                	graph.addVertex(newVertex);
+                	repaint();
+            	}
+
             }
 
             @Override
