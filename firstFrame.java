@@ -1,12 +1,8 @@
 import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import java.awt.BorderLayout;
+//import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
-
-import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +15,7 @@ import java.util.Scanner; //for graph read
 
 import javax.swing.*;
 import java.awt.*;
-//import java.awt.event.*;
+import java.awt.event.*;
 
 public class firstFrame {
 
@@ -28,13 +24,19 @@ public class firstFrame {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
+	public static void main(String[] args) 
+	{
+		EventQueue.invokeLater(new Runnable() 
+		{
+			public void run() 
+			{
+				try 
+				{
 					firstFrame window = new firstFrame();
 					window.frame.setVisible(true);
-				} catch (Exception e) {
+				}
+				catch (Exception e) 
+				{
 					e.printStackTrace();
 				}
 			}
@@ -44,7 +46,8 @@ public class firstFrame {
 	/**
 	 * Create the application.
 	 */
-	public firstFrame() {
+	public firstFrame()
+	{
 		initialize();
 	}
 	
@@ -53,30 +56,48 @@ public class firstFrame {
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
-		frame = new JFrame("Graph-Toolbox");
+	private void initialize()
+	{
+		frame = new JFrame("Graph-Toolbox v 0.3");
 		frame.getContentPane().setBackground(new Color(205, 133, 63));
 		frame.setBackground(new Color(184, 134, 11));
-		frame.setBounds(50, 50, 1200, 730);
+		frame.setBounds(50, 50, 1500, 900);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
-		JLabel lblOtherLable = new JLabel("other lable");
-		lblOtherLable.setBounds(350, 67, 85, 23);
-		frame.getContentPane().add(lblOtherLable);
+		/*JLabel lblOtherLabel = new JLabel("other label");
+		lblOtherLabel.setBounds(350, 67, 85, 23);
+		frame.getContentPane().add(lblOtherLable);*/
 		
 		JLabel lblBackgroundlable = new JLabel("background_lable");
-		lblBackgroundlable.setIcon(new ImageIcon("C:\\Users\\user\\eclipse-workspace\\proj2805\\backgroundImage.jpg"));
-		lblBackgroundlable.setBounds(0, 40, 1282, 650);
+		lblBackgroundlable.setIcon(new ImageIcon("D:\\JAVA_Workspace\\SE2018_HGW\\backgroundImage.jpg"));
+		lblBackgroundlable.setBounds(0, 40, 1282, 700);
 		//frame.getContentPane().add(lblBackgroundlable);
 		
 		drawPanel = new DrawPanel();
 		drawPanel.setForeground(Color.CYAN);
+		//drawPanel.setBackground(Color.WHITE);
 		drawPanel.lblMouseCoords.setText("COORD");
-		drawPanel.setLocation(0, 40);
-		drawPanel.setSize(1400, 650);
+		drawPanel.setLocation(-35, 40);
+		drawPanel.setSize(1200, 800);
 		//drawPanel.add(lblBackgroundlable);
 		frame.getContentPane().add(drawPanel);
+		
+		JButton btnAddEdge = new JButton("add edge");
+		btnAddEdge.setBounds(9, 11, 114, 23);
+		frame.getContentPane().add(btnAddEdge);
+		
+		JButton btnRemoveEdge = new JButton("remove edge");
+		btnRemoveEdge.setBounds(133, 11, 109, 23);
+		frame.getContentPane().add(btnRemoveEdge);
+		
+		JButton btnLoadGraph = new JButton("load graph");
+		btnLoadGraph.setBounds(247, 11, 110, 23);
+		frame.getContentPane().add(btnLoadGraph);
+		
+		JButton btnResetWindow = new JButton("reset window");
+		btnResetWindow.setBounds(1061, 0, 104, 34);
+		frame.getContentPane().add(btnResetWindow);
 		//drawPanel.setOpaque(false);
 	}
 }
