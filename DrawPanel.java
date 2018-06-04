@@ -142,6 +142,7 @@ public class DrawPanel extends JPanel
 		repaint();
 		
 	}
+
 	public void removeEdge(int cid1, int cid2)
 	{
 		
@@ -218,10 +219,11 @@ public class DrawPanel extends JPanel
 			//second integer is the amount of edges
 			int numberOfEdges = fileIn.nextInt();
 			circles = new ArrayList<Circle>(numberOfVertices);
-			lines = new ArrayList<Line>(numberOfEdges);
-					
+			lines = new ArrayList<Line>(numberOfVertices*(numberOfVertices-1));
+			
+
 			Circle startcircle = new Circle(0,0,0);
-			for(int i = 0; i < numberOfEdges; i ++ )
+			for(int i = 0; i < (numberOfVertices*(numberOfVertices-1)); i ++ )
 			{
 				lines.add(i, new Line(startcircle,startcircle));
 			}
@@ -232,17 +234,17 @@ public class DrawPanel extends JPanel
 				//random value between 5 and 1195
 				Random rand = new Random();
 				int x = rand.nextInt(950)+50;
-				circles.add(i, new Circle(10, x, ((1+i) *(800/(numberOfEdges+2)) )));
+				circles.add(i, new Circle(10, x, ((1+i) *(800/(numberOfVertices+2)) )));
 				graph.addVertex(new Vertex(x,i *(800/numberOfEdges)));
 			}
-			//does only read if file has a following word
+			
 			for(int i = 0; i < numberOfEdges; i ++ )
 			{
 				//create edge(fileIn.nextInt(), fileIn.nextInt())
 				int start = fileIn.nextInt();
 				int end = fileIn.nextInt();
 				//graph.addEdge(start, end, 0);
-				lines.set(i, new Line(circles.get(start), circles.get(end)));
+				lines.set(start+end, new Line(circles.get(start), circles.get(end)));
 			}
 			
 			//closes scanner
@@ -254,5 +256,18 @@ public class DrawPanel extends JPanel
 			e.printStackTrace();
 		}
 	}
+	public void addEdge2(int cid1, int cid2) 
+	{
+		if (cid1 < 0 || cid2 < 0 || cid1 >= circles.size() || cid2 >= circles.size())
+		{
+			throw new IllegalArgumentException("Ids must be valid");
+		}
+		lineindex1 = ((cid1*numberOfVertices) + cid2);
+		lineindex2 = ((cid2*numberOfVertices) + cid1);
 
+		lines.set(lineindex1, new Line(circles.get(cid1), circles.get(cid2)));
+		lines.set(lineindex2, new Line(circles.get(cid1), circles.get(cid2)));
+		repaint();
+		
+	}
 }
