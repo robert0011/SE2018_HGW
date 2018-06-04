@@ -75,7 +75,7 @@ public class firstFrame {
 		//frame.getContentPane().add(lblBackgroundlable);
 		
 		drawPanel = new DrawPanel();
-		drawPanel.setForeground(Color.CYAN);
+		drawPanel.setForeground(Color.BLACK);
 		//drawPanel.setBackground(Color.WHITE);
 		drawPanel.lblMouseCoords.setText("COORD");
 		drawPanel.setLocation(0, 40);
@@ -106,6 +106,13 @@ public class firstFrame {
 		frame.getContentPane().add(btnRemoveEdge);
 		
 		JButton btnLoadGraph = new JButton("load graph");
+		btnLoadGraph.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent loadingAction) 
+			{
+				
+			}
+		});
 		btnLoadGraph.setBounds(247, 11, 110, 23);
 		frame.getContentPane().add(btnLoadGraph);
 		

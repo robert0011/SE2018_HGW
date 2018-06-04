@@ -17,7 +17,8 @@ public class Graph implements GraphInterface
 	public Hashtable<Integer, List<Integer>> outEdges;
 	public Hashtable<Integer, List<Integer>> inEdges;
 	
-	public Graph() {
+	public Graph() 
+	{
 		
 		this.vertexlabel = 0;
 		

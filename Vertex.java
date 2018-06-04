@@ -15,7 +15,6 @@ class Vertex
 	{
 		this.x = x;
 		this.y = y;
-		
 	}
 	// overload constructor for colored graphs
 	public Vertex(int x, int y, String color) 

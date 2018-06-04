@@ -22,9 +22,10 @@ public class DrawPanel extends JPanel
 	//private final int WIDTH = 800;
 	//private final int HEIGHT = 1200;
 	
-	public Graph graph;
+	public Graph graph = new Graph();
 	int circleindex = 0;
-	int lineindex;
+	int lineindex1;
+	int lineindex2;
 	public int mouseX, mouseY; 
 	public JLabel lblMouseCoords;
 	
@@ -34,7 +35,6 @@ public class DrawPanel extends JPanel
 		circles = new ArrayList<Circle>(50);
 		// maximum edges = 50 * 49 (since every vertex can only have 49 neighbors
 		lines = new ArrayList<Line>(2450);
-		graph = new Graph();
 		
 		// just doing some magic 
 		Circle startcircle = new Circle(0,0,0);
@@ -79,7 +79,8 @@ public class DrawPanel extends JPanel
             public void mousePressed(MouseEvent e) 
             {
             	Circle actualCircle = new Circle(10, mouseX, mouseY);
-            	
+            	//Vertex vertexToAdd = new Vertex(mouseX,mouseY);
+            	//graph.addVertex(vertexToAdd);
             	// test for painting only unique circles
             	boolean circleTester = false;
             	for(Circle c : circles)
@@ -103,7 +104,7 @@ public class DrawPanel extends JPanel
                     	circleindex++;
                     	//add vertex(mouseX, mouseY) to vertexSet
                     	Vertex newVertex = new Vertex(mouseX, mouseY);
-//                    	graph.addVertex(newVertex);
+                    	graph.addVertex(newVertex);
                     	repaint();
             		}
             	}
@@ -124,20 +125,11 @@ public class DrawPanel extends JPanel
 		{
 			throw new IllegalArgumentException("Ids must be valid");
 		}
-		if(cid1 < cid2)
-		{
-			lineindex = ((cid1*50) + cid2);
-		}
-		if(cid1 == cid2)
-		{
-			
-		}
-		else
-		{
-			lineindex = ((cid2*50) + cid1);
-		}
-		lines.set(lineindex, new Line(circles.get(cid1), circles.get(cid2)));
+		lineindex1 = ((cid1*50) + cid2);
+		lineindex2 = ((cid2*50) + cid1);
 
+		lines.set(lineindex1, new Line(circles.get(cid1), circles.get(cid2)));
+		lines.set(lineindex2, new Line(circles.get(cid1), circles.get(cid2)));
 		repaint();
 		
 	}
@@ -148,20 +140,12 @@ public class DrawPanel extends JPanel
 		{
 			throw new IllegalArgumentException("Ids must be valid");
 		}
-		if(cid1 < cid2)
-		{
-			lineindex = ((cid1*50) + cid2) ;
-		}
-		if(cid1 == cid2)
-		{
-			
-		}
-		else
-		{
-			lineindex = ((cid2*50) + cid1);
-		}
 		
-		lines.set(lineindex, new Line( new Circle(0,0,0), new Circle(0,0,0)));
+		lineindex1 = ((cid1*50) + cid2) ;
+		lineindex2 = ((cid2*50) + cid1);
+		
+		lines.set(lineindex1, new Line( new Circle(0,0,0), new Circle(0,0,0)));
+		lines.set(lineindex2, new Line( new Circle(0,0,0), new Circle(0,0,0)));
 		repaint();
 	}
 		
