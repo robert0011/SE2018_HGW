@@ -5,11 +5,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
-import java.awt.image.ImageObserver;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -26,8 +24,8 @@ public class DrawPanel extends JPanel
 	
 	public Graph graph;
 	int circleindex = 0;
-	int lineindex = 0;
-	public int mouseX, mouseY;
+	int lineindex;
+	public int mouseX, mouseY; 
 	public JLabel lblMouseCoords;
 	
 	public DrawPanel() 
@@ -130,34 +128,43 @@ public class DrawPanel extends JPanel
 		{
 			lineindex = ((cid1*50) + cid2);
 		}
+		if(cid1 == cid2)
+		{
+			
+		}
 		else
 		{
 			lineindex = ((cid2*50) + cid1);
 		}
-		lines.set(lineindex,new Line(circles.get(cid1), circles.get(cid2)));
+		lines.set(lineindex, new Line(circles.get(cid1), circles.get(cid2)));
 
 		repaint();
 		
 	}
 	public void removeEdge(int cid1, int cid2)
 	{
+		
 		if (cid1 < 0 || cid2 < 0 || cid1 >= circles.size() || cid2 >= circles.size()) 
 		{
 			throw new IllegalArgumentException("Ids must be valid");
 		}
 		if(cid1 < cid2)
 		{
-			lineindex = ((cid1*50) + cid2);
+			lineindex = ((cid1*50) + cid2) ;
+		}
+		if(cid1 == cid2)
+		{
+			
 		}
 		else
 		{
 			lineindex = ((cid2*50) + cid1);
 		}
-		lines.remove(lineindex);
+		
 		lines.set(lineindex, new Line( new Circle(0,0,0), new Circle(0,0,0)));
 		repaint();
 	}
-	
+		
 	@Override
     protected void paintComponent (Graphics g)
 	{
@@ -165,11 +172,13 @@ public class DrawPanel extends JPanel
 		super.paintComponent(g);
 		
 		BufferedImage image;
-		try {
-			image = ImageIO.read(new File("C:\\\\Users\\\\user\\\\eclipse-workspace\\\\proj2805\\\\backgroundImage.jpg"));
-			g.drawImage(image,
-					0, 0, null);
-		} catch (IOException e) {
+		try 
+		{
+			image = ImageIO.read(new File("D:\\\\JAVA_Workspace\\\\SE2018_HGW\\\\backgroundImage.jpg"));
+			g.drawImage(image, 0, 0, null);
+		} 
+		catch (IOException e) 
+		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
@@ -180,22 +189,22 @@ public class DrawPanel extends JPanel
 		{
 			l.draw(g);
 		}
-		
 		int i = 0;
 		for (Circle c : circles) 
 		{
 			c.draw(g);
 			g.setColor(Color.WHITE); // textcolor for vertex numbers
-			g.drawString(String.valueOf(i), c.getX() - 3, c.getY() + 3);
+			g.drawString(String.valueOf(i), c.getX() - 5, c.getY() + 3);
 			i += 1;
 		}
 	}
 	
 	public void reset()
 	{
-		
 		lines.clear(); //removes all lines
 		circles.clear(); // removes all circles
 		repaint();
 	}
+	
+
 }
