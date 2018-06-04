@@ -110,7 +110,8 @@ public class firstFrame {
 		{
 			public void actionPerformed(ActionEvent loadingAction) 
 			{
-				
+				drawPanel.reset();
+				drawPanel.loadGraph();
 			}
 		});
 		btnLoadGraph.setBounds(247, 11, 110, 23);

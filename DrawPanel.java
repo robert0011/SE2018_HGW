@@ -6,8 +6,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
+import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
@@ -17,15 +20,21 @@ import javafx.scene.image.Image;
 
 public class DrawPanel extends JPanel 
 {
-	private ArrayList<Circle> circles;
-	private ArrayList<Line> lines;
+	private static ArrayList<Circle> circles;
+	private static ArrayList<Line> lines;
 	//private final int WIDTH = 800;
 	//private final int HEIGHT = 1200;
 	
-	public Graph graph = new Graph();
+	public static Graph graph = new Graph();
 	int circleindex = 0;
 	int lineindex1;
 	int lineindex2;
+	
+	int numberOfVertices;
+	int numberOfEdges;
+	int start;
+	int end;
+	
 	public int mouseX, mouseY; 
 	public JLabel lblMouseCoords;
 	
@@ -196,5 +205,54 @@ public class DrawPanel extends JPanel
 		repaint();
 	}
 	
+	//function to load a graph from a txt file 
+	public static void loadGraph()
+	{
+		
+		Scanner fileIn;
+		try
+		{
+			fileIn = new Scanner(new File("EXgraph.txt"));
+			//first line of the txt is the amount of vertices
+			int numberOfVertices = fileIn.nextInt();
+			//second integer is the amount of edges
+			int numberOfEdges = fileIn.nextInt();
+			circles = new ArrayList<Circle>(numberOfVertices);
+			lines = new ArrayList<Line>(numberOfEdges);
+					
+			Circle startcircle = new Circle(0,0,0);
+			for(int i = 0; i < numberOfEdges; i ++ )
+			{
+				lines.add(i, new Line(startcircle,startcircle));
+			}
+					
+					
+			for(int i = 0; i < numberOfVertices; i ++ )
+			{
+				//random value between 5 and 1195
+				Random rand = new Random();
+				int x = rand.nextInt(950)+50;
+				circles.add(i, new Circle(10, x, ((1+i) *(800/(numberOfEdges+2)) )));
+				graph.addVertex(new Vertex(x,i *(800/numberOfEdges)));
+			}
+			//does only read if file has a following word
+			for(int i = 0; i < numberOfEdges; i ++ )
+			{
+				//create edge(fileIn.nextInt(), fileIn.nextInt())
+				int start = fileIn.nextInt();
+				int end = fileIn.nextInt();
+				//graph.addEdge(start, end, 0);
+				lines.set(i, new Line(circles.get(start), circles.get(end)));
+			}
+			
+			//closes scanner
+			fileIn.close();
+		} 
+		catch (FileNotFoundException e) 
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 }
