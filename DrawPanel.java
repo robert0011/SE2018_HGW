@@ -187,6 +187,7 @@ public class DrawPanel extends JPanel
 	{
 		lines.clear(); //removes all lines
 		circles.clear(); // removes all circles
+		circleindex = 0;
 		repaint();
 	}
 	
