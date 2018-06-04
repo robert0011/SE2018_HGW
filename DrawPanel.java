@@ -125,7 +125,14 @@ public class DrawPanel extends JPanel
 		{
 			throw new IllegalArgumentException("Ids must be valid");
 		}
-		int lineindex = (cid1 + cid2) -1;
+		if(cid1 < cid2)
+		{
+			int lineindex = ((cid1*10) + cid2) -1;
+		}
+		else
+		{
+			int lineindex = ((cid2*10) + cid1) -1;
+		}
 		lines.add(lineindex,new Line(circles.get(cid1), circles.get(cid2)));
 
 		repaint();
@@ -137,8 +144,16 @@ public class DrawPanel extends JPanel
 		{
 			throw new IllegalArgumentException("Ids must be valid");
 		}
-		lines.remove((cid1 + cid2) -1);
-		lines.add((cid1 + cid2) -1, new Line( new Circle(0,0,0), new Circle(0,0,0)));
+		if(cid1 < cid2)
+		{
+			int lineindex = ((cid1*10) + cid2) -1;
+		}
+		else
+		{
+			int lineindex = ((cid2*10) + cid1) -1;
+		}
+		lines.remove(lineindex);
+		lines.add(lineindex, new Line( new Circle(0,0,0), new Circle(0,0,0)));
 		repaint();
 	}
 	
