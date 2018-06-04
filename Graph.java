@@ -1,6 +1,5 @@
 import java.util.*; // for sets
 
-
 import javafx.util.Pair;
 
 /**
@@ -18,6 +17,18 @@ public class Graph implements GraphInterface
 	public Hashtable<Integer, List<Integer>> outEdges;
 	public Hashtable<Integer, List<Integer>> inEdges;
 	
+	public Graph() {
+		
+		this.vertexlabel = 0;
+		
+		/*Set<Pair<Integer,Vertex>> test = new HashSet<Pair<Integer,Vertex>>();
+		this.vertexSet = test;*/
+		this.vertexSet = new HashSet<Pair<Integer,Vertex>>();
+		//this.vertexSet = new Set<Pair<Integer,Vertex>>();
+		this.outEdges = new Hashtable<Integer, List<Integer>>();
+		this.inEdges = new Hashtable<Integer, List<Integer>>();
+	}
+	
 	/**
 	 * 
 	 */
@@ -30,9 +41,33 @@ public class Graph implements GraphInterface
 		else
 		{
 			Vertex vertexToAdd = new Vertex(v.x,v.y);
-			vertexSet.add(new Pair<Integer,Vertex>(vertexlabel, vertexToAdd));
-			vertexlabel = vertexlabel++;
-			return true;
+			
+			// test whether the vertex is already in the set
+			Iterator<Pair<Integer,Vertex>> pairIterator = vertexSet.iterator();
+			boolean found = false;
+			while(pairIterator.hasNext()) {
+				Pair<Integer,Vertex> currPair = pairIterator.next();
+				Vertex curVertex = currPair.getValue();
+				int start = curVertex.x;
+				int end = curVertex.y;
+				if(v.x == start && v.y ==end)
+				{
+					found = true;
+				}
+				
+			}
+			
+			if(found == true)
+			{
+				return false;
+			}
+			else
+			{
+				vertexSet.add(new Pair<Integer,Vertex>(vertexlabel, vertexToAdd));
+				vertexlabel = vertexlabel++;
+				return true;
+			}
+			
 		}
 		
 		
