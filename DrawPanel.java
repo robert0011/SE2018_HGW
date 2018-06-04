@@ -25,15 +25,25 @@ public class DrawPanel extends JPanel
 	//private final int HEIGHT = 1200;
 	
 	public Graph graph;
-	
+	int circleindex = 0;
 	public int mouseX, mouseY;
 	public JLabel lblMouseCoords;
 	
 	public DrawPanel() 
 	{
-		circles = new ArrayList<Circle>();
-		lines = new ArrayList<Line>();
+		// set maximum drawable vertices to 50
+		circles = new ArrayList<Circle>(50);
+		// maximum edges = 50 * 49 (since every vertex can only have 49 neighbors
+		lines = new ArrayList<Line>(2450);
 		graph = new Graph();
+		
+		// just doing some magic 
+		Circle startcircle = new Circle(0,0,0);
+		for(int i = 0; i < 2449; i ++ )
+		{
+			lines.add(i, new Line(startcircle,startcircle));
+		}
+		
 		this.setBorder(BorderFactory.createLineBorder(Color.black, 2, false));	
 		this.addMouseMotionListener(new MouseMotionListener() 
 		{
@@ -88,11 +98,15 @@ public class DrawPanel extends JPanel
             	// draw only new circles
             	else
             	{
-                	circles.add(actualCircle);
-                	//add vertex(mouseX, mouseY) to vertexSet
-                	Vertex newVertex = new Vertex(mouseX, mouseY);
-                	graph.addVertex(newVertex);
-                	repaint();
+            		if(circleindex < 50)
+            		{
+                    	circles.add(circleindex,actualCircle);
+                    	circleindex++;
+                    	//add vertex(mouseX, mouseY) to vertexSet
+                    	Vertex newVertex = new Vertex(mouseX, mouseY);
+//                    	graph.addVertex(newVertex);
+                    	repaint();
+            		}
             	}
 
             }
@@ -111,7 +125,9 @@ public class DrawPanel extends JPanel
 		{
 			throw new IllegalArgumentException("Ids must be valid");
 		}
-		lines.add(new Line(circles.get(cid1), circles.get(cid2)));
+		int lineindex = (cid1 + cid2) -1;
+		lines.add(lineindex,new Line(circles.get(cid1), circles.get(cid2)));
+
 		repaint();
 		
 	}
@@ -121,13 +137,11 @@ public class DrawPanel extends JPanel
 		{
 			throw new IllegalArgumentException("Ids must be valid");
 		}
-		// want to remove the element from the arraylist lines
-		lines.clear(); //removes all lines 
-		//int index = lines.indexOf(line<cid1,cid2>);
-		//lines.remove(index);
+		lines.remove((cid1 + cid2) -1);
+		lines.add((cid1 + cid2) -1, new Line( new Circle(0,0,0), new Circle(0,0,0)));
 		repaint();
 	}
-		
+	
 	@Override
     protected void paintComponent (Graphics g)
 	{
