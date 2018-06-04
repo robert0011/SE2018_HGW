@@ -26,6 +26,7 @@ public class DrawPanel extends JPanel
 	
 	public Graph graph;
 	int circleindex = 0;
+	int lineindex = 0;
 	public int mouseX, mouseY;
 	public JLabel lblMouseCoords;
 	
@@ -127,13 +128,13 @@ public class DrawPanel extends JPanel
 		}
 		if(cid1 < cid2)
 		{
-			int lineindex = ((cid1*10) + cid2) -1;
+			lineindex = ((cid1*10) + cid2);
 		}
 		else
 		{
-			int lineindex = ((cid2*10) + cid1) -1;
+			lineindex = ((cid2*10) + cid1);
 		}
-		lines.add(lineindex,new Line(circles.get(cid1), circles.get(cid2)));
+		lines.set(lineindex,new Line(circles.get(cid1), circles.get(cid2)));
 
 		repaint();
 		
@@ -146,14 +147,14 @@ public class DrawPanel extends JPanel
 		}
 		if(cid1 < cid2)
 		{
-			int lineindex = ((cid1*10) + cid2) -1;
+			lineindex = ((cid1*10) + cid2);
 		}
 		else
 		{
-			int lineindex = ((cid2*10) + cid1) -1;
+			lineindex = ((cid2*10) + cid1);
 		}
 		lines.remove(lineindex);
-		lines.add(lineindex, new Line( new Circle(0,0,0), new Circle(0,0,0)));
+		lines.set(lineindex, new Line( new Circle(0,0,0), new Circle(0,0,0)));
 		repaint();
 	}
 	
