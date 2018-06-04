@@ -244,7 +244,8 @@ public class DrawPanel extends JPanel
 				int start = fileIn.nextInt();
 				int end = fileIn.nextInt();
 				//graph.addEdge(start, end, 0);
-				lines.set(start+end, new Line(circles.get(start), circles.get(end)));
+				lines.set((start*numberOfVertices)+end, new Line(circles.get(start), circles.get(end)));
+				lines.set((end*numberOfVertices)+start, new Line(circles.get(start), circles.get(end)));
 			}
 			
 			//closes scanner
@@ -269,5 +270,21 @@ public class DrawPanel extends JPanel
 		lines.set(lineindex2, new Line(circles.get(cid1), circles.get(cid2)));
 		repaint();
 		
+	}
+	
+	public void removeEdge2(int cid1, int cid2)
+	{
+		
+		if (cid1 < 0 || cid2 < 0 || cid1 >= circles.size() || cid2 >= circles.size()) 
+		{
+			throw new IllegalArgumentException("Ids must be valid");
+		}
+		
+		lineindex1 = ((cid1*numberOfVertices) + cid2);
+		lineindex2 = ((cid2*numberOfVertices) + cid1);	
+		
+		lines.set(lineindex1, new Line( new Circle(0,0,0), new Circle(0,0,0)));
+		lines.set(lineindex2, new Line( new Circle(0,0,0), new Circle(0,0,0)));
+		repaint();
 	}
 }
