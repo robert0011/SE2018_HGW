@@ -58,10 +58,10 @@ public class firstFrame {
 	 */
 	private void initialize()
 	{
-		frame = new JFrame("Graph-Toolbox v 0.4");
+		frame = new JFrame("Graph-Toolbox v 0.3");
 		frame.getContentPane().setBackground(new Color(205, 133, 63));
 		frame.setBackground(new Color(184, 134, 11));
-		frame.setBounds(50, 50, 1500, 900);
+		frame.setBounds(50, 50, 1220, 900);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -70,7 +70,7 @@ public class firstFrame {
 		frame.getContentPane().add(lblOtherLable);*/
 		
 		JLabel lblBackgroundlable = new JLabel("background_lable");
-		lblBackgroundlable.setIcon(new ImageIcon("D:\\JAVA_Workspace\\SE2018_HGW\\backgroundImage.jpg"));
+		lblBackgroundlable.setIcon(new ImageIcon(".\\backgroundImage.jpg"));
 		lblBackgroundlable.setBounds(0, 40, 1282, 700);
 		//frame.getContentPane().add(lblBackgroundlable);
 		
@@ -83,7 +83,7 @@ public class firstFrame {
 		//drawPanel.add(lblBackgroundlable);
 		frame.getContentPane().add(drawPanel);
 		
-		JButton btnAddEdge = new JButton("add edge to drawing");
+		JButton btnAddEdge = new JButton("add edge");
 		btnAddEdge.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent addEdgeAction) 
@@ -91,42 +91,8 @@ public class firstFrame {
 				createAddEdgeFrame();
 			}
 		});
-		btnAddEdge.setBounds(10, 11, 140, 23);
+		btnAddEdge.setBounds(9, 11, 114, 23);
 		frame.getContentPane().add(btnAddEdge);
-		
-		JButton btnRemoveEdge = new JButton("remove edge from drawing");
-		btnRemoveEdge.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent removeEdgeAction) 
-			{
-				createRemoveEdgeFrame();
-			}
-		});
-		btnRemoveEdge.setBounds(160, 11, 168, 23);
-		frame.getContentPane().add(btnRemoveEdge);
-		
-		JButton btnLoadGraph = new JButton("load graph");
-		btnLoadGraph.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent loadingAction) 
-			{
-				drawPanel.reset();
-				drawPanel.loadGraph();
-			}
-		});
-		btnLoadGraph.setBounds(355, 11, 110, 23);
-		frame.getContentPane().add(btnLoadGraph);
-		
-		JButton btnResetWindow = new JButton("reset window");
-		btnResetWindow.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent resetAction) 
-			{
-				drawPanel.reset();
-			}
-		});
-		btnResetWindow.setBounds(1025, 0, 140, 34);
-		frame.getContentPane().add(btnResetWindow);
 		
 		JButton btnAddEdgeTo = new JButton("add edge to loaded graph");
 		btnAddEdgeTo.addActionListener(new ActionListener() 
@@ -136,9 +102,65 @@ public class firstFrame {
 				createAddEdgeFrame2();
 			}
 		});
-		btnAddEdgeTo.setBounds(475, 11, 183, 23);
-		frame.getContentPane().add(btnAddEdgeTo);
-		//drawPanel.setOpaque(false);
+		btnAddEdgeTo.setBounds(600, 11, 183, 23);
+frame.getContentPane().add(btnAddEdgeTo);
+		
+		JButton btnRemoveEdge = new JButton("remove edge");
+		btnRemoveEdge.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent removeEdgeAction) 
+			{
+				createRemoveEdgeFrame();
+			}
+		});
+		btnRemoveEdge.setBounds(133, 11, 109, 23);
+		frame.getContentPane().add(btnRemoveEdge);
+		
+		JButton btnLoadGraph = new JButton("load example");
+		btnLoadGraph.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent loadingAction) 
+			{
+				drawPanel.reset();
+				//CAREFUL
+				//drawPanel.loadGraph();
+				drawPanel.loadFile(".\\EXgraph.txt");
+				drawPanel.repaint();
+			}
+		});
+		btnLoadGraph.setBounds(247, 11, 110, 23);
+		frame.getContentPane().add(btnLoadGraph);
+		
+		
+		//careful
+		JButton btnLoadFile = new JButton("load file");
+		btnLoadFile.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent loadingAction) 
+			{
+				drawPanel.reset();
+				OeffnenDialogClass odc = new OeffnenDialogClass();
+		        String file = odc.oeffnen();
+		        System.out.println(file);
+		        drawPanel.loadFile(file);
+		        drawPanel.repaint();
+			}
+		});
+		btnLoadFile.setBounds(450, 11, 110, 23);
+		frame.getContentPane().add(btnLoadFile);
+		
+		
+		
+		JButton btnResetWindow = new JButton("reset window");
+		btnResetWindow.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent resetAction) 
+			{
+				drawPanel.reset();
+			}
+		});
+		btnResetWindow.setBounds(1061, 0, 120, 34);
+		frame.getContentPane().add(btnResetWindow);
 	}
 	
 	public static void createAddEdgeFrame() 
@@ -182,6 +204,7 @@ public class firstFrame {
 		frame.setVisible(true);
 	}
 	
+	
 	public static void createAddEdgeFrame2() 
 	{
 		JFrame frame = new JFrame();
@@ -221,7 +244,7 @@ public class firstFrame {
 		frame.getContentPane().add(btnCancel);
 		frame.getContentPane().add(btnAddLine);
 		frame.setVisible(true);
-	}
+}
 	
 	public static void createRemoveEdgeFrame() 
 	{

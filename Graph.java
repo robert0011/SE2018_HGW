@@ -22,10 +22,8 @@ public class Graph implements GraphInterface
 		
 		this.vertexlabel = 0;
 		
-		/*Set<Pair<Integer,Vertex>> test = new HashSet<Pair<Integer,Vertex>>();
-		this.vertexSet = test;*/
 		this.vertexSet = new HashSet<Pair<Integer,Vertex>>();
-		//this.vertexSet = new Set<Pair<Integer,Vertex>>();
+		this.edgeSet = new HashSet<Edge>();
 		this.outEdges = new Hashtable<Integer, List<Integer>>();
 		this.inEdges = new Hashtable<Integer, List<Integer>>();
 	}
@@ -65,7 +63,7 @@ public class Graph implements GraphInterface
 			else
 			{
 				vertexSet.add(new Pair<Integer,Vertex>(vertexlabel, vertexToAdd));
-				vertexlabel = vertexlabel++;
+				vertexlabel = vertexlabel+1;
 				return true;
 			}
 			
@@ -81,20 +79,24 @@ public class Graph implements GraphInterface
 	 */
 	public boolean addEdge(int start, int end, double weight)
 	{
+		
 		Edge edgeToAdd = new Edge(start,end,weight);
 		
 		// first check whether this edge already exists
 		Iterator<Edge> iterator = edgeSet.iterator();
+		//boolean edgeNotFound = true;
 		
 		while(iterator.hasNext())
 		{
 			Edge curEdge = iterator.next();
 			if(curEdge.start == start && curEdge.end == end)
 			{
+				//edgeNotFound = false;
 				return false;
 			}
 			
 		}
+		
 		
 		//check whether the vertices exist
 		boolean foundStart = false;
@@ -115,27 +117,49 @@ public class Graph implements GraphInterface
 		}
 		
 		
+		
 		if(foundStart & foundEnd)
 		{
+			
+			
 			// both vertices exist, an edge can be constructed
 			edgeSet.add(edgeToAdd);
 			
+			
 			// add the edge from start to end to outEdges of start
 			List<Integer> curList = outEdges.get(start);
-			curList.add(end);
-			outEdges.put(start, curList);
+			if(curList == null) {
+				List<Integer> curList1 = new ArrayList<Integer>();
+				curList1.add(end);
+				outEdges.put(start, curList1);
+			}
+			else {
+				curList.add(end);
+				outEdges.put(start, curList);
+			}
 			
+			
+		
 			// add the edge from start to end to inEdges of end
 			List<Integer> curList2 = inEdges.get(end);
-			curList2.add(start);
-			inEdges.put(end, curList2);
 			
+			if(curList2 == null) {
+				List<Integer> curList1 = new ArrayList<Integer>();
+				curList1.add(end);
+				inEdges.put(end, curList1);
+			}
+			else {
+				curList2.add(end);
+				inEdges.put(end, curList2);
+			}
 			return true;
 		}
 		else
 		{
 			return false;
 		}
+		
+		
 		
 		
 		
@@ -175,28 +199,42 @@ public class Graph implements GraphInterface
 				Iterator<Edge> iterator = edgeSet.iterator();
 				boolean removed = false;
 				
-				while(iterator.hasNext())
+				/*if(iterator.next() == null)
 				{
-					Edge curEdge = iterator.next();
-					if(curEdge.start == start && curEdge.end == end)
-					{
-						edgeSet.remove(curEdge);
-						// remove outgoing and incoming edges
-						List<Integer> curList = outEdges.get(start);
-						int indexOfEnd = curList.indexOf(end);
-						curList.remove(indexOfEnd);
-						outEdges.put(start, curList);
-						
-						List<Integer> curList2 = inEdges.get(end);
-						int indexOfStart = curList2.indexOf(start);
-						curList2.remove(indexOfStart);
-						inEdges.put(end, curList2);
-						
-						removed = true;
-						return true;
-					}
-					
+					// there is no edge to be deleted
+					return false;
 				}
-				return removed;
+				
+				else
+				{*/
+					while(iterator.hasNext())
+					{
+						Edge curEdge = iterator.next();
+						
+						
+							if(curEdge.start == start && curEdge.end == end)
+							{
+								edgeSet.remove(curEdge);
+								// remove outgoing and incoming edges
+								List<Integer> curList = outEdges.get(start);
+								int indexOfEnd = curList.indexOf(end);
+								curList.remove(indexOfEnd);
+								outEdges.put(start, curList);
+								
+								List<Integer> curList2 = inEdges.get(end);
+								int indexOfStart = curList2.indexOf(start);
+								curList2.remove(indexOfStart);
+								inEdges.put(end, curList2);
+								
+								removed = true;
+								return true;
+							}
+							
+						}
+					return removed;
+				//}
+				
+				
+					
 	}
 }
