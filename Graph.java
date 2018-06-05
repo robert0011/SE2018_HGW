@@ -7,6 +7,7 @@ import javafx.util.Pair;
  * @author Bruckmann C., Wagner R.
  *
  */
+// Hallo Robert!
 public class Graph implements GraphInterface
 {
 	int vertexlabel = 0;
