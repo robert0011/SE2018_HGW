@@ -6,10 +6,6 @@ import javax.swing.JFileChooser;
 
 public class OeffnenDialogClass {
 
-    /*public static void main(String[] args) {
-        OeffnenDialogClass odc = new OeffnenDialogClass();
-        odc.oeffnen();
-    }*/
 
     String oeffnen() {
         final JFileChooser chooser = new JFileChooser("Verzeichnis wählen");
@@ -24,7 +20,7 @@ public class OeffnenDialogClass {
             public void propertyChange(PropertyChangeEvent e) {
                 if (e.getPropertyName().equals(JFileChooser.SELECTED_FILE_CHANGED_PROPERTY)
                         || e.getPropertyName().equals(JFileChooser.DIRECTORY_CHANGED_PROPERTY)) {
-                    final File f = (File) e.getNewValue();
+                    
                 }
             }
         });
@@ -35,9 +31,9 @@ public class OeffnenDialogClass {
         if (result == JFileChooser.APPROVE_OPTION) {
             File inputVerzFile = chooser.getSelectedFile();
             inputVerzStr = inputVerzFile.getPath();
-            System.out.println("Eingabepfad:" + inputVerzStr);
+            //System.out.println("Eingabepfad:" + inputVerzStr);
         }
-        System.out.println("Abbruch");
+        //System.out.println("Abbruch");
         chooser.setVisible(false);
         return inputVerzStr;
     }

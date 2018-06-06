@@ -1,18 +1,15 @@
 import java.util.*; // for sets
 
-import javafx.util.Pair;
-
 /**
  * Class for the graph used by our developed software.
  * @author Bruckmann C., Wagner R.
  *
  */
-// Hallo Robert!
 public class Graph implements GraphInterface
 {
 	int vertexlabel = 0;
 	// initialize the set for the edges and vertices for the graph
-	public Set<Pair<Integer,Vertex>> vertexSet;
+	public Hashtable<Integer,Vertex> vertexSet;
 	public Set<Edge> edgeSet;
 	
 	public Hashtable<Integer, List<Integer>> outEdges;
@@ -23,7 +20,7 @@ public class Graph implements GraphInterface
 		
 		this.vertexlabel = 0;
 		
-		this.vertexSet = new HashSet<Pair<Integer,Vertex>>();
+		this.vertexSet = new Hashtable<Integer,Vertex>();
 		this.edgeSet = new HashSet<Edge>();
 		this.outEdges = new Hashtable<Integer, List<Integer>>();
 		this.inEdges = new Hashtable<Integer, List<Integer>>();
@@ -34,41 +31,10 @@ public class Graph implements GraphInterface
 	 */
 	public boolean addVertex(Vertex v)
 	{
-		if(v == null)
-		{
-			throw new NullPointerException();
-		}
-		else
-		{
-			Vertex vertexToAdd = new Vertex(v.x,v.y);
-			
-			// test whether the vertex is already in the set
-			Iterator<Pair<Integer,Vertex>> pairIterator = vertexSet.iterator();
-			boolean found = false;
-			while(pairIterator.hasNext()) {
-				Pair<Integer,Vertex> currPair = pairIterator.next();
-				Vertex curVertex = currPair.getValue();
-				int start = curVertex.x;
-				int end = curVertex.y;
-				if(v.x == start && v.y ==end)
-				{
-					found = true;
-				}
-				
-			}
-			
-			if(found == true)
-			{
-				return false;
-			}
-			else
-			{
-				vertexSet.add(new Pair<Integer,Vertex>(vertexlabel, vertexToAdd));
-				vertexlabel = vertexlabel+1;
-				return true;
-			}
-			
-		}
+		
+			vertexSet.put(vertexlabel, v);
+			vertexlabel = vertexlabel +1;
+			return true;
 		
 		
 	}
@@ -100,26 +66,8 @@ public class Graph implements GraphInterface
 		
 		
 		//check whether the vertices exist
-		boolean foundStart = false;
-		boolean foundEnd = false;
-		Iterator<Pair<Integer,Vertex>> iterator2 = vertexSet.iterator();
-		while(iterator2.hasNext())
-		{
-			Pair<Integer,Vertex> current = iterator2.next();
-			int curVertexLable = current.getKey();
-			if(start == curVertexLable)
-			{
-				foundStart = true;
-			}
-			if(end == curVertexLable)
-			{
-				foundEnd = true;
-			}
-		}
-		
-		
-		
-		if(foundStart & foundEnd)
+		if(vertexSet.containsKey(start) && vertexSet.containsKey(end))
+
 		{
 			
 			
@@ -167,22 +115,19 @@ public class Graph implements GraphInterface
 
 	}
 	
-	public boolean removeVertex(int remove)
+	
+	
+	public boolean removeVertex(int remove) 
 	{
-		
-		Iterator<Pair<Integer,Vertex>> iterator = vertexSet.iterator();
-		boolean removed = false;
-		
-		while (iterator.hasNext()) {
-	         Pair<Integer,Vertex> current = iterator.next();
-	         int label = current.getKey();
-	         if(label == remove)
-	         {
-	        	 vertexSet.remove(current);
-	        	 removed = true;
-	         }
-	      }
-		return removed;
+		if(vertexSet.containsKey(remove))
+		{
+			vertexSet.remove(remove);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 		
 	}
 	

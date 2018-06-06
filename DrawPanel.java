@@ -17,8 +17,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JOptionPane;
 
-import javafx.scene.image.Image;
-
 public class DrawPanel extends JPanel 
 {
 	private static ArrayList<Circle> circles;
@@ -147,13 +145,17 @@ public class DrawPanel extends JPanel
 		{
 			throw new IllegalArgumentException("Ids must be valid");
 		}
-		lineindex1 = ((cid1*50) + cid2);
-		lineindex2 = ((cid2*50) + cid1);
+		else
+		{
+			lineindex1 = ((cid1*50) + cid2);
+			lineindex2 = ((cid2*50) + cid1);
 
-		lines.set(lineindex1, new Line(circles.get(cid1), circles.get(cid2)));
-		lines.set(lineindex2, new Line(circles.get(cid1), circles.get(cid2)));
-		graph.addEdge(cid1, cid2, 1);
-		repaint();
+			lines.set(lineindex1, new Line(circles.get(cid1), circles.get(cid2)));
+			lines.set(lineindex2, new Line(circles.get(cid1), circles.get(cid2)));
+			graph.addEdge(cid1, cid2, 1);
+			repaint();
+		}
+		
 		
 	}
 	public void removeEdge(int cid1, int cid2)
