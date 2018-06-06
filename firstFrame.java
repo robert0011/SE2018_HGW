@@ -94,16 +94,6 @@ public class firstFrame {
 		btnAddEdge.setBounds(9, 11, 114, 23);
 		frame.getContentPane().add(btnAddEdge);
 		
-		JButton btnAddEdgeTo = new JButton("add edge to loaded graph");
-		btnAddEdgeTo.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent arg0) 
-			{
-				createAddEdgeFrame2();
-			}
-		});
-		btnAddEdgeTo.setBounds(600, 11, 183, 23);
-frame.getContentPane().add(btnAddEdgeTo);
 		
 		JButton btnRemoveEdge = new JButton("remove edge");
 		btnRemoveEdge.addActionListener(new ActionListener() 
@@ -166,7 +156,8 @@ frame.getContentPane().add(btnAddEdgeTo);
 	public static void createAddEdgeFrame() 
 	{
 		JFrame frame = new JFrame();
-		frame.setSize(200, 80);
+		frame.setBounds(350, 200, 225, 80);
+		//frame.setSize(200, 80);
 		frame.getContentPane().setLayout(new FlowLayout());
 		
 		JTextField txtC1 = new JTextField(1);
@@ -205,51 +196,12 @@ frame.getContentPane().add(btnAddEdgeTo);
 	}
 	
 	
-	public static void createAddEdgeFrame2() 
-	{
-		JFrame frame = new JFrame();
-		frame.setSize(200, 80);
-		frame.getContentPane().setLayout(new FlowLayout());
-		
-		JTextField txtC1 = new JTextField(1);
-		JTextField txtC2 = new JTextField(1);
-		
-		JButton btnCancel = new JButton("cancel");
-		btnCancel.addActionListener(new ActionListener() 
-		{
-			
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				frame.dispose();
-			}
-		});
-		
-		JButton btnAddLine = new JButton("add");
-		btnAddLine.addActionListener(new ActionListener() 
-		{
-			
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				int cid1 = Integer.parseInt(txtC1.getText());
-				int cid2 = Integer.parseInt(txtC2.getText());
-				drawPanel.addEdge2(cid1, cid2);
-				frame.dispose();
-			}
-		});
-		
-		frame.getContentPane().add(txtC1);
-		frame.getContentPane().add(txtC2);
-		frame.getContentPane().add(btnCancel);
-		frame.getContentPane().add(btnAddLine);
-		frame.setVisible(true);
-}
+	
 	
 	public static void createRemoveEdgeFrame() 
 	{
 		JFrame frame = new JFrame();
-		frame.setSize(225, 80);
+		frame.setBounds(350, 200, 225, 80);
 		frame.getContentPane().setLayout(new FlowLayout());
 		
 		JTextField txtC1 = new JTextField(1);

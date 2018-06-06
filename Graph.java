@@ -142,16 +142,16 @@ public class Graph implements GraphInterface
 			
 		
 			// add the edge from start to end to inEdges of end
-			List<Integer> curList2 = inEdges.get(end);
+			curList = inEdges.get(end);
 			
-			if(curList2 == null) {
+			if(curList == null) {
 				List<Integer> curList1 = new ArrayList<Integer>();
-				curList1.add(end);
+				curList1.add(start);
 				inEdges.put(end, curList1);
 			}
 			else {
-				curList2.add(end);
-				inEdges.put(end, curList2);
+				curList.add(start);
+				inEdges.put(end, curList);
 			}
 			return true;
 		}
@@ -182,15 +182,7 @@ public class Graph implements GraphInterface
 	        	 removed = true;
 	         }
 	      }
-		if(removed == true)
-		{
-			return true;
-		}
-		else
-		{
-			// hier noch Nachricht ausgeben
-			return false;
-		}
+		return removed;
 		
 	}
 	
@@ -200,14 +192,7 @@ public class Graph implements GraphInterface
 				Iterator<Edge> iterator = edgeSet.iterator();
 				boolean removed = false;
 				
-				/*if(iterator.next() == null)
 				{
-					// there is no edge to be deleted
-					return false;
-				}
-				
-				else
-				{*/
 					while(iterator.hasNext())
 					{
 						Edge curEdge = iterator.next();
@@ -223,17 +208,25 @@ public class Graph implements GraphInterface
 								outEdges.put(start, curList);
 								
 								List<Integer> curList2 = inEdges.get(end);
-								int indexOfStart = curList2.indexOf(start);
-								curList2.remove(indexOfStart);
-								inEdges.put(end, curList2);
+								if(curList2 == null)
+								{
+									// do nothing if
+								}
+								else
+								{
+									int indexOfStart = curList2.indexOf(start);
+									curList2.remove(indexOfStart);
+									inEdges.put(end, curList2);
+									
+									removed = true;
+									return true;
+								}
 								
-								removed = true;
-								return true;
 							}
-							
+					
 						}
 					return removed;
-				//}
+				}
 				
 				
 					

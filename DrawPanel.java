@@ -235,6 +235,7 @@ public class DrawPanel extends JPanel
 		repaint();
 	}
 	
+	/*
 	//function to load a graph from a txt file 
 	public static void loadGraph()
 	{
@@ -286,7 +287,7 @@ public class DrawPanel extends JPanel
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-}
+}*/
 	
 	
 	// CAREFUL
@@ -351,22 +352,6 @@ public class DrawPanel extends JPanel
 		
 		
 	}
-	
-	public void addEdge2(int cid1, int cid2) 
-	{
-		if (cid1 < 0 || cid2 < 0 || cid1 >= circles.size() || cid2 >= circles.size())
-		{
-			throw new IllegalArgumentException("Ids must be valid");
-		}
-		lineindex1 = ((cid1*numberOfVertices) + cid2);
-		lineindex2 = ((cid2*numberOfVertices) + cid1);
-
-		lines.set(lineindex1, new Line(circles.get(cid1), circles.get(cid2)));
-		lines.set(lineindex2, new Line(circles.get(cid1), circles.get(cid2)));
-		graph.addEdge(cid1, cid2, 1);
-		repaint();
-		
-}
 
 
 }
