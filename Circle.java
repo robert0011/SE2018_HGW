@@ -29,7 +29,7 @@ public class Circle
 	
 	public void draw(Graphics g) 
 	{
-		g.setColor(Color.BLACK); // color of the added vertices
+		//g.setColor(Color.BLACK); // color of the added vertices
 		g.fillOval(x-r, y-r, r*2, r*2);
 	}
 }

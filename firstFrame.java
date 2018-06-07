@@ -1,9 +1,8 @@
-import java.awt.EventQueue;
 //import java.awt.BorderLayout;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.ImageIcon;
-import java.awt.FlowLayout;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JButton;
@@ -11,6 +10,8 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+
+import java.util.Enumeration;
 import java.util.Scanner; //for graph read
 
 import javax.swing.*;
@@ -19,7 +20,7 @@ import java.awt.event.*;
 
 public class firstFrame {
 
-	private JFrame frame;
+	public JFrame frame;
 
 	/**
 	 * Launch the application.
@@ -34,6 +35,7 @@ public class firstFrame {
 				{
 					firstFrame window = new firstFrame();
 					window.frame.setVisible(true);
+					
 				}
 				catch (Exception e) 
 				{
@@ -105,6 +107,25 @@ public class firstFrame {
 		});
 		btnRemoveEdge.setBounds(133, 11, 109, 23);
 		frame.getContentPane().add(btnRemoveEdge);
+		
+		
+		JButton btnRemoveVertex = new JButton("remove vertex");
+		btnRemoveVertex.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent removeVertexAction) 
+			{
+				System.out.println(drawPanel.circles.get(0).getX());
+				drawPanel.clickedRemoveVertex = true;
+				drawPanel.col = Color.CYAN;
+				drawPanel.repaint();
+				drawPanel.removeVertex();
+				
+			}
+		});
+		btnRemoveVertex.setBounds(600, 11, 120, 23);
+		frame.getContentPane().add(btnRemoveVertex);
+		
+
 		
 		JButton btnLoadGraph = new JButton("load example");
 		btnLoadGraph.addActionListener(new ActionListener() 
@@ -238,4 +259,6 @@ public class firstFrame {
 		frame.getContentPane().add(btnRemoveEdge);
 		frame.setVisible(true);
 	}
+	
+
 }
