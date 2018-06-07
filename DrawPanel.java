@@ -129,7 +129,7 @@ public class DrawPanel extends JPanel
             				}
             			}
             			repaint();
-            			createRemoveEdgeFrame();
+            			createRemoveVertexFrame();
             		}
             		
             	}
@@ -186,7 +186,7 @@ public class DrawPanel extends JPanel
             				}
             			}
             			repaint();
-            			createRemoveEdgeFrame(); 
+            			createRemoveVertexFrame(); 
             			
             		}
             		
@@ -204,7 +204,7 @@ public class DrawPanel extends JPanel
 	}
 	
 	
-	public void createRemoveEdgeFrame()
+	public void createRemoveVertexFrame()
 	{
 		JFrame frame = new JFrame();
 		frame.setBounds(350, 200, 225, 80);
