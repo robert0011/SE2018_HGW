@@ -248,14 +248,7 @@ public class firstFrame {
 			{
 				int cid1 = Integer.parseInt(txtC1.getText());
 				int cid2 = Integer.parseInt(txtC2.getText());
-				if(drawPanel.loadedFile)
-				{
-					drawPanel.removeEdge2(cid2, cid2);
-				}
-				else
-				{
-					drawPanel.removeEdge(cid1, cid2);
-				}
+				drawPanel.removeEdge(cid1, cid2);
 				frame.dispose();
 			}
 		});

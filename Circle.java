@@ -3,13 +3,14 @@ import java.awt.Graphics;
 
 public class Circle 
 {
-	private int x, y, r;
+	private int x, y, r, circleindex;
 	
-	public Circle(int r, int x, int y) 
+	public Circle(int r, int x, int y, int ci) 
 	{
 		this.x = x;
 		this.y = y;
 		this.r = r;
+		this.circleindex = ci;
 	}
 	
 	public int getX() 
@@ -25,6 +26,11 @@ public class Circle
 	public int getRadius() 
 	{
 		return r; 
+	}
+	
+	public int getIndex()
+	{
+		return circleindex;
 	}
 	
 	public void draw(Graphics g) 

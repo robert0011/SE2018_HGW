@@ -13,6 +13,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Random;
 import javax.imageio.ImageIO;
@@ -26,7 +28,7 @@ import javax.swing.JOptionPane;
 public class DrawPanel extends JPanel 
 {
 	public static ArrayList<Circle> circles;
-	public static ArrayList<Line> lines;
+	public static Hashtable<Integer, List<Line>> lines;
 	// for removing one special circle
 	public static Circle blueCircle;
 	private static ArrayList<Line> blueLines;
@@ -38,9 +40,7 @@ public class DrawPanel extends JPanel
 	Color col = Color.BLACK;
 	
 	public static Graph graph = new Graph();
-	int circleindex = 0;
-	int lineindex1;
-	int lineindex2;
+	public static int circleindex = 0;
 	
 	int numberOfVertices;
 	int numberOfEdges;
@@ -56,18 +56,18 @@ public class DrawPanel extends JPanel
 		// set maximum drawable vertices to 50
 		circles = new ArrayList<Circle>(50);
 		// maximum edges = 50 * 49 (since every vertex can only have 49 neighbors
-		lines = new ArrayList<Line>(2450);
+		lines = new Hashtable<Integer, List<Line>>();
 		
 		//blueCircle = new Circle(-1,0,0);
-		blueCircle = new Circle(0,0,-1000000);
+		blueCircle = new Circle(0,0,-1000000,-5);
 		blueLines = new ArrayList<Line>(2450);
 		
 		// just doing some magic 
-		Circle startcircle = new Circle(0,0,0);
+		/*Circle startcircle = new Circle(0,0,0);
 		for(int i = 0; i < 2449; i ++ )
 		{
 			lines.add(i, new Line(startcircle,startcircle));
-		}
+		}*/
 		
 		this.setBorder(BorderFactory.createLineBorder(Color.black, 2, false));	
 		this.addMouseMotionListener(new MouseMotionListener() 
@@ -137,7 +137,7 @@ public class DrawPanel extends JPanel
             	{
             		if(! clickedRemoveVertex)
             		{
-            			Circle actualCircle = new Circle(10, mouseX, mouseY);
+            			Circle actualCircle = new Circle(10, mouseX, mouseY, circleindex);
                     	//Vertex vertexToAdd = new Vertex(mouseX,mouseY);
                     	//graph.addVertex(vertexToAdd);
                     	// test for painting only unique circles
@@ -241,7 +241,7 @@ public class DrawPanel extends JPanel
     			col = Color.CYAN;
     			repaint();
     			col = Color.BLACK;
-    			blueCircle = new Circle(0,0,-1000000);
+    			blueCircle = new Circle(0,0,-1000000, -5);
     			repaint();
 				
 				frame.dispose();
@@ -255,7 +255,7 @@ public class DrawPanel extends JPanel
 			public void actionPerformed(ActionEvent e) 
 			{
 				col = Color.BLACK;
-				blueCircle = new Circle(0,0,-1000000);
+				blueCircle = new Circle(0,0,-1000000, -5);
 				repaint();
 				frame.dispose();
 			}
@@ -270,52 +270,72 @@ public class DrawPanel extends JPanel
 	
 	public void addEdge(int cid1, int cid2) 
 	{
-		if (cid1 < 0 || cid2 < 0 || cid1 >= circles.size() || cid2 >= circles.size())
-		{
-			throw new IllegalArgumentException("Ids must be valid");
-		}
-		else
-		{
-			lineindex1 = ((cid1*50) + cid2);
-			//lineindex2 = ((cid2*50) + cid1);
-
-			lines.set(lineindex1, new Line(circles.get(cid1), circles.get(cid2)));
-			//lines.set(lineindex2, new Line(circles.get(cid1), circles.get(cid2)));
-			graph.addEdge(cid1, cid2, 1);
+		
+			boolean success = graph.addEdge(cid1, cid2, 1);
+			if(success)
+			{
+				if(lines.containsKey(cid1))
+				{
+					List<Line> curList = lines.get(cid1);
+					// die circles sind nicht sortiert! ordne circleindex zu!
+					Circle c1 = circles.get(cid1);
+					Circle c2 = circles.get(cid2);
+					Line lineToAdd = new Line(c1,c2);
+					if(curList == null) {
+						List<Line> curList1 = new ArrayList<Line>();
+						curList1.add(lineToAdd);
+						//lines.put(cid1, curList1);
+					}
+					else {
+						curList.add(lineToAdd);
+						//lines.put(cid1, curList);
+					}
+				}
+				
+				else
+				{
+					List<Line> curList = new ArrayList<Line>();
+	
+					Circle c1 = circles.get(cid1);
+					Circle c2 = circles.get(cid2);
+					Line lineToAdd = new Line(c1,c2);
+					curList.add(lineToAdd);
+					//lines.put(cid1, curList);
+					
+					//teste ob es am repaint() liegt:
+					/*Circle test1 = new Circle(10,400,400,2);
+					Circle test2 = new Circle(10,500,500,3);
+					circles.add(test1);
+					circles.add(test2);
+					lineToAdd = new Line(test1,test2);
+					curList.add(lineToAdd);
+					//lines.put(0, curList);*/
+					
+					
+				}
+				
+				
+			}
 			repaint();
-		}
+		
 		
 		
 	}
 	public void removeEdge(int cid1, int cid2)
 	{
 		
-		if (cid1 < 0 || cid2 < 0 || cid1 >= circles.size() || cid2 >= circles.size()) 
+		boolean success = graph.removeEdge(cid1, cid2);
+		if(success)
 		{
-			throw new IllegalArgumentException("Ids must be valid");
+			List<Line> curList = lines.get(cid1);
+			int indexToRemove = curList.indexOf(cid2);
+			curList.remove(indexToRemove);
+			lines.put(cid1, curList);
 		}
-		
-		lineindex1 = ((cid1*50) + cid2) ;
-		
-		lines.set(lineindex1, new Line( new Circle(0,0,0), new Circle(0,0,0)));
 		repaint();
 	}
 	
-	public void removeEdge2(int cid1, int cid2)
-	{
-		
-		if (cid1 < 0 || cid2 < 0 || cid1 >= circles.size() || cid2 >= circles.size()) 
-		{
-			throw new IllegalArgumentException("Ids must be valid");
-		}
-		
-		lineindex1 = ((cid1*numberOfVertices) + cid2);
-		lineindex2 = ((cid2*numberOfVertices) + cid1);	
-		
-		lines.set(lineindex1, new Line( new Circle(0,0,0), new Circle(0,0,0)));
-		lines.set(lineindex2, new Line( new Circle(0,0,0), new Circle(0,0,0)));
-		repaint();
-}
+	
 	
 	public void removeVertex()
 	{
@@ -345,19 +365,26 @@ public class DrawPanel extends JPanel
 				
 		
 		//lblMouseCoords.setText("coords: (" + mouseX + ", " + mouseY + ")");
-		for (Line l: lines) 
+		Enumeration<List<Line>> lineIterator = lines.elements();
+		while(lineIterator.hasMoreElements())
 		{
-			//l.draw(g);
-			g.setColor(col);
-			l.drawArrowLine(g, 8, 8);
+			List<Line> curList = lineIterator.nextElement();
+			for(int i=1; i <= curList.size(); i = i+1)
+			{
+				Line lineToDraw = curList.get(i);
+				g.setColor(col);
+				lineToDraw.drawArrowLine(g, 8, 8);
+			}
 		}
-		int i = 0;
+		
+		//int i = 0;
 		for (Circle c : circles) 
 		{
 			c.draw(g);
 			g.setColor(Color.WHITE); // textcolor for vertex numbers
-			g.drawString(String.valueOf(i), c.getX() - 5, c.getY() + 3);
-			i += 1;
+			g.drawString(String.valueOf(c.getIndex()), c.getX() - 5, c.getY() + 3);
+			//g.drawString(String.valueOf(i), c.getX() - 5, c.getY() + 3);
+			//i += 1;
 			g.setColor(col);
 		}
 		
@@ -374,11 +401,6 @@ public class DrawPanel extends JPanel
 		lines.clear(); //removes all lines
 		circles.clear(); // removes all circles
 		circleindex = 0;
-		Circle startcircle = new Circle(0,0,0);
-		for(int i = 0; i < 2449; i ++ )
-		{
-			lines.add(i, new Line(startcircle,startcircle));
-		}
 		loadedFile = false;
 		repaint();
 	}
@@ -456,14 +478,7 @@ public class DrawPanel extends JPanel
 				//second integer is the amount of edges
 				int numberOfEdges = fileIn.nextInt();
 				circles = new ArrayList<Circle>(numberOfVertices);
-				lines = new ArrayList<Line>(numberOfVertices*(numberOfVertices-1));
-				
-
-				Circle startcircle = new Circle(0,0,0);
-				for(int i = 0; i < (numberOfVertices*(numberOfVertices-1)); i ++ )
-				{
-					lines.add(i, new Line(startcircle,startcircle));
-				}
+				lines = new Hashtable<Integer, List<Line>>();
 						
 						
 				for(int i = 0; i < numberOfVertices; i ++ )
@@ -471,18 +486,40 @@ public class DrawPanel extends JPanel
 					//random value between 5 and 1195
 					Random rand = new Random();
 					int x = rand.nextInt(950)+50;
-					circles.add(i, new Circle(10, x, ((1+i) *(800/(numberOfVertices+2)) )));
+					// CAREFUL
+					double yCoord = (1+i) *(800/(numberOfVertices+2));
+					Circle tmp = new Circle(10, x, (int) yCoord, circleindex);
+					circleindex = circleindex+1;
+					circles.add(i, tmp);
+					//circles.add(i, new Circle(10, x, ((1+i) *(800/(numberOfVertices+2)))));
 					graph.addVertex(new Vertex(x,i *(800/numberOfEdges)));
 				}
 				
+				boolean validEdge = false;
 				for(int i = 0; i < numberOfEdges; i ++ )
 				{
 					//create edge(fileIn.nextInt(), fileIn.nextInt())
 					int start = fileIn.nextInt();
 					int end = fileIn.nextInt();
-					graph.addEdge(start, end, 0);
-					lines.set((start*numberOfVertices)+end, new Line(circles.get(start), circles.get(end)));
-					lines.set((end*numberOfVertices)+start, new Line(circles.get(start), circles.get(end)));
+					validEdge = graph.addEdge(start, end, 1);
+					if(validEdge)
+					{
+						//addEdge
+						List<Line> curList = lines.get(start);
+						Circle c1 = circles.get(start);
+						Circle c2 = circles.get(end);
+						Line lineToAdd = new Line(c1, c2);
+						if(curList == null) {
+							List<Line> curList1 = new ArrayList<Line>();
+							curList1.add(lineToAdd);
+							//lines.put(start, curList1);
+						}
+						else {
+							curList.add(lineToAdd);
+							//lines.put(start, curList);
+						}
+						
+					}
 				}
 				
 				//closes scanner
