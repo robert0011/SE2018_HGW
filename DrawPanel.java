@@ -277,7 +277,7 @@ public class DrawPanel extends JPanel
 		else
 		{
 			lineindex1 = ((cid1*50) + cid2);
-			lineindex2 = ((cid2*50) + cid1);
+			//lineindex2 = ((cid2*50) + cid1);
 
 			lines.set(lineindex1, new Line(circles.get(cid1), circles.get(cid2)));
 			//lines.set(lineindex2, new Line(circles.get(cid1), circles.get(cid2)));
@@ -296,10 +296,8 @@ public class DrawPanel extends JPanel
 		}
 		
 		lineindex1 = ((cid1*50) + cid2) ;
-		lineindex2 = ((cid2*50) + cid1);
 		
 		lines.set(lineindex1, new Line( new Circle(0,0,0), new Circle(0,0,0)));
-		lines.set(lineindex2, new Line( new Circle(0,0,0), new Circle(0,0,0)));
 		repaint();
 	}
 	
