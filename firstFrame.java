@@ -114,7 +114,6 @@ public class firstFrame {
 		{
 			public void actionPerformed(ActionEvent removeVertexAction) 
 			{
-				System.out.println(drawPanel.circles.get(0).getX());
 				drawPanel.clickedRemoveVertex = true;
 				drawPanel.col = Color.CYAN;
 				drawPanel.repaint();
@@ -211,8 +210,8 @@ public class firstFrame {
 		
 		frame.getContentPane().add(txtC1);
 		frame.getContentPane().add(txtC2);
-		frame.getContentPane().add(btnCancel);
 		frame.getContentPane().add(btnAddLine);
+		frame.getContentPane().add(btnCancel);
 		frame.setVisible(true);
 	}
 	
