@@ -22,6 +22,16 @@ public class Line
 		}
 	}
 	
+	public Circle getC1()
+	{
+		return c1;
+	}
+	
+	public Circle getC2()
+	{
+		return c2;
+	}
+	
 	/**
 	 * Draw an arrow line between two points.
 	 * @param g the graphics component.

@@ -328,7 +328,25 @@ public class DrawPanel extends JPanel
 		if(success)
 		{
 			List<Line> curList = lines.get(cid1);
-			int indexToRemove = curList.indexOf(cid2);
+			// anscheinend Fehler, weil curList.indexOf(cid2) = -1, da cid2 nicht in curList
+			// in curList gibt es eine Line mit c1.getIndex() = cid1 und c2.getIndex = cid2
+			int indexToRemove= -5;
+			Circle c1, c2;
+			int circle1, circle2 = -2;
+			//for( Line l : curList)
+			for(int i=0; i<curList.size(); i=i+1)
+			{
+				Line tmp = curList.get(i);
+				c1 = tmp.getC1();
+				c2 = tmp.getC2();
+				circle1 = c1.getIndex();
+				circle2 = c2.getIndex();
+				if(circle1 == cid1 & circle2==cid2)
+				{
+					indexToRemove = i;
+				}
+			}
+			
 			curList.remove(indexToRemove);
 			lines.put(cid1, curList);
 		}
