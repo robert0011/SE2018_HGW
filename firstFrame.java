@@ -63,7 +63,7 @@ public class firstFrame {
 		frame = new JFrame("Graph-Toolbox v 0.3");
 		frame.getContentPane().setBackground(new Color(205, 133, 63));
 		frame.setBackground(new Color(184, 134, 11));
-		frame.setBounds(50, 50, 1220, 900);
+		frame.setBounds(50, 50, 1300, 900);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		
@@ -81,7 +81,7 @@ public class firstFrame {
 		//drawPanel.setBackground(Color.WHITE);
 		drawPanel.lblMouseCoords.setText("COORD");
 		drawPanel.setLocation(0, 40);
-		drawPanel.setSize(1200, 800);
+		drawPanel.setSize(1280, 800);
 		//drawPanel.add(lblBackgroundlable);
 		frame.getContentPane().add(drawPanel);
 		

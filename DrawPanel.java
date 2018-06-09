@@ -284,11 +284,11 @@ public class DrawPanel extends JPanel
 					if(curList == null) {
 						List<Line> curList1 = new ArrayList<Line>();
 						curList1.add(lineToAdd);
-						//lines.put(cid1, curList1);
+						lines.put(cid1, curList1);
 					}
 					else {
 						curList.add(lineToAdd);
-						//lines.put(cid1, curList);
+						lines.put(cid1, curList);
 					}
 				}
 				
@@ -300,7 +300,7 @@ public class DrawPanel extends JPanel
 					Circle c2 = circles.get(cid2);
 					Line lineToAdd = new Line(c1,c2);
 					curList.add(lineToAdd);
-					//lines.put(cid1, curList);
+					lines.put(cid1, curList);
 					
 					//teste ob es am repaint() liegt:
 					/*Circle test1 = new Circle(10,400,400,2);
@@ -309,7 +309,7 @@ public class DrawPanel extends JPanel
 					circles.add(test2);
 					lineToAdd = new Line(test1,test2);
 					curList.add(lineToAdd);
-					//lines.put(0, curList);*/
+					lines.put(0, curList);*/
 					
 					
 				}
@@ -369,7 +369,9 @@ public class DrawPanel extends JPanel
 		while(lineIterator.hasMoreElements())
 		{
 			List<Line> curList = lineIterator.nextElement();
-			for(int i=1; i <= curList.size(); i = i+1)
+			// hier geändert
+			
+			for(int i=0; i < curList.size(); i = i+1)
 			{
 				Line lineToDraw = curList.get(i);
 				g.setColor(col);
@@ -401,7 +403,10 @@ public class DrawPanel extends JPanel
 		lines.clear(); //removes all lines
 		circles.clear(); // removes all circles
 		circleindex = 0;
+		blueCircle = new Circle(0,0,-1000000,-5);
 		loadedFile = false;
+		graph = new Graph();
+		
 		repaint();
 	}
 	
@@ -512,11 +517,11 @@ public class DrawPanel extends JPanel
 						if(curList == null) {
 							List<Line> curList1 = new ArrayList<Line>();
 							curList1.add(lineToAdd);
-							//lines.put(start, curList1);
+							lines.put(start, curList1);
 						}
 						else {
 							curList.add(lineToAdd);
-							//lines.put(start, curList);
+							lines.put(start, curList);
 						}
 						
 					}
