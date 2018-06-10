@@ -208,7 +208,7 @@ public class DrawPanel extends JPanel
 	public void createRemoveVertexFrame()
 	{
 		JFrame frame = new JFrame();
-		frame.setBounds(350, 200, 225, 80);
+		frame.setBounds(350, 200, 275, 95);
 		frame.getContentPane().setLayout(new FlowLayout());
 		
 		JLabel txt = new JLabel();
@@ -251,9 +251,8 @@ public class DrawPanel extends JPanel
         			}
     			}
     			
-    			circles.remove(blueCircle);
+    			circles.set(blueCircle.getIndex(), new Circle(0,-5,-5,blueCircle.getIndex()));
 				graph.removeVertex(blueCircle.getIndex());
-    			
     			
     			clickedRemoveVertex = false;
     			col = Color.CYAN;
