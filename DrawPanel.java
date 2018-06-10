@@ -539,9 +539,12 @@ public class DrawPanel extends JPanel
 		}	
 	}
 
-	public static void move()
+	
+	
+	public void move(int vertexindex, int x, int y)
 	{
-		
+		circles.set(vertexindex, new Circle(10, x, y, vertexindex));
+		repaint();
 	}
 
 }

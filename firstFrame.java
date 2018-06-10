@@ -60,7 +60,7 @@ public class firstFrame {
 	 */
 	private void initialize()
 	{
-		frame = new JFrame("Graph-Toolbox v 0.3");
+		frame = new JFrame("Graph-Toolbox v 0.5");
 		frame.getContentPane().setBackground(new Color(205, 133, 63));
 		frame.setBackground(new Color(184, 134, 11));
 		frame.setBounds(50, 50, 1300, 900);
@@ -121,7 +121,7 @@ public class firstFrame {
 				
 			}
 		});
-		btnRemoveVertex.setBounds(600, 11, 120, 23);
+		btnRemoveVertex.setBounds(252, 11, 120, 23);
 		frame.getContentPane().add(btnRemoveVertex);
 		
 
@@ -138,7 +138,7 @@ public class firstFrame {
 				drawPanel.repaint();
 			}
 		});
-		btnLoadGraph.setBounds(247, 11, 110, 23);
+		btnLoadGraph.setBounds(600, 11, 110, 23);
 		frame.getContentPane().add(btnLoadGraph);
 		
 		
@@ -156,7 +156,7 @@ public class firstFrame {
 		        drawPanel.repaint();
 			}
 		});
-		btnLoadFile.setBounds(450, 11, 110, 23);
+		btnLoadFile.setBounds(720, 11, 110, 23);
 		frame.getContentPane().add(btnLoadFile);
 		
 		
@@ -169,8 +169,19 @@ public class firstFrame {
 				drawPanel.reset();
 			}
 		});
-		btnResetWindow.setBounds(1061, 0, 120, 34);
+		btnResetWindow.setBounds(1138, 11, 109, 23);
 		frame.getContentPane().add(btnResetWindow);
+		
+		JButton btnNewButton = new JButton("move vertex");
+		btnNewButton.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent arg0) 
+			{
+				createMovepanel();
+			}
+		});
+		btnNewButton.setBounds(382, 11, 120, 23);
+		frame.getContentPane().add(btnNewButton);
 	}
 	
 	public static void createAddEdgeFrame() 
@@ -259,5 +270,47 @@ public class firstFrame {
 		frame.setVisible(true);
 	}
 	
-
+	public void createMovepanel() 
+	{
+		JFrame frame = new JFrame();
+		frame.setBounds(350, 200, 225, 80);
+		frame.getContentPane().setLayout(new FlowLayout());
+		
+		JTextField txtC1 = new JTextField(1);
+		JTextField txtC2 = new JTextField(1);
+		JTextField txtC3 = new JTextField(1);
+		
+		JButton btnCancel = new JButton("cancel");
+		btnCancel.addActionListener(new ActionListener() 
+		{
+			
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				frame.dispose();
+			}
+		});
+		
+		JButton btnRemoveEdge = new JButton("move");
+		btnRemoveEdge.addActionListener(new ActionListener() 
+		{
+			
+			@Override
+			public void actionPerformed(ActionEvent e)
+			{
+				int cid1 = Integer.parseInt(txtC1.getText());
+				int cid2 = Integer.parseInt(txtC2.getText());
+				int cid3 = Integer.parseInt(txtC3.getText());
+				drawPanel.move(cid1, cid2, cid3);
+				frame.dispose();
+			}
+		});
+		
+		frame.getContentPane().add(txtC1);
+		frame.getContentPane().add(txtC2);
+		frame.getContentPane().add(txtC3);
+		frame.getContentPane().add(btnCancel);
+		frame.getContentPane().add(btnRemoveEdge);
+		frame.setVisible(true);
+	}
 }
