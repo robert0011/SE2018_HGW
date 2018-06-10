@@ -145,7 +145,7 @@ public class DrawPanel extends JPanel
                     	for(Circle c : circles)
                     	{
                     		// checks whether the x coordinate is taken or not
-                    		if(mouseX <= c.getX()+20 & mouseX>=c.getX()-20 & mouseY <= c.getY()+20 & mouseY >=c.getY()-20)
+                    		if(mouseX <= c.getX()+25 & mouseX>=c.getX()-25 & mouseY <= c.getY()+25 & mouseY >=c.getY()-25)
                     		{
                     			circleTester = true;
                     		}
