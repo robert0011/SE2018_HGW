@@ -55,15 +55,14 @@ public class DrawPanel extends JPanel
 	
 	public DrawPanel() 
 	{
-		// set maximum drawable vertices to 50
-		circles = new ArrayList<Circle>(50);
-		// maximum edges = 50 * 49 (since every vertex can only have 49 neighbors
+		// set maximum drawable vertices to 300
+		circles = new ArrayList<Circle>(300);
+		// maximum edges = 300 * 299 (since every vertex can only have 299 neighbors)
 		lines = new Hashtable<Integer, List<Line>>();
 		
 		//blueCircle = new Circle(-1,0,0);
 		blueCircle = new Circle(0,0,-1000000,-5);
 		blueLines = new Hashtable<Integer, List<Line>>();
-		
 		
 		// just doing some magic 
 		/*Circle startcircle = new Circle(0,0,0);
@@ -158,7 +157,7 @@ public class DrawPanel extends JPanel
                     	// draw only new circles
                     	else
                     	{
-                    		if(circleindex < 50)
+                    		if(circleindex < 300)
                     		{
                             	circles.add(circleindex,actualCircle);
                             	circleindex++;
@@ -278,14 +277,16 @@ public class DrawPanel extends JPanel
 			}
 		});
 		
-		frame.addWindowListener(new WindowAdapter() {
-			  public void windowClosing(WindowEvent we) {
+		frame.addWindowListener(new WindowAdapter() 
+		{
+			  public void windowClosing(WindowEvent we) 
+			  {
 				  col = Color.BLACK;
 					blueCircle = new Circle(0,0,-1000000, -5);
 					repaint();
 					frame.dispose();
 			  }
-			});
+		});
 		
 		frame.getContentPane().add(txt);
 		frame.getContentPane().add(ok);
@@ -308,12 +309,14 @@ public class DrawPanel extends JPanel
 					Circle c1 = circles.get(cid1);
 					Circle c2 = circles.get(cid2);
 					Line lineToAdd = new Line(c1,c2);
-					if(curList == null) {
+					if(curList == null) 
+					{
 						List<Line> curList1 = new ArrayList<Line>();
 						curList1.add(lineToAdd);
 						lines.put(cid1, curList1);
 					}
-					else {
+					else 
+					{
 						curList.add(lineToAdd);
 						lines.put(cid1, curList);
 					}
@@ -336,12 +339,8 @@ public class DrawPanel extends JPanel
 					circles.add(test2);
 					lineToAdd = new Line(test1,test2);
 					curList.add(lineToAdd);
-					lines.put(0, curList);*/
-					
-					
-				}
-				
-				
+					lines.put(0, curList);*/		
+				}			
 			}
 			repaint();
 		
@@ -581,12 +580,12 @@ public class DrawPanel extends JPanel
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-		}
-		
-		
-		
+		}	
 	}
 
+	public static void move()
+	{
+		
+	}
 
 }
