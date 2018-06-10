@@ -230,13 +230,16 @@ public class DrawPanel extends JPanel
     			// Zielknoten
     			List<Integer> edgesToRemove2 = graph.inEdges.get(tmp1);
     			
-
-    			int edges2Remove = edgesToRemove.size();
-    			for(int i=0; i < edges2Remove; i++)
-        		{
-        				removeEdge(tmp1, edgesToRemove.get(0));
-        				System.out.println("removed");
-        		}
+    			if(edgesToRemove != null)
+    			{
+    				int edges2Remove = edgesToRemove.size();
+        			for(int i=0; i < edges2Remove; i++)
+            		{
+            				removeEdge(tmp1, edgesToRemove.get(0));
+            				System.out.println("removed");
+            		}
+    			}
+    			
     			
     			/*if(edgesToRemove != null)
     			{
@@ -249,13 +252,17 @@ public class DrawPanel extends JPanel
         			}
     			}*/
     			
-    			int edges2Remove2 = edgesToRemove2.size();
-    			System.out.println(edges2Remove2);
-    			for(int i=0; i < edges2Remove2; i++)
-        		{
-        				removeEdge(edgesToRemove2.get(0), tmp1);
-        				System.out.println("removed2");
-        		}
+    			if(edgesToRemove2 != null)
+    			{
+    				int edges2Remove2 = edgesToRemove2.size();
+        			System.out.println(edges2Remove2);
+        			for(int i=0; i < edges2Remove2; i++)
+            		{
+            				removeEdge(edgesToRemove2.get(0), tmp1);
+            				System.out.println("removed2");
+            		}
+    			}
+    			
     					
     			
     			/*if(edgesToRemove2 != null)
