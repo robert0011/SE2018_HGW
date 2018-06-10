@@ -224,10 +224,12 @@ public class DrawPanel extends JPanel
     			
     			// collect all edges to be removed
 				int tmp1 = blueCircle.getIndex();
-    			List<Integer> edgesToRemove = graph.outEdges.get(tmp1);
+				
+				//Carmens method
+    			/*List<Integer> edgesToRemove = graph.outEdges.get(tmp1);
     			// Zielknoten
     			List<Integer> edgesToRemove2 = graph.inEdges.get(tmp1);
-    			System.out.println("hi");
+    			
     			
     			if(edgesToRemove != null)
     			{
@@ -240,7 +242,6 @@ public class DrawPanel extends JPanel
         			}
     			}
     			
-    			
     			if(edgesToRemove2 != null)
     			{
     				for(int i=0; i < edgesToRemove2.size(); i=i+1)
@@ -248,7 +249,15 @@ public class DrawPanel extends JPanel
         				removeEdge(edgesToRemove2.get(i), tmp1);
         				System.out.println("removed2");
         			}
-    			}
+    			}*/
+				
+				// my method
+				for(int i = 0; i < 89700; i++)
+				{
+					removeEdge(tmp1, i);
+					removeEdge(i,tmp1);
+				}
+				
     			
     			circles.set(blueCircle.getIndex(), new Circle(0,-5,-5,blueCircle.getIndex()));
 				graph.removeVertex(blueCircle.getIndex());
@@ -447,67 +456,14 @@ public class DrawPanel extends JPanel
 		lines.clear(); //removes all lines
 		circles.clear(); // removes all circles
 		circleindex = 0;
+		blueLines.clear();
 		blueCircle = new Circle(0,0,-1000000,-5);
 		loadedFile = false;
 		graph = new Graph();
 		
 		repaint();
 	}
-	
-	/*
-	//function to load a graph from a txt file 
-	public static void loadGraph()
-	{
-		
-		Scanner fileIn;
-		try
-		{
-			fileIn = new Scanner(new File("EXgraph.txt"));
-			//first line of the txt is the amount of vertices
-			int numberOfVertices = fileIn.nextInt();
-			//second integer is the amount of edges
-			int numberOfEdges = fileIn.nextInt();
-			circles = new ArrayList<Circle>(numberOfVertices);
-			lines = new ArrayList<Line>(numberOfVertices*(numberOfVertices-1));
-			
 
-			Circle startcircle = new Circle(0,0,0);
-			for(int i = 0; i < (numberOfVertices*(numberOfVertices-1)); i ++ )
-			{
-				lines.add(i, new Line(startcircle,startcircle));
-			}
-					
-					
-			for(int i = 0; i < numberOfVertices; i ++ )
-			{
-				//random value between 5 and 1195
-				Random rand = new Random();
-				int x = rand.nextInt(950)+50;
-				circles.add(i, new Circle(10, x, ((1+i) *(800/(numberOfVertices+2)) )));
-				graph.addVertex(new Vertex(x,i *(800/numberOfEdges)));
-			}
-			
-			for(int i = 0; i < numberOfEdges; i ++ )
-			{
-				//create edge(fileIn.nextInt(), fileIn.nextInt())
-				int start = fileIn.nextInt();
-				int end = fileIn.nextInt();
-				//graph.addEdge(start, end, 0);
-				lines.set((start*numberOfVertices)+end, new Line(circles.get(start), circles.get(end)));
-				lines.set((end*numberOfVertices)+start, new Line(circles.get(start), circles.get(end)));
-			}
-			
-			//closes scanner
-			fileIn.close();
-			loadedFile = true;
-		} 
-		catch (FileNotFoundException e) 
-		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-}*/
-	
 	
 	// CAREFUL
 	public static void loadFile(String path)
