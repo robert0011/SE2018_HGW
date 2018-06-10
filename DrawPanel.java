@@ -7,6 +7,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -31,7 +33,7 @@ public class DrawPanel extends JPanel
 	public static Hashtable<Integer, List<Line>> lines;
 	// for removing one special circle
 	public static Circle blueCircle;
-	private static ArrayList<Line> blueLines;
+	public static Hashtable<Integer, List<Line>> blueLines;
 	
 	//private final int WIDTH = 800;
 	//private final int HEIGHT = 1200;
@@ -60,7 +62,8 @@ public class DrawPanel extends JPanel
 		
 		//blueCircle = new Circle(-1,0,0);
 		blueCircle = new Circle(0,0,-1000000,-5);
-		blueLines = new ArrayList<Line>(2450);
+		blueLines = new Hashtable<Integer, List<Line>>();
+		
 		
 		// just doing some magic 
 		/*Circle startcircle = new Circle(0,0,0);
@@ -112,8 +115,8 @@ public class DrawPanel extends JPanel
             		// else
             		if(clickedRemoveVertex)
             		{
-            			double smallestDistance= (circles.get(1).getX() - mouseX)*(circles.get(1).getX() - mouseX)+(circles.get(1).getY()-mouseY)*(circles.get(1).getY()-mouseY);
-            			blueCircle = circles.get(1);
+            			double smallestDistance= (circles.get(0).getX() - mouseX)*(circles.get(0).getX() - mouseX)+(circles.get(0).getY()-mouseY)*(circles.get(0).getY()-mouseY);
+            			blueCircle = circles.get(0);
             			for(Circle c: circles)
             			{
             				double getX = (double) c.getX();
@@ -138,8 +141,6 @@ public class DrawPanel extends JPanel
             		if(! clickedRemoveVertex)
             		{
             			Circle actualCircle = new Circle(10, mouseX, mouseY, circleindex);
-                    	//Vertex vertexToAdd = new Vertex(mouseX,mouseY);
-                    	//graph.addVertex(vertexToAdd);
                     	// test for painting only unique circles
                     	boolean circleTester = false;
                     	for(Circle c : circles)
@@ -171,8 +172,8 @@ public class DrawPanel extends JPanel
             		
             		else
             		{
-            			double smallestDistance= (circles.get(1).getX() - mouseX)*(circles.get(1).getX() - mouseX)+(circles.get(1).getY()-mouseY)*(circles.get(1).getY()-mouseY);
-            			blueCircle = circles.get(1);
+            			double smallestDistance= (circles.get(0).getX() - mouseX)*(circles.get(0).getX() - mouseX)+(circles.get(0).getY()-mouseY)*(circles.get(0).getY()-mouseY);
+            			blueCircle = circles.get(0);
             			for(Circle c: circles)
             			{
             				double tmp = (c.getX() - mouseX)*(c.getX() - mouseX)+(c.getY()-mouseY)*(c.getY()-mouseY);
@@ -220,21 +221,38 @@ public class DrawPanel extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				circles.remove(blueCircle);
-    			Vertex vertexToRemove = new Vertex(blueCircle.getX(), blueCircle.getY());
-    			// search for the key of vertexToRemove
-    			Enumeration<Integer> test = graph.vertexSet.keys();
-    			while(test.hasMoreElements())
+				
+    			
+    			// collect all edges to be removed
+				int tmp1 = blueCircle.getIndex();
+    			List<Integer> edgesToRemove = graph.outEdges.get(tmp1);
+    			// Zielknoten
+    			List<Integer> edgesToRemove2 = graph.inEdges.get(tmp1);
+    			System.out.println("hi");
+    			
+    			if(edgesToRemove != null)
     			{
-    				int v = test.nextElement();
-    				Vertex curVertex = graph.vertexSet.get(v);
-    				if(curVertex.x == vertexToRemove.x & curVertex.y == vertexToRemove.y)
-    				{
-    					graph.vertexSet.remove(v);
-    				}
-    				
-    				
+    				for(int i=0; i < edgesToRemove.size(); i=i+1)
+        			{
+        				//edges in graph are also removed here
+        				removeEdge(tmp1,edgesToRemove.get(i));
+        				System.out.println("removed");
+        				
+        			}
     			}
+    			
+    			
+    			if(edgesToRemove2 != null)
+    			{
+    				for(int i=0; i < edgesToRemove2.size(); i=i+1)
+        			{
+        				removeEdge(edgesToRemove2.get(i), tmp1);
+        				System.out.println("removed2");
+        			}
+    			}
+    			
+    			circles.remove(blueCircle);
+				graph.removeVertex(blueCircle.getIndex());
     			
     			
     			clickedRemoveVertex = false;
@@ -243,8 +261,8 @@ public class DrawPanel extends JPanel
     			col = Color.BLACK;
     			blueCircle = new Circle(0,0,-1000000, -5);
     			repaint();
+    			frame.dispose();
 				
-				frame.dispose();
 			}
 		});
 		JButton btnCancel = new JButton("cancel");
@@ -260,6 +278,16 @@ public class DrawPanel extends JPanel
 				frame.dispose();
 			}
 		});
+		
+		frame.addWindowListener(new WindowAdapter() {
+			  public void windowClosing(WindowEvent we) {
+				  col = Color.BLACK;
+					blueCircle = new Circle(0,0,-1000000, -5);
+					repaint();
+					frame.dispose();
+			  }
+			});
+		
 		frame.getContentPane().add(txt);
 		frame.getContentPane().add(ok);
 		frame.getContentPane().add(btnCancel);
