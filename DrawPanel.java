@@ -226,12 +226,19 @@ public class DrawPanel extends JPanel
 				int tmp1 = blueCircle.getIndex();
 				
 				//Carmens method
-    			/*List<Integer> edgesToRemove = graph.outEdges.get(tmp1);
+    			List<Integer> edgesToRemove = graph.outEdges.get(tmp1);
     			// Zielknoten
     			List<Integer> edgesToRemove2 = graph.inEdges.get(tmp1);
     			
+
+    			int edges2Remove = edgesToRemove.size();
+    			for(int i=0; i < edges2Remove; i++)
+        		{
+        				removeEdge(tmp1, edgesToRemove.get(0));
+        				System.out.println("removed");
+        		}
     			
-    			if(edgesToRemove != null)
+    			/*if(edgesToRemove != null)
     			{
     				for(int i=0; i < edgesToRemove.size(); i=i+1)
         			{
@@ -240,24 +247,25 @@ public class DrawPanel extends JPanel
         				System.out.println("removed");
         				
         			}
-    			}
+    			}*/
     			
-    			if(edgesToRemove2 != null)
+    			int edges2Remove2 = edgesToRemove2.size();
+    			System.out.println(edges2Remove2);
+    			for(int i=0; i < edges2Remove2; i++)
+        		{
+        				removeEdge(edgesToRemove2.get(0), tmp1);
+        				System.out.println("removed2");
+        		}
+    					
+    			
+    			/*if(edgesToRemove2 != null)
     			{
     				for(int i=0; i < edgesToRemove2.size(); i=i+1)
         			{
         				removeEdge(edgesToRemove2.get(i), tmp1);
         				System.out.println("removed2");
         			}
-    			}*/
-				
-				// my method
-				for(int i = 0; i < 89700; i++)
-				{
-					removeEdge(tmp1, i);
-					removeEdge(i,tmp1);
-				}
-				
+    			}*/			
     			
     			circles.set(blueCircle.getIndex(), new Circle(0,-5,-5,blueCircle.getIndex()));
 				graph.removeVertex(blueCircle.getIndex());
@@ -514,12 +522,14 @@ public class DrawPanel extends JPanel
 						Circle c1 = circles.get(start);
 						Circle c2 = circles.get(end);
 						Line lineToAdd = new Line(c1, c2);
-						if(curList == null) {
+						if(curList == null) 
+						{
 							List<Line> curList1 = new ArrayList<Line>();
 							curList1.add(lineToAdd);
 							lines.put(start, curList1);
 						}
-						else {
+						else 
+						{
 							curList.add(lineToAdd);
 							lines.put(start, curList);
 						}
@@ -543,7 +553,7 @@ public class DrawPanel extends JPanel
 	
 	public void move(int vertexindex, int x, int y)
 	{
-		circles.set(vertexindex, new Circle(10, x, y, vertexindex));
+
 		repaint();
 	}
 
