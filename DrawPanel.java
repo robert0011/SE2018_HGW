@@ -199,8 +199,43 @@ public class DrawPanel extends JPanel
                 	{
                 		int x = e.getX();
             			int y = e.getY();
-            			circles.set(blueCircle.getIndex(), new Circle(10,x,y,blueCircle.getIndex()));
+            			Circle movedCircle = new Circle(10,x,y,blueCircle.getIndex());
+            			circles.set(blueCircle.getIndex(), movedCircle);
+            			//move edges along the moving vertex
+            			int tmp1 = blueCircle.getIndex();
+            			List<Integer> edgesToMove = graph.outEdges.get(tmp1);
+            			List<Integer> edgesToMove2 = graph.inEdges.get(tmp1);
+            			if(edgesToMove != null)
+            			{
+            				int edges2Move = edgesToMove.size();
+                			for(int i=0; i < edges2Move; i++)
+                    		{
+                				int movingindex = edgesToMove.get(0);
+                				removeEdge(movedCircle.getIndex(),movingindex);
+                				repaint();
+                				addEdge(movedCircle.getIndex(),movingindex);
+                				repaint();
+                    		}
+            			}
+            			
+            			if(edgesToMove2 != null)
+            			{
+            				int edges2Move2 = edgesToMove2.size();
+                			
+                			for(int i=0; i < edges2Move2; i++)
+                    		{
+                				System.out.println(edges2Move2);
+                				int movingindex = edgesToMove2.get(0);
+                				removeEdge(movingindex, movedCircle.getIndex());
+                				repaint();	
+                				addEdge(movingindex, movedCircle.getIndex());
+                				repaint();
+                       		}
+            			}
+            			
+            			//reset blue circle
             			blueCircle = new Circle(0,0,-1000000,-5);
+            			//make changes appearing on the GUI
             			repaint();
                 	}
                 	moved = true;
@@ -282,18 +317,6 @@ public class DrawPanel extends JPanel
             		}
     			}
     			
-    			
-    			/*if(edgesToRemove != null)
-    			{
-    				for(int i=0; i < edgesToRemove.size(); i=i+1)
-        			{
-        				//edges in graph are also removed here
-        				removeEdge(tmp1,edgesToRemove.get(i));
-        				System.out.println("removed");
-        				
-        			}
-    			}*/
-    			
     			if(edgesToRemove2 != null)
     			{
     				int edges2Remove2 = edgesToRemove2.size();
@@ -304,18 +327,7 @@ public class DrawPanel extends JPanel
             				System.out.println("removed2");
             		}
     			}
-    			
-    					
-    			
-    			/*if(edgesToRemove2 != null)
-    			{
-    				for(int i=0; i < edgesToRemove2.size(); i=i+1)
-        			{
-        				removeEdge(edgesToRemove2.get(i), tmp1);
-        				System.out.println("removed2");
-        			}
-    			}*/			
-    			
+
     			circles.set(blueCircle.getIndex(), new Circle(0,-5,-5,blueCircle.getIndex()));
 				graph.removeVertex(blueCircle.getIndex());
     			
@@ -598,12 +610,5 @@ public class DrawPanel extends JPanel
 		}	
 	}
 
-	
-	
-	public void move(int vertexindex)
-	{
-
-		repaint();
-	}
 
 }

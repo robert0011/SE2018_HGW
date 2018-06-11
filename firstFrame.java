@@ -177,7 +177,8 @@ public class firstFrame {
 		{
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				createMovepanel();
+				// insert method for moving vertex plus edges
+				moveAction();
 			}
 		});
 		btnNewButton.setBounds(382, 11, 120, 23);
@@ -226,9 +227,6 @@ public class firstFrame {
 		frame.setVisible(true);
 	}
 	
-	
-	
-	
 	public static void createRemoveEdgeFrame() 
 	{
 		JFrame frame = new JFrame();
@@ -270,47 +268,8 @@ public class firstFrame {
 		frame.setVisible(true);
 	}
 	
-	public void createMovepanel() 
+	public static void moveAction() 
 	{
-		JFrame frame = new JFrame();
-		frame.setBounds(350, 200, 225, 80);
-		frame.getContentPane().setLayout(new FlowLayout());
-		
-		JTextField txtC1 = new JTextField(1);
-		JTextField txtC2 = new JTextField(1);
-		JTextField txtC3 = new JTextField(1);
-		
-		JButton btnCancel = new JButton("cancel");
-		btnCancel.addActionListener(new ActionListener() 
-		{
-			
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				frame.dispose();
-			}
-		});
-		
-		JButton btnRemoveEdge = new JButton("move");
-		btnRemoveEdge.addActionListener(new ActionListener() 
-		{
-			
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				int cid1 = Integer.parseInt(txtC1.getText());
-				int cid2 = Integer.parseInt(txtC2.getText());
-				int cid3 = Integer.parseInt(txtC3.getText());
-				drawPanel.move(cid1, cid2, cid3);
-				frame.dispose();
-			}
-		});
-		
-		frame.getContentPane().add(txtC1);
-		frame.getContentPane().add(txtC2);
-		frame.getContentPane().add(txtC3);
-		frame.getContentPane().add(btnCancel);
-		frame.getContentPane().add(btnRemoveEdge);
-		frame.setVisible(true);
+		drawPanel.clickedMoveVertex = true;
 	}
 }
