@@ -39,6 +39,9 @@ public class DrawPanel extends JPanel
 	//private final int HEIGHT = 1200;
 	static boolean loadedFile = false;
 	public static boolean clickedRemoveVertex = false;
+	public static boolean clickedMoveVertex = false;
+	public static boolean marked = false;
+	public static boolean moved = true;
 	Color col = Color.BLACK;
 	
 	public static Graph graph = new Graph();
@@ -57,7 +60,6 @@ public class DrawPanel extends JPanel
 	{
 		// set maximum drawable vertices to 300
 		circles = new ArrayList<Circle>(300);
-		// maximum edges = 300 * 299 (since every vertex can only have 299 neighbors)
 		lines = new Hashtable<Integer, List<Line>>();
 		
 		//blueCircle = new Circle(-1,0,0);
@@ -108,91 +110,131 @@ public class DrawPanel extends JPanel
             @Override
             public void mousePressed(MouseEvent e) 
             {
-            	if(loadedFile == true)
+            	if(! clickedMoveVertex)
             	{
-            		// if a file was loaded, no more edges should be created
-            		// else
-            		if(clickedRemoveVertex)
+            		marked = false;
+                	if(moved)
+                	{
+                		if(loadedFile == true)
+                    	{
+                    		// if a file was loaded, no more edges should be created
+                    		// else
+                    		if(clickedRemoveVertex)
+                    		{
+                    			double smallestDistance= (circles.get(0).getX() - mouseX)*(circles.get(0).getX() - mouseX)+(circles.get(0).getY()-mouseY)*(circles.get(0).getY()-mouseY);
+                    			blueCircle = circles.get(0);
+                    			for(Circle c: circles)
+                    			{
+                    				double getX = (double) c.getX();
+                    				double getY = (double) c.getY();
+                    				double tmp = (getX - mouseX)*(getX - mouseX)+(getY-mouseY)*(getY-mouseY);
+                    			//	double dist = Math.sqrt(tmp);
+                    				if(tmp < smallestDistance)
+                    				{
+                    					smallestDistance = tmp;
+                    					blueCircle = c;
+                    					
+                    					
+                    				}
+                    			}
+                    			repaint();
+                    			createRemoveVertexFrame();
+                    		}
+                    		
+                    	}
+                    	else
+                    	{
+                    		if(! clickedRemoveVertex)
+                    		{
+                    			Circle actualCircle = new Circle(10, mouseX, mouseY, circleindex);
+                            	// test for painting only unique circles
+                            	boolean circleTester = false;
+                            	for(Circle c : circles)
+                            	{
+                            		// checks whether the x coordinate is taken or not
+                            		if(mouseX <= c.getX()+25 & mouseX>=c.getX()-25 & mouseY <= c.getY()+25 & mouseY >=c.getY()-25)
+                            		{
+                            			circleTester = true;
+                            		}
+                            	}
+                            	if(circleTester == true)
+                            	{
+                            		
+                            	}
+                            	// draw only new circles
+                            	else
+                            	{
+                            		if(circleindex < 300)
+                            		{
+                                    	circles.add(circleindex,actualCircle);
+                                    	circleindex++;
+                                    	//add vertex(mouseX, mouseY) to vertexSet
+                                    	Vertex newVertex = new Vertex(mouseX, mouseY);
+                                    	graph.addVertex(newVertex);
+                                    	repaint();
+                            		}
+                            	}
+                    		}
+                    		
+                    		else
+                    		{
+                    			double smallestDistance= (circles.get(0).getX() - mouseX)*(circles.get(0).getX() - mouseX)+(circles.get(0).getY()-mouseY)*(circles.get(0).getY()-mouseY);
+                    			blueCircle = circles.get(0);
+                    			for(Circle c: circles)
+                    			{
+                    				double tmp = (c.getX() - mouseX)*(c.getX() - mouseX)+(c.getY()-mouseY)*(c.getY()-mouseY);
+                    			//	double dist = Math.sqrt(tmp);
+                    				if(tmp < smallestDistance)
+                    				{
+                    					smallestDistance = tmp;
+                    					blueCircle = c;	
+                    				}
+                    			}
+                    			repaint();
+                    			createRemoveVertexFrame();      			
+                    		}
+                    	}
+                	}
+                	else
+                	{
+                		int x = e.getX();
+            			int y = e.getY();
+            			circles.set(blueCircle.getIndex(), new Circle(10,x,y,blueCircle.getIndex()));
+            			blueCircle = new Circle(0,0,-1000000,-5);
+            			repaint();
+                	}
+                	moved = true;
+            	}
+            	else //block for actual moving of an vertex
+            	{
+            		//mark the vertex to move
+            		clickedMoveVertex = false;
+            		if(!marked)
             		{
-            			double smallestDistance= (circles.get(0).getX() - mouseX)*(circles.get(0).getX() - mouseX)+(circles.get(0).getY()-mouseY)*(circles.get(0).getY()-mouseY);
+                		double smallestDistance= (circles.get(0).getX() - mouseX)*(circles.get(0).getX() - mouseX)+(circles.get(0).getY()-mouseY)*(circles.get(0).getY()-mouseY);
             			blueCircle = circles.get(0);
             			for(Circle c: circles)
             			{
             				double getX = (double) c.getX();
             				double getY = (double) c.getY();
             				double tmp = (getX - mouseX)*(getX - mouseX)+(getY-mouseY)*(getY-mouseY);
-            			//	double dist = Math.sqrt(tmp);
             				if(tmp < smallestDistance)
             				{
             					smallestDistance = tmp;
             					blueCircle = c;
-            					
-            					
             				}
             			}
-            			repaint();
-            			createRemoveVertexFrame();
+            			marked = true;
+            			moved = false;
             		}
-            		
+        			repaint();
+        			col = Color.CYAN;
+        			repaint();
+        			col = Color.BLACK;     			
+        			repaint();
+        			
+        			
             	}
-            	else
-            	{
-            		if(! clickedRemoveVertex)
-            		{
-            			Circle actualCircle = new Circle(10, mouseX, mouseY, circleindex);
-                    	// test for painting only unique circles
-                    	boolean circleTester = false;
-                    	for(Circle c : circles)
-                    	{
-                    		// checks whether the x coordinate is taken or not
-                    		if(mouseX <= c.getX()+25 & mouseX>=c.getX()-25 & mouseY <= c.getY()+25 & mouseY >=c.getY()-25)
-                    		{
-                    			circleTester = true;
-                    		}
-                    	}
-                    	if(circleTester == true)
-                    	{
-                    		
-                    	}
-                    	// draw only new circles
-                    	else
-                    	{
-                    		if(circleindex < 300)
-                    		{
-                            	circles.add(circleindex,actualCircle);
-                            	circleindex++;
-                            	//add vertex(mouseX, mouseY) to vertexSet
-                            	Vertex newVertex = new Vertex(mouseX, mouseY);
-                            	graph.addVertex(newVertex);
-                            	repaint();
-                    		}
-                    	}
-            		}
-            		
-            		else
-            		{
-            			double smallestDistance= (circles.get(0).getX() - mouseX)*(circles.get(0).getX() - mouseX)+(circles.get(0).getY()-mouseY)*(circles.get(0).getY()-mouseY);
-            			blueCircle = circles.get(0);
-            			for(Circle c: circles)
-            			{
-            				double tmp = (c.getX() - mouseX)*(c.getX() - mouseX)+(c.getY()-mouseY)*(c.getY()-mouseY);
-            			//	double dist = Math.sqrt(tmp);
-            				if(tmp < smallestDistance)
-            				{
-            					smallestDistance = tmp;
-            					blueCircle = c;
-            					
-            					
-            				}
-            			}
-            			repaint();
-            			createRemoveVertexFrame(); 
-            			
-            		}
-            		
-
-            	}
-            	
             }
 
             @Override
@@ -558,7 +600,7 @@ public class DrawPanel extends JPanel
 
 	
 	
-	public void move(int vertexindex, int x, int y)
+	public void move(int vertexindex)
 	{
 
 		repaint();
