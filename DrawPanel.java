@@ -62,16 +62,8 @@ public class DrawPanel extends JPanel
 		circles = new ArrayList<Circle>(300);
 		lines = new Hashtable<Integer, List<Line>>();
 		
-		//blueCircle = new Circle(-1,0,0);
 		blueCircle = new Circle(0,0,-1000000,-5);
 		blueLines = new Hashtable<Integer, List<Line>>();
-		
-		// just doing some magic 
-		/*Circle startcircle = new Circle(0,0,0);
-		for(int i = 0; i < 2449; i ++ )
-		{
-			lines.add(i, new Line(startcircle,startcircle));
-		}*/
 		
 		this.setBorder(BorderFactory.createLineBorder(Color.black, 2, false));	
 		this.addMouseMotionListener(new MouseMotionListener() 
@@ -92,8 +84,7 @@ public class DrawPanel extends JPanel
 				
 				lblMouseCoords.setText("coords: (" + mouseX + ", " + mouseY + ")");
 				lblMouseCoords.setForeground(Color.cyan);
-				lblMouseCoords.repaint();
-				
+				lblMouseCoords.repaint();		
 			}
 			
 		});
@@ -195,13 +186,16 @@ public class DrawPanel extends JPanel
                     		}
                     	}
                 	}
-                	else
+                	else //if the chosen vertex is not moved 
                 	{
-                		int x = e.getX();
+                		//get coordinates of the new position
+                		int x = e.getX(); 
             			int y = e.getY();
+            			// create an new vertex with coordinates of the new position
             			Circle movedCircle = new Circle(10,x,y,blueCircle.getIndex());
+            			//replace vertex at the old position with new circle new defined position
             			circles.set(blueCircle.getIndex(), movedCircle);
-            			//move edges along the moving vertex
+            			//also moves edges of the moved vertex
             			int tmp1 = blueCircle.getIndex();
             			List<Integer> edgesToMove = graph.outEdges.get(tmp1);
             			List<Integer> edgesToMove2 = graph.inEdges.get(tmp1);
@@ -266,9 +260,7 @@ public class DrawPanel extends JPanel
         			col = Color.CYAN;
         			repaint();
         			col = Color.BLACK;     			
-        			repaint();
-        			
-        			
+        			repaint();     			
             	}
             }
 
@@ -302,7 +294,6 @@ public class DrawPanel extends JPanel
     			// collect all edges to be removed
 				int tmp1 = blueCircle.getIndex();
 				
-				//Carmens method
     			List<Integer> edgesToRemove = graph.outEdges.get(tmp1);
     			// Zielknoten
     			List<Integer> edgesToRemove2 = graph.inEdges.get(tmp1);
@@ -383,7 +374,7 @@ public class DrawPanel extends JPanel
 				if(lines.containsKey(cid1))
 				{
 					List<Line> curList = lines.get(cid1);
-					// die circles sind nicht sortiert! ordne circleindex zu!
+					// assigne circleindex to circles
 					Circle c1 = circles.get(cid1);
 					Circle c2 = circles.get(cid2);
 					Line lineToAdd = new Line(c1,c2);
@@ -408,16 +399,7 @@ public class DrawPanel extends JPanel
 					Circle c2 = circles.get(cid2);
 					Line lineToAdd = new Line(c1,c2);
 					curList.add(lineToAdd);
-					lines.put(cid1, curList);
-					
-					//teste ob es am repaint() liegt:
-					/*Circle test1 = new Circle(10,400,400,2);
-					Circle test2 = new Circle(10,500,500,3);
-					circles.add(test1);
-					circles.add(test2);
-					lineToAdd = new Line(test1,test2);
-					curList.add(lineToAdd);
-					lines.put(0, curList);*/		
+					lines.put(cid1, curList);		
 				}			
 			}
 			repaint();
@@ -432,12 +414,9 @@ public class DrawPanel extends JPanel
 		if(success)
 		{
 			List<Line> curList = lines.get(cid1);
-			// anscheinend Fehler, weil curList.indexOf(cid2) = -1, da cid2 nicht in curList
-			// in curList gibt es eine Line mit c1.getIndex() = cid1 und c2.getIndex = cid2
 			int indexToRemove= -5;
 			Circle c1, c2;
 			int circle1, circle2 = -2;
-			//for( Line l : curList)
 			for(int i=0; i<curList.size(); i=i+1)
 			{
 				Line tmp = curList.get(i);
@@ -485,14 +464,10 @@ public class DrawPanel extends JPanel
 			e.printStackTrace();
 		}
 				
-		
-		//lblMouseCoords.setText("coords: (" + mouseX + ", " + mouseY + ")");
 		Enumeration<List<Line>> lineIterator = lines.elements();
 		while(lineIterator.hasMoreElements())
 		{
 			List<Line> curList = lineIterator.nextElement();
-			// hier geändert
-			
 			for(int i=0; i < curList.size(); i = i+1)
 			{
 				Line lineToDraw = curList.get(i);
@@ -501,14 +476,11 @@ public class DrawPanel extends JPanel
 			}
 		}
 		
-		//int i = 0;
 		for (Circle c : circles) 
 		{
 			c.draw(g);
 			g.setColor(Color.WHITE); // textcolor for vertex numbers
 			g.drawString(String.valueOf(c.getIndex()), c.getX() - 5, c.getY() + 3);
-			//g.drawString(String.valueOf(i), c.getX() - 5, c.getY() + 3);
-			//i += 1;
 			g.setColor(col);
 		}
 		
@@ -532,9 +504,7 @@ public class DrawPanel extends JPanel
 		
 		repaint();
 	}
-
 	
-	// CAREFUL
 	public static void loadFile(String path)
 	{
 		boolean txt = path.endsWith(".txt");
@@ -553,19 +523,16 @@ public class DrawPanel extends JPanel
 				int numberOfEdges = fileIn.nextInt();
 				circles = new ArrayList<Circle>(numberOfVertices);
 				lines = new Hashtable<Integer, List<Line>>();
-						
-						
+												
 				for(int i = 0; i < numberOfVertices; i ++ )
 				{
 					//random value between 5 and 1195
 					Random rand = new Random();
 					int x = rand.nextInt(950)+50;
-					// CAREFUL
 					double yCoord = (1+i) *(800/(numberOfVertices+2));
 					Circle tmp = new Circle(10, x, (int) yCoord, circleindex);
 					circleindex = circleindex+1;
 					circles.add(i, tmp);
-					//circles.add(i, new Circle(10, x, ((1+i) *(800/(numberOfVertices+2)))));
 					graph.addVertex(new Vertex(x,i *(800/numberOfEdges)));
 				}
 				
@@ -593,11 +560,9 @@ public class DrawPanel extends JPanel
 						{
 							curList.add(lineToAdd);
 							lines.put(start, curList);
-						}
-						
+						}						
 					}
-				}
-				
+				}				
 				//closes scanner
 				fileIn.close();
 				loadedFile = true;
@@ -609,6 +574,4 @@ public class DrawPanel extends JPanel
 			}
 		}	
 	}
-
-
 }
