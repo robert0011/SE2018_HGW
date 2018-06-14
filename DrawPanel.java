@@ -1,7 +1,10 @@
 //import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -18,6 +21,8 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
@@ -25,6 +30,9 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+
+import javafx.scene.image.Image;
+
 import javax.swing.JOptionPane;
 
 public class DrawPanel extends JPanel 
@@ -43,12 +51,18 @@ public class DrawPanel extends JPanel
 	public static boolean marked = false;
 	public static boolean moved = true;
 	Color col = Color.BLACK;
+	public String background = ".\\img\\backgroundImage.jpg";
 	
 	public static Graph graph = new Graph();
 	public static int circleindex = 0;
 	
 	int numberOfVertices;
 	int numberOfEdges;
+	public static int currrentNumberOfEdges;
+	public static boolean couldNotReadAnEdge = false;
+	public static boolean duplicateEdge = false;
+	public static boolean missingNV = false;
+	public static boolean missingNE = false; 
 	int start;
 	int end;
 	
@@ -62,8 +76,10 @@ public class DrawPanel extends JPanel
 		circles = new ArrayList<Circle>(300);
 		lines = new Hashtable<Integer, List<Line>>();
 		
+		//blueCircle = new Circle(-1,0,0);
 		blueCircle = new Circle(0,0,-1000000,-5);
 		blueLines = new Hashtable<Integer, List<Line>>();
+		
 		
 		this.setBorder(BorderFactory.createLineBorder(Color.black, 2, false));	
 		this.addMouseMotionListener(new MouseMotionListener() 
@@ -84,7 +100,8 @@ public class DrawPanel extends JPanel
 				
 				lblMouseCoords.setText("coords: (" + mouseX + ", " + mouseY + ")");
 				lblMouseCoords.setForeground(Color.cyan);
-				lblMouseCoords.repaint();		
+				lblMouseCoords.repaint();
+				
 			}
 			
 		});
@@ -186,16 +203,13 @@ public class DrawPanel extends JPanel
                     		}
                     	}
                 	}
-                	else //if the chosen vertex is not moved 
+                	else
                 	{
-                		//get coordinates of the new position
-                		int x = e.getX(); 
+                		int x = e.getX();
             			int y = e.getY();
-            			// create an new vertex with coordinates of the new position
             			Circle movedCircle = new Circle(10,x,y,blueCircle.getIndex());
-            			//replace vertex at the old position with new circle new defined position
             			circles.set(blueCircle.getIndex(), movedCircle);
-            			//also moves edges of the moved vertex
+            			//move edges along the moving vertex
             			int tmp1 = blueCircle.getIndex();
             			List<Integer> edgesToMove = graph.outEdges.get(tmp1);
             			List<Integer> edgesToMove2 = graph.inEdges.get(tmp1);
@@ -207,7 +221,8 @@ public class DrawPanel extends JPanel
                 				int movingindex = edgesToMove.get(0);
                 				removeEdge(movedCircle.getIndex(),movingindex);
                 				repaint();
-                				addEdge(movedCircle.getIndex(),movingindex);
+                				//falsch
+                				addEdge(movedCircle.getIndex(),movingindex,1);
                 				repaint();
                     		}
             			}
@@ -218,11 +233,12 @@ public class DrawPanel extends JPanel
                 			
                 			for(int i=0; i < edges2Move2; i++)
                     		{
-                				System.out.println(edges2Move2);
+                				//System.out.println(edges2Move2);
                 				int movingindex = edgesToMove2.get(0);
                 				removeEdge(movingindex, movedCircle.getIndex());
                 				repaint();	
-                				addEdge(movingindex, movedCircle.getIndex());
+                				// falsch
+                				addEdge(movingindex, movedCircle.getIndex(),1);
                 				repaint();
                        		}
             			}
@@ -260,7 +276,9 @@ public class DrawPanel extends JPanel
         			col = Color.CYAN;
         			repaint();
         			col = Color.BLACK;     			
-        			repaint();     			
+        			repaint();
+        			
+        			
             	}
             }
 
@@ -294,6 +312,7 @@ public class DrawPanel extends JPanel
     			// collect all edges to be removed
 				int tmp1 = blueCircle.getIndex();
 				
+				//Carmens method
     			List<Integer> edgesToRemove = graph.outEdges.get(tmp1);
     			// Zielknoten
     			List<Integer> edgesToRemove2 = graph.inEdges.get(tmp1);
@@ -304,7 +323,7 @@ public class DrawPanel extends JPanel
         			for(int i=0; i < edges2Remove; i++)
             		{
             				removeEdge(tmp1, edgesToRemove.get(0));
-            				System.out.println("removed");
+            				//System.out.println("removed");
             		}
     			}
     			
@@ -315,7 +334,7 @@ public class DrawPanel extends JPanel
         			for(int i=0; i < edges2Remove2; i++)
             		{
             				removeEdge(edgesToRemove2.get(0), tmp1);
-            				System.out.println("removed2");
+            				//System.out.println("removed2");
             		}
     			}
 
@@ -365,16 +384,17 @@ public class DrawPanel extends JPanel
 	}
 	
 	
-	public void addEdge(int cid1, int cid2) 
+	// NEW
+	public boolean addEdge(int cid1, int cid2, int weight) 
 	{
 		
-			boolean success = graph.addEdge(cid1, cid2, 1);
+			boolean success = graph.addEdge(cid1, cid2, weight);
 			if(success)
 			{
 				if(lines.containsKey(cid1))
 				{
 					List<Line> curList = lines.get(cid1);
-					// assigne circleindex to circles
+					// die circles sind nicht sortiert! ordne circleindex zu!
 					Circle c1 = circles.get(cid1);
 					Circle c2 = circles.get(cid2);
 					Line lineToAdd = new Line(c1,c2);
@@ -403,10 +423,11 @@ public class DrawPanel extends JPanel
 				}			
 			}
 			repaint();
-		
-		
-		
+			return success;
+			
 	}
+	
+	
 	public void removeEdge(int cid1, int cid2)
 	{
 		
@@ -414,9 +435,12 @@ public class DrawPanel extends JPanel
 		if(success)
 		{
 			List<Line> curList = lines.get(cid1);
+			// anscheinend Fehler, weil curList.indexOf(cid2) = -1, da cid2 nicht in curList
+			// in curList gibt es eine Line mit c1.getIndex() = cid1 und c2.getIndex = cid2
 			int indexToRemove= -5;
 			Circle c1, c2;
 			int circle1, circle2 = -2;
+			//for( Line l : curList)
 			for(int i=0; i<curList.size(); i=i+1)
 			{
 				Line tmp = curList.get(i);
@@ -444,6 +468,27 @@ public class DrawPanel extends JPanel
 		repaint();
 		clickedRemoveVertex = true;
 	}
+	
+	// https://stackoverflow.com/questions/9417356/bufferedimage-resize
+	public static BufferedImage scale(BufferedImage src, int w, int h)
+	{
+	    BufferedImage img = 
+	            new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+	    int x, y;
+	    int ww = src.getWidth();
+	    int hh = src.getHeight();
+	    int[] ys = new int[h];
+	    for (y = 0; y < h; y++)
+	        ys[y] = y * hh / h;
+	    for (x = 0; x < w; x++) {
+	        int newX = x * ww / w;
+	        for (y = 0; y < h; y++) {
+	            int col = src.getRGB(newX, ys[y]);
+	            img.setRGB(x, y, col);
+	        }
+	    }
+	    return img;
+	}
 		
 	@Override
     protected void paintComponent (Graphics g)
@@ -455,8 +500,11 @@ public class DrawPanel extends JPanel
 		BufferedImage image;
 		try 
 		{
-			image = ImageIO.read(new File(".\\backgroundImage.jpg"));
-			g.drawImage(image, 0, 0, null);
+			image = ImageIO.read(new File(background));
+			int height = this.getHeight();
+			int width = this.getWidth();
+			BufferedImage rescaledImage = scale(image, width, height);
+			g.drawImage(rescaledImage, 0, 0, null);
 		} 
 		catch (IOException e) 
 		{
@@ -464,10 +512,14 @@ public class DrawPanel extends JPanel
 			e.printStackTrace();
 		}
 				
+		
+		//lblMouseCoords.setText("coords: (" + mouseX + ", " + mouseY + ")");
 		Enumeration<List<Line>> lineIterator = lines.elements();
 		while(lineIterator.hasMoreElements())
 		{
 			List<Line> curList = lineIterator.nextElement();
+			// hier geändert
+			
 			for(int i=0; i < curList.size(); i = i+1)
 			{
 				Line lineToDraw = curList.get(i);
@@ -476,11 +528,14 @@ public class DrawPanel extends JPanel
 			}
 		}
 		
+		//int i = 0;
 		for (Circle c : circles) 
 		{
 			c.draw(g);
 			g.setColor(Color.WHITE); // textcolor for vertex numbers
 			g.drawString(String.valueOf(c.getIndex()), c.getX() - 5, c.getY() + 3);
+			//g.drawString(String.valueOf(i), c.getX() - 5, c.getY() + 3);
+			//i += 1;
 			g.setColor(col);
 		}
 		
@@ -501,77 +556,291 @@ public class DrawPanel extends JPanel
 		blueCircle = new Circle(0,0,-1000000,-5);
 		loadedFile = false;
 		graph = new Graph();
+		numberOfEdges = 0;
+		currrentNumberOfEdges = 0;
+		missingNV = false;
+		missingNE = false;
 		
 		repaint();
 	}
+
 	
-	public static void loadFile(String path)
+	// CAREFUL
+	public boolean loadFile(String path)
 	{
+		reset();
 		boolean txt = path.endsWith(".txt");
 		if(!txt) {
 			JOptionPane.showMessageDialog(null, "Please choose a .txt file.");
+			return true;
 		}
 		else
 		{
 			Scanner fileIn;
 			try
 			{
+				int numberOfVertices = 0;
+				numberOfEdges = 0;
 				fileIn = new Scanner(new File(path));
-				//first line of the txt is the amount of vertices
-				int numberOfVertices = fileIn.nextInt();
-				//second integer is the amount of edges
-				int numberOfEdges = fileIn.nextInt();
+				// first there needs to be given the number of vertices
+				/*if(fileIn.hasNextInt())
+				{
+					numberOfVertices = fileIn.nextInt();
+					//System.out.println("number of vertices: "+numberOfVertices);
+				}
+				else
+				{
+					missingNV = true;
+					System.out.println("error");
+				}
+				// next information is the number of edges
+				if(fileIn.hasNextInt())
+				{
+					numberOfEdges = fileIn.nextInt();
+					//System.out.println("number of edges: "+numberOfEdges);
+				}
+				else
+				{
+					missingNE = true;
+					System.out.println("error2");
+				}*/
+				String v = fileIn.nextLine();
+				String c1 = "(\\d+)";
+				Pattern c2 = Pattern.compile(c1);
+				Matcher m1 = c2.matcher(v);
+				boolean matchesV = m1.matches();
+				if(matchesV)
+				{
+					String test = m1.group(0);
+					numberOfVertices = Integer.parseInt(test);
+				}
+				else
+				{
+					missingNV = true;
+					fileIn.close();
+					createInputErrorFrame();
+					return false;
+				}
+				
+				String e = fileIn.nextLine();
+				m1 = c2.matcher(e);
+				boolean matchesE = m1.matches();
+				if(matchesE)
+				{
+					String test = m1.group(0);
+					numberOfEdges = Integer.parseInt(test);
+				}
+				else
+				{
+					missingNE = true;
+					fileIn.close();
+					createInputErrorFrame();
+					return false;
+				}
+				
+				
+				
+				//fileIn.nextLine();
 				circles = new ArrayList<Circle>(numberOfVertices);
 				lines = new Hashtable<Integer, List<Line>>();
-												
+						
+						
 				for(int i = 0; i < numberOfVertices; i ++ )
 				{
 					//random value between 5 and 1195
 					Random rand = new Random();
 					int x = rand.nextInt(950)+50;
+					// CAREFUL
 					double yCoord = (1+i) *(800/(numberOfVertices+2));
 					Circle tmp = new Circle(10, x, (int) yCoord, circleindex);
 					circleindex = circleindex+1;
 					circles.add(i, tmp);
+					//circles.add(i, new Circle(10, x, ((1+i) *(800/(numberOfVertices+2)))));
 					graph.addVertex(new Vertex(x,i *(800/numberOfEdges)));
 				}
 				
-				boolean validEdge = false;
-				for(int i = 0; i < numberOfEdges; i ++ )
+				
+				while(fileIn.hasNext())
 				{
-					//create edge(fileIn.nextInt(), fileIn.nextInt())
-					int start = fileIn.nextInt();
-					int end = fileIn.nextInt();
-					validEdge = graph.addEdge(start, end, 1);
-					if(validEdge)
-					{
-						//addEdge
-						List<Line> curList = lines.get(start);
-						Circle c1 = circles.get(start);
-						Circle c2 = circles.get(end);
-						Line lineToAdd = new Line(c1, c2);
-						if(curList == null) 
-						{
-							List<Line> curList1 = new ArrayList<Line>();
-							curList1.add(lineToAdd);
-							lines.put(start, curList1);
-						}
-						else 
-						{
-							curList.add(lineToAdd);
-							lines.put(start, curList);
-						}						
-					}
-				}				
+					
+					String line = fileIn.nextLine();
+					int firstVertex = -1;
+					int secondVertex = -1;
+					int weight = -1;
+					//System.out.println(line);
+					// for instance 2 3
+					String patternType1 = "(.*?)(\\d+)\\s+(\\d+)";
+					// for instance 2 3 5 with 5 as weight
+					String patternType2 = "(.*?)(\\d+)\\s+(\\d+)+\\s+(\\d+)";
+					// for instance (2,3) or (2, 3) or (2,  3) or (2 , 3), or ( 2 ,3) etc.
+					String patternType3 = "(.*?)(\\s+)?(\\d+)(\\s+)?,(\\s+)?(\\d+)(\\s+)?\\)";
+					// like patternType3 but with 3 numbers
+					String patternType4 = "(.*?)(\\s+)?(\\d+)(\\s+)?,(\\s+)?(\\d+)(\\s+)?,(\\s+)?(\\d+)(\\s+)?\\)";
+					
+					
+					Pattern pattern1 = Pattern.compile(patternType1);
+					Pattern pattern2 = Pattern.compile(patternType2);
+					Pattern pattern3 = Pattern.compile(patternType3);
+					Pattern pattern4 = Pattern.compile(patternType4);
+
+			        Matcher matcher1 = pattern1.matcher(line);
+			        Matcher matcher2 = pattern2.matcher(line);
+			        Matcher matcher3 = pattern3.matcher(line);
+			        Matcher matcher4 = pattern4.matcher(line);
+			        
+			        boolean matchesType1 = matcher1.matches();
+			        boolean matchesType2 = matcher2.matches();
+			        boolean matchesType3 = matcher3.matches();
+			        boolean matchesType4 = matcher4.matches();
+			        
+			        
+			        if(matchesType1 & !matchesType2)
+			        {
+			        	String test = matcher1.group(2);
+			        	String test2 = matcher1.group(3);
+			        	firstVertex = Integer.parseInt(test);
+			        	secondVertex = Integer.parseInt(test2);
+			        	/*System.out.println("first vertex: "+Integer.parseInt(test));
+			        	System.out.println("second vertex: "+Integer.parseInt(test2));*/
+			        	
+			        }
+			        
+			        if(matchesType2)
+			        {
+			        	String test = matcher2.group(2);
+			        	String test2 = matcher2.group(3);
+			        	String test3 = matcher2.group(4);
+			        	firstVertex = Integer.parseInt(test);
+			        	secondVertex = Integer.parseInt(test2);
+			        	weight = Integer.parseInt(test3);
+			        	
+			        }
+			        
+			        if(matchesType3 & !matchesType4)
+			        {
+			        	String test = matcher3.group(3);
+			        	String test2 = matcher3.group(6);
+			        	firstVertex = Integer.parseInt(test);
+			        	secondVertex = Integer.parseInt(test2);
+			        	
+			        }
+			        
+			        if(matchesType4)
+			        {
+			        	String test = matcher4.group(3);
+			        	String test2 = matcher4.group(6);
+			        	String test3 = matcher4.group(9);
+			        	firstVertex = Integer.parseInt(test);
+			        	secondVertex = Integer.parseInt(test2);
+			        	weight = Integer.parseInt(test3);
+			 
+			        	
+			        }
+			        
+			        if(matchesType3 || matchesType1)
+			        {
+			        	boolean success = false;
+			        	if(weight == -1)
+			        	{
+			        		success = addEdge(firstVertex, secondVertex,1);
+			        	}
+			        	else
+			        	{
+			        		//System.out.println("WEIGHTED EDGE");
+			        		success = addEdge(firstVertex, secondVertex, weight);
+			        	}
+			        	if(success)
+			        	{
+			        		currrentNumberOfEdges = currrentNumberOfEdges+1;
+			        	}
+			        	else
+			        	{
+			        		duplicateEdge = true;
+			        	}
+			        	
+			        }
+			        else
+			        {
+			        	couldNotReadAnEdge = true;
+			        }
+				}
+				
 				//closes scanner
 				fileIn.close();
 				loadedFile = true;
+				
+				if(numberOfEdges != currrentNumberOfEdges | couldNotReadAnEdge | missingNV | missingNE | duplicateEdge)
+				{
+					createInputErrorFrame();
+					currrentNumberOfEdges = numberOfEdges;
+					couldNotReadAnEdge = false;
+					missingNV = false;
+					missingNE = false;
+					duplicateEdge = false;
+					return true;
+					
+				}
+				else
+				{
+					return true;
+				}
+				
+				
+					
 			} 
 			catch (FileNotFoundException e) 
 			{
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return true;
 			}
 		}	
 	}
+
+
+	public void createInputErrorFrame()
+	{
+		JFrame frame = new JFrame();
+		frame.setBounds(350, 200, 600, 300);
+		frame.getContentPane().setLayout(new FlowLayout());
+		
+		//String text = "<html>Please notice: <br> <br> </html>";
+		JLabel text = new JLabel("<html>Please notice: <br> <br> </html>");
+		text.setFont(text.getFont().deriveFont(Font.BOLD));
+		frame.getContentPane().add(text);
+		JLabel txt1 = new JLabel("<html>The number of edges given in line 2 is not equal to the number of actually read edges.<br>  </html>");
+		JLabel txt2 = new JLabel("<html>Failed to read an edge.<br> </html>");
+		JLabel txt3 = new JLabel("<html>The number of vertices is not given in line 1 or the number of edges is not given in line 2.<br> </html>");
+		JLabel txt4 = new JLabel("<html>File contains a duplicate edge.<br> </html>");
+		text.setBounds(0, 0, 600, 50);
+		txt1.setBounds(0, 100, 600, 50);
+		txt2.setBounds(0, 200, 600, 50);
+		txt3.setBounds(0, 300, 600, 50);
+		
+		if(numberOfEdges != currrentNumberOfEdges)
+		{
+			frame.getContentPane().add(txt1);		}
+		if(couldNotReadAnEdge)
+		{
+			frame.getContentPane().add(txt2);
+		}
+		if(missingNV | missingNE)
+		{
+			frame.getContentPane().add(txt3);
+		}
+		if(duplicateEdge)
+		{
+			frame.getContentPane().add(txt4);
+		}
+		
+		
+		frame.setVisible(true);
+	}
+	
+	public void setBackground(String b)
+	{
+		this.background = b;
+	}
+	
+	
 }
