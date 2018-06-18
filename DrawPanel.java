@@ -52,7 +52,8 @@ public class DrawPanel extends JPanel
 	public static boolean clickedMoveVertex = false;
 	public static boolean marked = false;
 	public static boolean moved = true;
-	public static boolean AddEdgeClicked = false;
+	public boolean addOrRemoveEdgeClicked = false;
+	public static boolean addEdgeClicked = false;
 	public static boolean startgiven = false;
 	Color col = Color.BLACK;
 	public String background = ".\\img\\backgroundImage.jpg";
@@ -121,7 +122,7 @@ public class DrawPanel extends JPanel
             @Override
             public void mousePressed(MouseEvent e) 
             {
-            	if(! AddEdgeClicked)
+            	if(! addOrRemoveEdgeClicked)
             	{
             		if(! clickedMoveVertex)
                 	{
@@ -314,9 +315,17 @@ public class DrawPanel extends JPanel
             					edgeend = c;
             				}
             			}
-            			addEdge(edgestart.getIndex(), edgeend.getIndex(), 1);
+            			if(! addEdgeClicked )
+            			{
+            				removeEdge(edgestart.getIndex(), edgeend.getIndex());
+            			}
+            			else
+            			{
+            				addEdge(edgestart.getIndex(), edgeend.getIndex(), 1);
+            				addEdgeClicked = false;
+            			}
             			repaint();
-            			AddEdgeClicked = false;
+            			addOrRemoveEdgeClicked = false;
             			startgiven = false;
             		}
             	}

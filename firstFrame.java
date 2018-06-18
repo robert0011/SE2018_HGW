@@ -124,7 +124,8 @@ public class firstFrame {
 		{
 			public void actionPerformed(ActionEvent addEdgeAction) 
 			{
-				drawPanel.AddEdgeClicked = true;
+				drawPanel.addOrRemoveEdgeClicked = true;
+				drawPanel.addEdgeClicked = true;
 			}
 		});
 		JMenuItem mntmEdgeRemove = new JMenuItem("remove");
@@ -133,7 +134,7 @@ public class firstFrame {
 		{
 			public void actionPerformed(ActionEvent removeEdgeAction) 
 			{
-				createRemoveEdgeFrame();
+				drawPanel.addOrRemoveEdgeClicked = true;
 			}
 		});
 		
