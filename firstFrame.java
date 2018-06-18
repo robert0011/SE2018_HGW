@@ -75,67 +75,83 @@ public class firstFrame {
 		drawPanel.setBounds(0, 40, frameWidth, frameHeight-40);
 		
 		frame.getContentPane().add(drawPanel);
+		//create menu bar
+		JMenuBar menuBar = new JMenuBar();
+		menuBar.setBounds(124, 0, 426, 39);
+		frame.getContentPane().add(menuBar);
 		
-		JButton btnAddEdge = new JButton("add edge");
-		btnAddEdge.addActionListener(new ActionListener() 
+		JMenu mnVertex = new JMenu("Vertex");
+		menuBar.add(mnVertex);
+		JMenu mnEdge = new JMenu("Edge");
+		menuBar.add(mnEdge);
+		JMenu mnAlgorithm = new JMenu("Algorithm");
+		menuBar.add(mnAlgorithm);
+		JMenu mnLoad = new JMenu("Load");
+		menuBar.add(mnLoad);
+		JMenu mnSettings = new JMenu("Settings");
+		menuBar.add(mnSettings);
+		
+		//vertex menu items
+		JMenuItem mntmVertMove = new JMenuItem("move");
+		mnVertex.add(mntmVertMove);
+		mntmVertMove.addActionListener(new ActionListener() 
 		{
-			public void actionPerformed(ActionEvent addEdgeAction) 
+			public void actionPerformed(ActionEvent arg0) 
 			{
-				createAddEdgeFrame();
+				if(drawPanel.circles.size() > 0)
+				{
+					drawPanel.clickedMoveVertex = true;
+				}		
 			}
-		});
-		btnAddEdge.setBounds(9, 11, 114, 23);
-		frame.getContentPane().add(btnAddEdge);
-		
-		
-		JButton btnRemoveEdge = new JButton("remove edge");
-		btnRemoveEdge.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent removeEdgeAction) 
-			{
-				createRemoveEdgeFrame();
-			}
-		});
-		btnRemoveEdge.setBounds(133, 11, 109, 23);
-		frame.getContentPane().add(btnRemoveEdge);
-		
-		
-		JButton btnRemoveVertex = new JButton("remove vertex");
-		btnRemoveVertex.addActionListener(new ActionListener() 
+		});	
+		JMenuItem mntmVertRemove = new JMenuItem("remove");
+		mnVertex.add(mntmVertRemove);
+		mntmVertRemove.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent removeVertexAction) 
 			{
 				drawPanel.clickedRemoveVertex = true;
 				drawPanel.col = Color.CYAN;
 				drawPanel.repaint();
-				drawPanel.removeVertex();
-				
+				drawPanel.removeVertex();		
 			}
 		});
-		btnRemoveVertex.setBounds(252, 11, 120, 23);
-		frame.getContentPane().add(btnRemoveVertex);
 		
-
+		//edge menu items
+		JMenuItem mntmEdgeAdd = new JMenuItem("add");
+		mnEdge.add(mntmEdgeAdd);
+		mntmEdgeAdd.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent addEdgeAction) 
+			{
+				drawPanel.AddEdgeClicked = true;
+			}
+		});
+		JMenuItem mntmEdgeRemove = new JMenuItem("remove");
+		mnEdge.add(mntmEdgeRemove);
+		mntmEdgeRemove.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent removeEdgeAction) 
+			{
+				createRemoveEdgeFrame();
+			}
+		});
 		
-		JButton btnLoadGraph = new JButton("load example");
-		btnLoadGraph.addActionListener(new ActionListener() 
+		//load menu items
+		JMenuItem mntmExample = new JMenuItem("example");
+		mnLoad.add(mntmExample);
+		mntmExample.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent loadingAction) 
 			{
 				drawPanel.reset();
-				//CAREFUL
-				//drawPanel.loadGraph();
 				drawPanel.loadFile(".\\EXgraph.txt");
 				drawPanel.repaint();
 			}
 		});
-		btnLoadGraph.setBounds(600, 11, 110, 23);
-		frame.getContentPane().add(btnLoadGraph);
-		
-		
-		//careful
-		JButton btnLoadFile = new JButton("load file");
-		btnLoadFile.addActionListener(new ActionListener() 
+		JMenuItem mntmFile = new JMenuItem("file");
+		mnLoad.add(mntmFile);
+		mntmFile.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent loadingAction) 
 			{
@@ -147,114 +163,28 @@ public class firstFrame {
 		        drawPanel.repaint();
 			}
 		});
-		btnLoadFile.setBounds(720, 11, 110, 23);
-		frame.getContentPane().add(btnLoadFile);
 		
-		
-		
-		JButton btnResetWindow = new JButton("reset window");
-		btnResetWindow.addActionListener(new ActionListener() 
+		//settings menu items
+		JMenuItem mntmReset = new JMenuItem("reset");
+		mnSettings.add(mntmReset);
+		mntmReset.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent resetAction) 
 			{
 				drawPanel.reset();
 			}
 		});
-		btnResetWindow.setBounds(1138, 11, 115, 23);
-		frame.getContentPane().add(btnResetWindow);
-		
-		JButton btnBackground = new JButton("background");
-		btnBackground.setBounds(1000, 11, 115, 23);
-		btnBackground.addActionListener(new ActionListener() 
+		JMenuItem mntmBackground = new JMenuItem("change background");
+		mnSettings.add(mntmBackground);
+		mntmBackground.addActionListener(new ActionListener() 
 		{
 			public void actionPerformed(ActionEvent backgroundAction) 
 			{
 				createBackgroundFrame();
 			}
 		});
-		
-		frame.getContentPane().add(btnBackground);
-		
-		
-		
-		JButton btnNewButton = new JButton("move vertex");
-		btnNewButton.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent arg0) 
-			{
-				// insert method for moving vertex plus edges
-				if(drawPanel.circles.size() > 0)
-				{
-					moveAction();
-				}
-				
-			}
-		});
-		btnNewButton.setBounds(382, 11, 120, 23);
-		frame.getContentPane().add(btnNewButton);
-		
-		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(55, 0, 198, 21);
-		frame.getContentPane().add(menuBar);
-		
-		JMenu mnTest = new JMenu("test1");
-		menuBar.add(mnTest);
-		
-		JMenuItem mntmAlg = new JMenuItem("alg1");
-		mnTest.add(mntmAlg);
-		
-		mntmAlg.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent resetAction) 
-			{
-				drawPanel.reset();
-			}
-		});
 	}
-	
-	public static void createAddEdgeFrame() 
-	{
-		JFrame frame = new JFrame();
-		frame.setBounds(350, 200, 225, 80);
-		//frame.setSize(200, 80);
-		frame.getContentPane().setLayout(new FlowLayout());
-		
-		JTextField txtC1 = new JTextField(1);
-		JTextField txtC2 = new JTextField(1);
-		
-		JButton btnCancel = new JButton("cancel");
-		btnCancel.addActionListener(new ActionListener() 
-		{
-			
-			@Override
-			public void actionPerformed(ActionEvent e) 
-			{
-				frame.dispose();
-			}
-		});
-		
-		JButton btnAddLine = new JButton("add");
-		btnAddLine.addActionListener(new ActionListener() 
-		{
-			
-			@Override
-			public void actionPerformed(ActionEvent e)
-			{
-				int cid1 = Integer.parseInt(txtC1.getText());
-				int cid2 = Integer.parseInt(txtC2.getText());
-				// noch Kantengewicht einfügen
-				drawPanel.addEdge(cid1, cid2,1);
-				frame.dispose();
-			}
-		});
-		
-		frame.getContentPane().add(txtC1);
-		frame.getContentPane().add(txtC2);
-		frame.getContentPane().add(btnAddLine);
-		frame.getContentPane().add(btnCancel);
-		frame.setVisible(true);
-	}
-	
+
 	public static void createRemoveEdgeFrame() 
 	{
 		JFrame frame = new JFrame();
@@ -299,7 +229,7 @@ public class firstFrame {
 	public static void createBackgroundFrame() 
 	{
 		JFrame frame = new JFrame();
-		frame.setLayout(null);
+		frame.getContentPane().setLayout(null);
 		frame.setBounds(200, 200, 1000, 500);
 		
 		int x =(int) Math.floor(frame.getWidth()*0.5);
@@ -436,13 +366,6 @@ public class firstFrame {
 		frame.getContentPane().add(btnB);
 		frame.getContentPane().add(btnC);
 		frame.getContentPane().add(btnD);
-		frame.setVisible(true);
-		
-		
-	}
-	
-	public static void moveAction() 
-	{
-		drawPanel.clickedMoveVertex = true;
+		frame.setVisible(true);		
 	}
 }
