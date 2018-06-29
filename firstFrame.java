@@ -1,10 +1,10 @@
 //import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.Hashtable;
 import java.util.Scanner; //for graph read
 
 import javax.imageio.ImageIO;
@@ -13,8 +13,14 @@ import java.awt.*;
 import java.awt.event.*;
 
 public class firstFrame {
-
+	
+	public static interSteps testTheSteps = new interSteps();
 	public JFrame frame;
+	static JMenu mnVertex;
+	static JMenu mnEdge;
+	static JMenu mnAlgorithm;
+	static JMenu mnLoad;
+	static JMenu mnSettings;
 
 	/**
 	 * Launch the application.
@@ -67,6 +73,7 @@ public class firstFrame {
 		drawPanel.setForeground(Color.BLACK);
 		drawPanel.lblMouseCoords.setText("COORD");
 		
+		
 		// new size
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		int frameWidth = ((int) tk.getScreenSize().getWidth());
@@ -80,16 +87,19 @@ public class firstFrame {
 		menuBar.setBounds(124, 0, 426, 39);
 		frame.getContentPane().add(menuBar);
 		
-		JMenu mnVertex = new JMenu("Vertex");
+		
+		mnVertex = new JMenu("Vertex");
 		menuBar.add(mnVertex);
-		JMenu mnEdge = new JMenu("Edge");
+		mnEdge = new JMenu("Edge");
 		menuBar.add(mnEdge);
-		JMenu mnAlgorithm = new JMenu("Algorithm");
+		mnAlgorithm = new JMenu("Algorithm");
 		menuBar.add(mnAlgorithm);
-		JMenu mnLoad = new JMenu("Load");
+		mnLoad = new JMenu("Load");
 		menuBar.add(mnLoad);
-		JMenu mnSettings = new JMenu("Settings");
+		mnSettings = new JMenu("Settings");
 		menuBar.add(mnSettings);
+		
+		
 		
 		//vertex menu items
 		JMenuItem mntmVertMove = new JMenuItem("move");
@@ -165,6 +175,21 @@ public class firstFrame {
 			}
 		});
 		
+		//algorithm menu items
+		JMenuItem Dijkstra = new JMenuItem("Dijkstra");
+		mnAlgorithm.add(Dijkstra);
+		Dijkstra.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent Dijkstra) 
+			{
+				mnVertex.setEnabled(false);
+				mnEdge.setEnabled(false);
+				mnAlgorithm.setEnabled(false);
+				createDijkstraFrame();
+			}
+		});
+		
+		
 		//settings menu items
 		JMenuItem mntmReset = new JMenuItem("reset");
 		mnSettings.add(mntmReset);
@@ -184,6 +209,13 @@ public class firstFrame {
 				createBackgroundFrame();
 			}
 		});
+	}
+	
+	public static void enable()
+	{
+		mnVertex.setEnabled(true);
+		mnEdge.setEnabled(true);
+		mnAlgorithm.setEnabled(true);
 	}
 
 	public static void createRemoveEdgeFrame() 
@@ -226,6 +258,66 @@ public class firstFrame {
 		frame.getContentPane().add(btnRemoveEdge);
 		frame.setVisible(true);
 	}
+	
+	public static void createDijkstraFrame() 
+	{
+		JFrame frame = new JFrame();
+		frame.setBounds(350, 200, 225, 80);
+		//frame.setSize(200, 80);
+		frame.getContentPane().setLayout(new FlowLayout());
+		
+		JTextField txtC1 = new JTextField(1);
+		JTextField txtC2 = new JTextField(1);
+		
+		JButton btnNext = new JButton("next step");
+		btnNext.setVisible(true);
+		btnNext.addActionListener(new ActionListener() 
+		{
+			public void actionPerformed(ActionEvent next) 
+			{
+				txtC1.setEnabled(false);
+				txtC2.setEnabled(false);
+				
+				if(testTheSteps == null || testTheSteps.start == -1)
+				{
+					System.out.println("testTheSteps = null");
+					System.out.println("");
+					testTheSteps = new interSteps(drawPanel, "Dijkstra", Integer.parseInt(txtC1.getText()), Integer.parseInt(txtC2.getText()));
+				}
+				
+				testTheSteps.stepwise("Dijkstra");
+				if(testTheSteps.isFinished())
+				{
+					btnNext.setEnabled(false);
+					testTheSteps.showPath();
+				}
+				
+			}
+		});
+		
+		frame.addWindowListener(new WindowAdapter() 
+		{
+			  public void windowClosing(WindowEvent we) 
+			  {
+				  	enable();
+				  	ArrayList<Dijkstravertex> p = testTheSteps.testDijkstra.getPath();
+				  	if(p != null)
+				  	{
+				  		createPathFrame();
+				  	}
+				  	testTheSteps.recolor();
+				  	testTheSteps.destruct();
+				  	frame.dispose();
+					
+			  }
+		});
+		frame.add(btnNext);
+		
+		frame.getContentPane().add(txtC1);
+		frame.getContentPane().add(txtC2);
+		frame.setVisible(true);
+	}
+	
 	
 	public static void createBackgroundFrame() 
 	{
@@ -368,5 +460,20 @@ public class firstFrame {
 		frame.getContentPane().add(btnC);
 		frame.getContentPane().add(btnD);
 		frame.setVisible(true);		
+	}
+	
+	public static void createPathFrame()
+	{
+		ArrayList<Dijkstravertex> p = testTheSteps.testDijkstra.getPath();
+		System.out.println("");
+		System.out.println("Path:");
+		if(p != null)
+		{
+			for(Dijkstravertex i : p)
+			{
+				System.out.print(i.getCircle().getIndex() + ", ");
+			}
+		}
+		System.out.println("");
 	}
 }

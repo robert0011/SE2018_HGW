@@ -85,7 +85,7 @@ public class DrawPanel extends JPanel
 		blueCircle = new Circle(0,0,-1000000,-5);
 		blueLines = new Hashtable<Integer, List<Line>>();
 		
-		
+		this.setLayout(null);
 		this.setBorder(BorderFactory.createLineBorder(Color.black, 2, false));	
 		this.addMouseMotionListener(new MouseMotionListener() 
 		{
@@ -447,7 +447,7 @@ public class DrawPanel extends JPanel
 					// die circles sind nicht sortiert! ordne circleindex zu!
 					Circle c1 = circles.get(cid1);
 					Circle c2 = circles.get(cid2);
-					Line lineToAdd = new Line(c1,c2);
+					Line lineToAdd = new Line(c1,c2,weight);
 					if(curList == null) 
 					{
 						List<Line> curList1 = new ArrayList<Line>();
@@ -467,7 +467,7 @@ public class DrawPanel extends JPanel
 	
 					Circle c1 = circles.get(cid1);
 					Circle c2 = circles.get(cid2);
-					Line lineToAdd = new Line(c1,c2);
+					Line lineToAdd = new Line(c1,c2,weight);
 					curList.add(lineToAdd);
 					lines.put(cid1, curList);		
 				}			
@@ -573,19 +573,19 @@ public class DrawPanel extends JPanel
 			for(int i=0; i < curList.size(); i = i+1)
 			{
 				Line lineToDraw = curList.get(i);
-				g.setColor(col);
+				//g.setColor(col);
+				g.setColor(lineToDraw.getColor());
 				lineToDraw.drawArrowLine(g, 8, 8);
 			}
 		}
 		
-		//int i = 0;
+		
 		for (Circle c : circles) 
 		{
+			g.setColor(c.getColor());
 			c.draw(g);
 			g.setColor(Color.WHITE); // textcolor for vertex numbers
 			g.drawString(String.valueOf(c.getIndex()), c.getX() - 5, c.getY() + 3);
-			//g.drawString(String.valueOf(i), c.getX() - 5, c.getY() + 3);
-			//i += 1;
 			g.setColor(col);
 		}
 		
@@ -890,6 +890,16 @@ public class DrawPanel extends JPanel
 	public void setBackground(String b)
 	{
 		this.background = b;
+	}
+	
+	public ArrayList<Circle> getCircles()
+	{
+		return circles;
+	}
+	
+	public Hashtable<Integer, List<Line>> getLines()
+	{
+		return lines;
 	}
 	
 	

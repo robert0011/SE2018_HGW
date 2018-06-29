@@ -4,10 +4,14 @@ import java.awt.Color;
 public class Line 
 {
 	private Circle c1, c2;
-	public Line(Circle c1, Circle c2) 
+	private int weight;
+	private Color col = Color.BLACK;
+	
+	public Line(Circle c1, Circle c2, int weight) 
 	{
 		this.c1 = c1;
 		this.c2 = c2;
+		this.weight = weight;
 	}
 	
 	public void draw(Graphics g)
@@ -30,6 +34,21 @@ public class Line
 	public Circle getC2()
 	{
 		return c2;
+	}
+	
+	public int getWeight()
+	{
+		return weight;
+	}
+	
+	public void setColor(Color c)
+	{
+		this.col = c;
+	}
+	
+	public Color getColor()
+	{
+		return col;
 	}
 	
 	/**

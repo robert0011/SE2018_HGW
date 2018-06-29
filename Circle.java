@@ -4,6 +4,7 @@ import java.awt.Graphics;
 public class Circle 
 {
 	private int x, y, r, circleindex;
+	private Color col = Color.BLACK;
 	
 	public Circle(int r, int x, int y, int ci) 
 	{
@@ -31,6 +32,16 @@ public class Circle
 	public int getIndex()
 	{
 		return circleindex;
+	}
+	
+	public Color getColor()
+	{
+		return col;
+	}
+	
+	public void setColor(Color c)
+	{
+		this.col = c;
 	}
 	
 	public void draw(Graphics g) 
