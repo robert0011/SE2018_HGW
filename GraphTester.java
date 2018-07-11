@@ -8,7 +8,7 @@ public class GraphTester extends TestCase {
 	
 	public void testEmptyConstructor() {
 		 Graph g = new Graph();
-		 assertNotNull("Graph should != null after call to constructor", g);
+		 assertNotNull("Graph should != null after call of constructor", g);
 		 /*assertEquals("Size on vertexSet should return 0", 0, g.vertexSet.size());*/
 		 assertEquals("Size of outEdges should return 0", 0, g.outEdges.size());
 		 assertEquals("Size of inEdges should return 0", 0, g.outEdges.size());
@@ -16,9 +16,11 @@ public class GraphTester extends TestCase {
 	
 	public void testAddVertex() {
 		Graph g = new Graph();
-		Vertex v1 = new Vertex(1, 2);
-		Vertex v2 = new Vertex(1, 2);
+		assertFalse("Graph g should not contain vertices.", g.vertexSet.containsKey(0));
+		Vertex v1 = new Vertex(10,1, 2);
 		
+		Vertex v2 = new Vertex(10,1, 2);
+				
 		boolean success = g.addVertex(v1);
 		
 		assertTrue("Graph.addVertex(v) did not return true when adding a new unique vertex.",
@@ -27,8 +29,11 @@ public class GraphTester extends TestCase {
 				g.vertexSet.size(), 1);
 		
 		success = g.addVertex(v2);
+		assertEquals("Vertex v1 should have index 0.",v1.getIndex(),0);
+		assertEquals("Vertex v2 should have index 1.",v2.getIndex(),1);
+
 		
-		Vertex v4 = new Vertex(7,8);
+		Vertex v4 = new Vertex(10,7,8);
 		g.addVertex(v4);
 		assertEquals("Graph should contain 3 elements after addiing v4",g.vertexSet.size(),3);
 		
@@ -46,48 +51,50 @@ public class GraphTester extends TestCase {
 	
 	public void testAddEdge() {
 		Graph g = new Graph();
-		Vertex v1 = new Vertex(1, 2);
+		Vertex v0 = new Vertex(10,1, 2);
+		g.addVertex(v0);
+		Vertex v1 = new Vertex(10,3,4);
 		g.addVertex(v1);
-		Vertex v2 = new Vertex(3,4);
-		g.addVertex(v2);
 		
 		
 		
-		boolean success = g.addEdge(0, 1, 1);
+		boolean success = g.addEdge(v0, v1, 1);
 		assertTrue("edge should be added", success);
-		assertEquals(g.edgeSet.size(),1);
+				assertEquals(g.outEdges.size(),1);
+
+		Vertex v2 = new Vertex(10,5,8);
+		boolean success2 = g.addEdge(v1, v2, 1);
 		
-		success = g.addEdge(1, 2, 1);
-		assertFalse("vertex 2 does not exist, edge should not be added", success);
+		assertFalse("vertex v2 does not exist in the graph, edge should not be added", success2);
 		
-		success = g.addEdge(0, 1, 1);
+		success = g.addEdge(v0, v1, 1);
 		assertFalse("This edge already exists and should therefore not be added.",success);
 		
 	}
 	
 	public void testEdgeSets() {
 		Graph g = new Graph();
-		Vertex v1 = new Vertex(1, 2);
+		Vertex v0 = new Vertex(10,1, 2);
+		g.addVertex(v0);
+		Vertex v1 = new Vertex(10,3,4);
 		g.addVertex(v1);
-		Vertex v2 = new Vertex(3,4);
+		Vertex v2 = new Vertex(10,4,5);
 		g.addVertex(v2);
-		Vertex v3 = new Vertex(4,5);
-		g.addVertex(v3);
-		g.addEdge(0, 1, 1);
-		g.addEdge(1, 2, 1);
-		g.addEdge(0, 2, 1);
+		g.addEdge(v0, v1, 1);
+		g.addEdge(v1, v2, 1);
+		g.addEdge(v0, v2, 1);
 		
 		// check out going edges
-		Hashtable<Integer, List<Integer>> test1 = g.outEdges;
-		List<Integer> testList = test1.get(0);
-		int a = testList.get(0);
+		Hashtable<Integer, List<Edge>> test1 = g.outEdges;
+		List<Edge> testList = test1.get(0);
+		Edge a = testList.get(0);
 		// the first vertex that can be reached from vertex with label 0 is the vertex with label 1
-		assertEquals(a,1);
+		assertEquals(a.getEnd().getIndex(),1);
 		a= testList.get(1);
-		assertEquals(a,2);
+		assertEquals(a.getEnd().getIndex(),2);
 		testList = test1.get(1);
 		a= testList.get(0);
-		assertEquals(a,2);
+		assertEquals(a.getEnd().getIndex(),2);
 		
 		// check incoming edges
 		test1 = g.inEdges;
@@ -95,103 +102,119 @@ public class GraphTester extends TestCase {
 		testList = test1.get(1);
 		a = testList.get(0);
 		// the first vertex with an edge to vertex with label 1 is the vertex with label 0
-		assertEquals(a,0);
+		assertEquals(a.getStart().getIndex(),0);
 		
 		testList = test1.get(2);
 		a = testList.get(0);
 		// the first vertex with an edge to vertex with label 2 is the vertex with label 0
-		assertEquals(a,1);
+		assertEquals(a.getStart().getIndex(),1);
 		a = testList.get(1);
-		assertEquals(a,0);
+		assertEquals(a.getStart().getIndex(),0);
 		
 		
 	}
 	
 	public void testRemoveEdge() {
 		Graph g = new Graph();
-		boolean success = g.removeEdge(0, 1);
+		Vertex v0 = new Vertex(10,1,2);
+		Vertex v1 = new Vertex(10,2,3);
+		boolean success = g.removeEdge(v0, v1);
 		assertFalse("The edgeSet is empty.",success);
 		
-		Vertex v0 = new Vertex(1, 2);
 		g.addVertex(v0);
-		Vertex v1 = new Vertex(3,4);
 		g.addVertex(v1);
-		g.addEdge(0, 1, 1);
+		g.addEdge(v0, v1, 1);
 		
-		success = g.removeEdge(0, 1);
+		success = g.removeEdge(v0, v1);
 		assertTrue(success);
 		
-		success= g.removeEdge(0, 1);
+		success= g.removeEdge(v0, v1);
 		assertFalse(success);
 		
-		Vertex v2 = new Vertex(1,0);
+		Vertex v2 = new Vertex(10,1,0);
 		g.addVertex(v2);
-		Vertex v3 = new Vertex(2,0);
+		Vertex v3 = new Vertex(10,2,0);
 		g.addVertex(v3);
-		g.addEdge(0, 1, 1);
-		g.addEdge(0, 3, 1);
-		g.addEdge(1, 2, 1);
-		g.addEdge(3, 2, 1);
+		g.addEdge(v0, v1, 1);
+		g.addEdge(v0, v3, 1);
+		g.addEdge(v1, v2, 1);
+		g.addEdge(v3, v2, 1);
 		
 		
 		// check out going edges:
-			Hashtable<Integer, List<Integer>> test1 = g.outEdges;
-			List<Integer> testList = test1.get(0);
+			Hashtable<Integer, List<Edge>> test1 = g.outEdges;
+			List<Edge> testList = test1.get(0);
 			
-			int a = testList.get(0);
+			Edge a = testList.get(0);
 			// the first vertex that can be reached from vertex with label 0 is the vertex with label 1
-			assertEquals(a,1);
+			assertEquals(a.getEnd().getIndex(),1);
 			a = testList.get(1);
-			assertEquals(a,3);
+			assertEquals(a.getEnd().getIndex(),3);
 			
 			testList = test1.get(1);
 			a = testList.get(0);
-			assertEquals(a,2);
+			assertEquals(a.getEnd().getIndex(),2);
 			
 			testList = test1.get(3);
 			a = testList.get(0);
-			assertEquals(a,2);
+			assertEquals(a.getEnd().getIndex(),2);
 			
 		// check incoming edges:
 			test1 = g.inEdges;
 			testList = test1.get(1);
 			a = testList.get(0);
-			assertEquals(a,0);
+			assertEquals(a.getStart().getIndex(),0);
 			
 			testList = test1.get(2);
 			a = testList.get(0);
-			assertEquals(a,1);
+			assertEquals(a.getStart().getIndex(),1);
 			a = testList.get(1);
-			assertEquals(a,3);
+			assertEquals(a.getStart().getIndex(),3);
 			
 			testList = test1.get(3);
 			a = testList.get(0);
-			assertEquals(a,0);
+			assertEquals(a.getStart().getIndex(),0);
 			
-			g.removeEdge(1, 2);
+			g.removeEdge(v1, v2);
+			test1 = g.inEdges;
 			testList = test1.get(2);
-			a = testList.size();
-			assertEquals(a,1);
+			int b = testList.size();
+			assertEquals(b,1);
 			
-			g.removeEdge(0, 1);
-			g.removeEdge(0, 3);
-			g.removeEdge(3, 2);
-			assertEquals("edgeSet shold be empty.",g.edgeSet.size(),0);
+			g.removeEdge(v0, v1);
+			g.removeEdge(v0, v3);
+			g.removeEdge(v3, v2);
+
+			Enumeration<List<Edge>> e = g.inEdges.elements();
+			while(e.hasMoreElements())
+			{
+				assertEquals("All Lists in inEdges should be empty.",e.nextElement().size(),0);
+			}
+			
+			e = g.outEdges.elements();
+			while(e.hasMoreElements())
+			{
+				assertEquals("All Lists in outEdges should be empty.",e.nextElement().size(),0);
+			}
+			
+			
+			
 			
 			// g.inEdges.size() is not 0 because the keys are now stored with empty lists
-			List<Integer> test = g.inEdges.get(2);
+			List<Edge> test = g.inEdges.get(2);
 			assertEquals("List of incoming edges to vertex with label 2 should be empty.",test.size(),0);
 			
 			
 			
 	}
 	
-	public void testRemoveVertex() {
+	public void testRemoveVertex()
+	{
 		Graph g = new Graph();
-		Vertex v0 = new Vertex(1,0);
+		Vertex v0 = new Vertex(10,1,0);
 		g.addVertex(v0);
 		assertEquals("size should be 1.",g.vertexSet.size(),1);
-		Vertex v1 = new Vertex(0,1);
+		Vertex v1 = new Vertex(10,0,1);
 		g.addVertex(v1);
 		assertEquals("size should be 2.",g.vertexSet.size(),2);
 		
@@ -200,7 +223,7 @@ public class GraphTester extends TestCase {
 		assertFalse("there is no vertex with label 2 in vertexSet, should not be removed.",success);
 		
 		
-		Vertex v2 = new Vertex(3,4);
+		Vertex v2 = new Vertex(10,3,4);
 		g.addVertex(v2);
 		
 		// enumerate the elements in vertexSet:

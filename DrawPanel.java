@@ -38,14 +38,13 @@ import javax.swing.JOptionPane;
 public class DrawPanel extends JPanel 
 {
 	public static ArrayList<Circle> circles;
-	public static ArrayList<Integer> fdEdgeList;
 	public static Hashtable<Integer, List<Line>> lines;
 	// for removing one special circle
 	public static Circle blueCircle;
 	public static Circle edgestart;
 	public static Circle edgeend;
 	public static Hashtable<Integer, List<Line>> blueLines;
-
+	
 	//private final int WIDTH = 800;
 	//private final int HEIGHT = 1200;
 	static boolean loadedFile = false;
@@ -71,7 +70,6 @@ public class DrawPanel extends JPanel
 	public static boolean missingNE = false; 
 	int start;
 	int end;
-	int fdEdgeCounter;
 	
 	public int mouseX, mouseY; 
 	public JLabel lblMouseCoords;
@@ -181,7 +179,7 @@ public class DrawPanel extends JPanel
                                         	circles.add(circleindex,actualCircle);
                                         	circleindex++;
                                         	//add vertex(mouseX, mouseY) to vertexSet
-                                        	Vertex newVertex = new Vertex(mouseX, mouseY);
+                                        	Vertex newVertex = new Vertex(10,mouseX, mouseY);
                                         	graph.addVertex(newVertex);
                                         	repaint();
                                 		}
@@ -215,8 +213,8 @@ public class DrawPanel extends JPanel
                 			circles.set(blueCircle.getIndex(), movedCircle);
                 			//move edges along the moving vertex
                 			int tmp1 = blueCircle.getIndex();
-                			List<Integer> edgesToMove = graph.outEdges.get(tmp1);
-                			List<Integer> edgesToMove2 = graph.inEdges.get(tmp1);
+                			List<Edge> edgesToMove = graph.outEdges.get(tmp1);
+                			List<Edge> edgesToMove2 = graph.inEdges.get(tmp1);
                 			if(edgesToMove != null)
                 			{
                 				int edges2Move = edgesToMove.size();
@@ -634,6 +632,28 @@ public class DrawPanel extends JPanel
 				int numberOfVertices = 0;
 				numberOfEdges = 0;
 				fileIn = new Scanner(new File(path));
+				// first there needs to be given the number of vertices
+				/*if(fileIn.hasNextInt())
+				{
+					numberOfVertices = fileIn.nextInt();
+					//System.out.println("number of vertices: "+numberOfVertices);
+				}
+				else
+				{
+					missingNV = true;
+					System.out.println("error");
+				}
+				// next information is the number of edges
+				if(fileIn.hasNextInt())
+				{
+					numberOfEdges = fileIn.nextInt();
+					//System.out.println("number of edges: "+numberOfEdges);
+				}
+				else
+				{
+					missingNE = true;
+					System.out.println("error2");
+				}*/
 				String v = fileIn.nextLine();
 				String c1 = "(\\d+)";
 				Pattern c2 = Pattern.compile(c1);
@@ -659,8 +679,6 @@ public class DrawPanel extends JPanel
 				{
 					String test = m1.group(0);
 					numberOfEdges = Integer.parseInt(test);
-					fdEdgeList = new ArrayList<Integer>(numberOfEdges*3);
-					
 				}
 				else
 				{
@@ -670,29 +688,25 @@ public class DrawPanel extends JPanel
 					return false;
 				}
 				
+				
+				
+				//fileIn.nextLine();
 				circles = new ArrayList<Circle>(numberOfVertices);
 				lines = new Hashtable<Integer, List<Line>>();
 						
 						
-				for(int i = 0; i < numberOfVertices; i++ )
+				for(int i = 0; i < numberOfVertices; i ++ )
 				{
+					//random value between 5 and 1195
 					Random rand = new Random();
-					int x = rand.nextInt(1500)+150;
+					int x = rand.nextInt(950)+50;
 					// CAREFUL
-					double yCoord = (1+i) *(950/(numberOfVertices+1))+50;
+					double yCoord = (1+i) *(800/(numberOfVertices+2));
 					Circle tmp = new Circle(10, x, (int) yCoord, circleindex);
 					circleindex = circleindex+1;
 					circles.add(i, tmp);
 					//circles.add(i, new Circle(10, x, ((1+i) *(800/(numberOfVertices+2)))));
-					if(numberOfEdges > 0)
-					{
-						graph.addVertex(new Vertex(x,i *(1000/numberOfEdges)));
-					}
-					if(numberOfEdges <= 0)
-					{
-						graph.addVertex(new Vertex(x,i *(1000/numberOfVertices)));
-					}
-					
+					graph.addVertex(new Vertex(x,i *(800/numberOfEdges)));
 				}
 				
 				
@@ -779,24 +793,11 @@ public class DrawPanel extends JPanel
 			        	if(weight == -1)
 			        	{
 			        		success = addEdge(firstVertex, secondVertex,1);
-			        		fdEdgeList.add(firstVertex);
-			        		fdEdgeCounter++;
-			        		fdEdgeList.add(secondVertex);
-			        		fdEdgeCounter++;
-			        		fdEdgeList.add(1);
-			        		fdEdgeCounter++;
-			        		
 			        	}
 			        	else
 			        	{
 			        		//System.out.println("WEIGHTED EDGE");
 			        		success = addEdge(firstVertex, secondVertex, weight);
-			        		fdEdgeList.add(firstVertex);
-			        		fdEdgeCounter++;
-			        		fdEdgeList.add(secondVertex);
-			        		fdEdgeCounter++;
-			        		fdEdgeList.add(weight);
-			        		fdEdgeCounter++;
 			        	}
 			        	if(success)
 			        	{
@@ -813,24 +814,6 @@ public class DrawPanel extends JPanel
 			        	couldNotReadAnEdge = true;
 			        }
 				}
-				
-				ForceDirected eades = new ForceDirected();
-				eades.forceDirected(circles, lines, fdEdgeList);
-				//lines.clear();
-				for(int i= 0; i < fdEdgeList.size(); i++)
-				{	
-					int startVertex = fdEdgeList.get(i).intValue();
-					i++;
-					int endVertex = fdEdgeList.get(i).intValue();
-					i++;
-					int edgeWeight = fdEdgeList.get(i).intValue();
-					
-					addEdge(startVertex, endVertex, edgeWeight);
-					//list.add(edge);
-					//list.add(edgeKey, edge);
-					
-				} 
-				repaint();
 				
 				//closes scanner
 				fileIn.close();
@@ -850,7 +833,10 @@ public class DrawPanel extends JPanel
 				else
 				{
 					return true;
-				}	
+				}
+				
+				
+					
 			} 
 			catch (FileNotFoundException e) 
 			{

@@ -84,7 +84,7 @@ public class firstFrame {
 		frame.getContentPane().add(drawPanel);
 		//create menu bar
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.setBounds(124, 0, 426, 39);
+		menuBar.setBounds(0, 0, 426, 39);
 		frame.getContentPane().add(menuBar);
 		
 		
@@ -311,7 +311,7 @@ public class firstFrame {
 					
 			  }
 		});
-		frame.add(btnNext);
+		frame.getContentPane().add(btnNext);
 		
 		frame.getContentPane().add(txtC1);
 		frame.getContentPane().add(txtC2);
