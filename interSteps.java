@@ -24,7 +24,7 @@ class interSteps
 		end = e;
 		if(alg.equals("Dijkstra"))
 		{
-			testDijkstra = new Dijkstra(s, e, d.getCircles(), d.getLines());
+			testDijkstra = new Dijkstra(s, e, d.graph);
 		}
 		
 		reachedEnd = false;
@@ -99,7 +99,7 @@ class interSteps
 	  	testDijkstra.visited = new ArrayList<Dijkstravertex>();
 		reachedEnd = false;
 		testDijkstra.steps = 0;
-		testDijkstra.startCircle = null;
+		testDijkstra.startVertex = null;
 		testDijkstra.curVertex = null;
 	}
 	
@@ -107,25 +107,25 @@ class interSteps
 	{
 		ArrayList<Dijkstravertex> path = testDijkstra.getPath();
 		Dijkstravertex tmp = null;
-		Line tmp2;
+		Edge tmp2;
 		for(int i = 0; i<path.size(); i = i+1)
 		{
 			// last vertex = end has no edge to color
 			if(i != 0)
 			{
-				List<Line> search = path.get(i).getEdges();
+				List<Edge> search = path.get(i).getEdges();
 				for(int j = 0; j<search.size(); j = j+1)
 				{
 					tmp2 = search.get(j);
-					int c2 = tmp2.getC2().getIndex();
-					if(c2 == tmp.getCircle().getIndex())
+					int c2 = tmp2.getEnd().getIndex();
+					if(c2 == tmp.getVertex().getIndex())
 					{
 						tmp2.setColor(Color.BLUE);
 					}
 				}
 			}
 			tmp = path.get(i);
-			tmp.getCircle().setColor(Color.BLUE);
+			tmp.getVertex().setColor(Color.BLUE);
 			
 		}
 		d.repaint();

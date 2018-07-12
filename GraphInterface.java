@@ -21,7 +21,7 @@ public interface GraphInterface
 	 * @param weight an double for the weight of this edge, for unweighted graphs is the default value = 0
 	 * @return true if the given edge is successfully added to the graph
 	 */
-	public boolean addEdge(Vertex start, Vertex end, double weight); // start = startvertex, end = endvertex, weight for the edge (default = 0) returns true if edge is successfulyl added to graph 
+	public boolean addEdge(Vertex start, Vertex end, int weight); // start = startvertex, end = endvertex, weight for the edge (default = 0) returns true if edge is successfulyl added to graph 
 	
 	/**
 	 * Function to delete a vertex from the graph, also removes all edges from the graph, which are adjacent to v.

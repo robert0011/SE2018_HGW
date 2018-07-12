@@ -108,7 +108,7 @@ public class firstFrame {
 		{
 			public void actionPerformed(ActionEvent arg0) 
 			{
-				if(drawPanel.circles.size() > 0)
+				if(drawPanel.graph.vertexSet.size() > 0)
 				{
 					drawPanel.clickedMoveVertex = true;
 				}		
@@ -471,7 +471,7 @@ public class firstFrame {
 		{
 			for(Dijkstravertex i : p)
 			{
-				System.out.print(i.getCircle().getIndex() + ", ");
+				System.out.print(i.getVertex().getIndex() + ", ");
 			}
 		}
 		System.out.println("");

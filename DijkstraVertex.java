@@ -3,20 +3,20 @@ import java.util.List;
 
 class Dijkstravertex
 {
-	private Circle v;
+	private Vertex v;
 	Dijkstravertex precursor;
 	private int distance;
 	private boolean visited;
-	private List<Line> edges;
+	private List<Edge> edges;
 	
 	
-	public Dijkstravertex(Circle v)
+	public Dijkstravertex(Vertex v)
 	{
 		this.v = v;
 		//precursor = -1;
 		distance = (int) Double.POSITIVE_INFINITY;
 		visited = false;
-		edges = new ArrayList<Line>();
+		edges = new ArrayList<Edge>();
 	}
 	
 	public void setPrecursor(Dijkstravertex p)
@@ -34,7 +34,7 @@ class Dijkstravertex
 		visited = v;
 	}
 	
-	public void setEdges(List<Line> edges)
+	public void setEdges(List<Edge> edges)
 	{
 		this.edges = edges;
 	}
@@ -54,12 +54,12 @@ class Dijkstravertex
 		return visited;
 	}
 	
-	public Circle getCircle()
+	public Vertex getVertex()
 	{
 		return v;
 	}
 	
-	List<Line> getEdges()
+	List<Edge> getEdges()
 	{
 		return edges;
 	}

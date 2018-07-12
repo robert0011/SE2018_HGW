@@ -10,7 +10,6 @@ public class Graph implements GraphInterface
 	int vertexlabel = 0;
 	// initialize the set for the edges and vertices for the graph
 	public Hashtable<Integer,Vertex> vertexSet;
-	public Set<Edge> edgeSet;
 	
 	public Hashtable<Integer, List<Edge>> outEdges;
 	public Hashtable<Integer, List<Edge>> inEdges;
@@ -21,7 +20,6 @@ public class Graph implements GraphInterface
 		this.vertexlabel = 0;
 		
 		this.vertexSet = new Hashtable<Integer,Vertex>();
-		this.edgeSet = new HashSet<Edge>();
 		this.outEdges = new Hashtable<Integer, List<Edge>>();
 		this.inEdges = new Hashtable<Integer, List<Edge>>();
 	}
@@ -45,7 +43,7 @@ public class Graph implements GraphInterface
 	/**
 	 * 
 	 */
-	public boolean addEdge(Vertex start, Vertex end, double weight)
+	public boolean addEdge(Vertex start, Vertex end, int weight)
 	{
 		
 		Edge edgeToAdd = new Edge(start,end,weight);

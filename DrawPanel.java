@@ -2,9 +2,7 @@
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Frame;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -16,9 +14,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -30,23 +26,15 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
-import javafx.scene.image.Image;
-
 import javax.swing.JOptionPane;
 
 public class DrawPanel extends JPanel 
 {
-	public static ArrayList<Circle> circles;
-	public static Hashtable<Integer, List<Line>> lines;
 	// for removing one special circle
-	public static Circle blueCircle;
-	public static Circle edgestart;
-	public static Circle edgeend;
-	public static Hashtable<Integer, List<Line>> blueLines;
+	public static Vertex blueVertex;
+	public static Vertex edgestart;
+	public static Vertex edgeend;
 	
-	//private final int WIDTH = 800;
-	//private final int HEIGHT = 1200;
 	static boolean loadedFile = false;
 	public static boolean clickedRemoveVertex = false;
 	public static boolean clickedMoveVertex = false;
@@ -59,7 +47,7 @@ public class DrawPanel extends JPanel
 	public String background = ".\\img\\backgroundImage.jpg";
 	
 	public static Graph graph = new Graph();
-	public static int circleindex = 0;
+	//public static int circleindex = 0;
 	
 	int numberOfVertices;
 	int numberOfEdges;
@@ -77,13 +65,8 @@ public class DrawPanel extends JPanel
 	
 	public DrawPanel() 
 	{
-		// set maximum drawable vertices to 300
-		circles = new ArrayList<Circle>(300);
-		lines = new Hashtable<Integer, List<Line>>();
 		
-		//blueCircle = new Circle(-1,0,0);
-		blueCircle = new Circle(0,0,-1000000,-5);
-		blueLines = new Hashtable<Integer, List<Line>>();
+		blueVertex = new Vertex(0,0,0);
 		
 		this.setLayout(null);
 		this.setBorder(BorderFactory.createLineBorder(Color.black, 2, false));	
@@ -135,69 +118,70 @@ public class DrawPanel extends JPanel
                         		// else
                         		if(clickedRemoveVertex)
                         		{
-                        			double smallestDistance= (circles.get(0).getX() - mouseX)*(circles.get(0).getX() - mouseX)+(circles.get(0).getY()-mouseY)*(circles.get(0).getY()-mouseY);
-                        			blueCircle = circles.get(0);
-                        			for(Circle c: circles)
+                        			double smallestDistance= (graph.vertexSet.get(0).getX() - mouseX)*(graph.vertexSet.get(0).getX() - mouseX)+(graph.vertexSet.get(0).getY() - mouseY)*(graph.vertexSet.get(0).getY() - mouseY);
+                        			blueVertex = graph.vertexSet.get(0);
+                        			Enumeration<Vertex> v = graph.vertexSet.elements();
+                        			while(v.hasMoreElements())
                         			{
-                        				double getX = (double) c.getX();
-                        				double getY = (double) c.getY();
+                        				Vertex curVertex = v.nextElement();
+                        				double getX = (double) curVertex.getX();
+                        				double getY = (double) curVertex.getY();
                         				double tmp = (getX - mouseX)*(getX - mouseX)+(getY-mouseY)*(getY-mouseY);
                         				if(tmp < smallestDistance)
                         				{
                         					smallestDistance = tmp;
-                        					blueCircle = c;
+                        					blueVertex = curVertex;
                         				}
                         			}
                         			repaint();
                         			createRemoveVertexFrame();
+                        			System.out.println("size of vertex set after ieration: "+graph.vertexSet.size());
                         		}        		
                         	}
                         	else
                         	{
                         		if(! clickedRemoveVertex)
                         		{
-                        			Circle actualCircle = new Circle(10, mouseX, mouseY, circleindex);
-                                	// test for painting only unique circles
-                                	boolean circleTester = false;
-                                	for(Circle c : circles)
+                        			Vertex newVertex = new Vertex(10, mouseX, mouseY);
+                                	// test for painting only unique vertices
+                                	boolean vertexTester = false;
+                                	Enumeration<Vertex> v = graph.vertexSet.elements();
+                                	while(v.hasMoreElements())
                                 	{
+                                		Vertex curVertex = v.nextElement();
                                 		// checks whether the x coordinate is taken or not
-                                		if(mouseX <= c.getX()+25 & mouseX>=c.getX()-25 & mouseY <= c.getY()+25 & mouseY >=c.getY()-25)
+                                		if(mouseX <= curVertex.getX()+25 & mouseX>=curVertex.getX()-25 & mouseY <= curVertex.getY()+25 & mouseY >=curVertex.getY()-25)
                                 		{
-                                			circleTester = true;
+                                			vertexTester = true;
                                 		}
                                 	}
-                                	if(circleTester == true)
+                                	if(vertexTester == true)
                                 	{
                                 		
                                 	}
                                 	// draw only new circles
                                 	else
                                 	{
-                                		if(circleindex < 300)
-                                		{
-                                        	circles.add(circleindex,actualCircle);
-                                        	circleindex++;
-                                        	//add vertex(mouseX, mouseY) to vertexSet
-                                        	Vertex newVertex = new Vertex(10,mouseX, mouseY);
-                                        	graph.addVertex(newVertex);
-                                        	repaint();
-                                		}
+                                		graph.addVertex(newVertex);
+                                    	repaint();
+                                		
                                 	}
                         		}
                         		
                         		else
                         		{
-                        			double smallestDistance= (circles.get(0).getX() - mouseX)*(circles.get(0).getX() - mouseX)+(circles.get(0).getY()-mouseY)*(circles.get(0).getY()-mouseY);
-                        			blueCircle = circles.get(0);
-                        			for(Circle c: circles)
+                        			double smallestDistance= (graph.vertexSet.get(0).getX() - mouseX)*(graph.vertexSet.get(0).getX() - mouseX)+(graph.vertexSet.get(0).getY()-mouseY)*(graph.vertexSet.get(0).getY()-mouseY);
+                        			blueVertex = graph.vertexSet.get(0);
+                        			Enumeration<Vertex> v = graph.vertexSet.elements();
+                        			while(v.hasMoreElements())
                         			{
-                        				double tmp = (c.getX() - mouseX)*(c.getX() - mouseX)+(c.getY()-mouseY)*(c.getY()-mouseY);
+                        				Vertex curVertex = v.nextElement();
+                        				double tmp = (curVertex.getX() - mouseX)*(curVertex.getX() - mouseX)+(curVertex.getY()-mouseY)*(curVertex.getY()-mouseY);
                         			//	double dist = Math.sqrt(tmp);
                         				if(tmp < smallestDistance)
                         				{
                         					smallestDistance = tmp;
-                        					blueCircle = c;	
+                        					blueVertex = curVertex;	
                         				}
                         			}
                         			repaint();
@@ -209,10 +193,11 @@ public class DrawPanel extends JPanel
                     	{
                     		int x = e.getX();
                 			int y = e.getY();
-                			Circle movedCircle = new Circle(10,x,y,blueCircle.getIndex());
-                			circles.set(blueCircle.getIndex(), movedCircle);
+                			Vertex movedVertex = new Vertex(10,x,y);
+                			movedVertex.setIndex(blueVertex.getIndex());
+                			graph.vertexSet.put(blueVertex.getIndex(), movedVertex);
                 			//move edges along the moving vertex
-                			int tmp1 = blueCircle.getIndex();
+                			int tmp1 = blueVertex.getIndex();
                 			List<Edge> edgesToMove = graph.outEdges.get(tmp1);
                 			List<Edge> edgesToMove2 = graph.inEdges.get(tmp1);
                 			if(edgesToMove != null)
@@ -220,13 +205,17 @@ public class DrawPanel extends JPanel
                 				int edges2Move = edgesToMove.size();
                     			for(int i=0; i < edges2Move; i++)
                         		{
-                    				int movingindex = edgesToMove.get(0);
+                    				/*int movingindex = edgesToMove.get(0);
                     				removeEdge(movedCircle.getIndex(),movingindex);
                     				repaint();
                     				//falsch
                     				addEdge(movedCircle.getIndex(),movingindex,1);
-                    				repaint();
+                    				repaint();*/
+                    				Edge edge = edgesToMove.get(i);
+                    				edge.setStart(movedVertex);
+                    				
                         		}
+                    			repaint();
                 			}
                 			
                 			if(edgesToMove2 != null)
@@ -236,17 +225,21 @@ public class DrawPanel extends JPanel
                     			for(int i=0; i < edges2Move2; i++)
                         		{
                     				//System.out.println(edges2Move2);
-                    				int movingindex = edgesToMove2.get(0);
+                    				/*int movingindex = edgesToMove2.get(0);
                     				removeEdge(movingindex, movedCircle.getIndex());
                     				repaint();	
                     				// falsch
                     				addEdge(movingindex, movedCircle.getIndex(),1);
-                    				repaint();
+                    				repaint();*/
+                    				Edge edge = edgesToMove.get(i);
+                    				edge.setStart(movedVertex);
+                    				
                            		}
+                    			repaint();
                 			}
                 			
                 			//reset blue circle
-                			blueCircle = new Circle(0,0,-1000000,-5);
+                			blueVertex = new Vertex(0,0,0);
                 			//make changes appearing on the GUI
                 			repaint();
                     	}
@@ -258,17 +251,19 @@ public class DrawPanel extends JPanel
                 		clickedMoveVertex = false;
                 		if(!marked)
                 		{
-                    		double smallestDistance= (circles.get(0).getX() - mouseX)*(circles.get(0).getX() - mouseX)+(circles.get(0).getY()-mouseY)*(circles.get(0).getY()-mouseY);
-                			blueCircle = circles.get(0);
-                			for(Circle c: circles)
+                    		double smallestDistance= (graph.vertexSet.get(0).getX() - mouseX)*(graph.vertexSet.get(0).getX() - mouseX)+(graph.vertexSet.get(0).getY()-mouseY)*(graph.vertexSet.get(0).getY()-mouseY);
+                			blueVertex = graph.vertexSet.get(0);
+                			Enumeration<Vertex> v = graph.vertexSet.elements();
+                			while(v.hasMoreElements())
                 			{
-                				double getX = (double) c.getX();
-                				double getY = (double) c.getY();
+                				Vertex curVertex = v.nextElement();
+                				double getX = (double) curVertex.getX();
+                				double getY = (double) curVertex.getY();
                 				double tmp = (getX - mouseX)*(getX - mouseX)+(getY-mouseY)*(getY-mouseY);
                 				if(tmp < smallestDistance)
                 				{
                 					smallestDistance = tmp;
-                					blueCircle = c;
+                					blueVertex = curVertex;
                 				}
                 			}
                 			marked = true;
@@ -285,43 +280,47 @@ public class DrawPanel extends JPanel
             	{
             		if(! startgiven)
             		{
-            			double smallestDistance= (circles.get(0).getX() - mouseX)*(circles.get(0).getX() - mouseX)+(circles.get(0).getY()-mouseY)*(circles.get(0).getY()-mouseY);
-            			edgestart = circles.get(0);
-            			for(Circle c: circles)
+            			double smallestDistance= (graph.vertexSet.get(0).getX() - mouseX)*(graph.vertexSet.get(0).getX() - mouseX)+(graph.vertexSet.get(0).getY()-mouseY)*(graph.vertexSet.get(0).getY()-mouseY);
+            			edgestart = graph.vertexSet.get(0);
+            			Enumeration<Vertex> v = graph.vertexSet.elements();
+            			while(v.hasMoreElements())
             			{
-            				double getX = (double) c.getX();
-            				double getY = (double) c.getY();
+            				Vertex curVertex = v.nextElement();
+            				double getX = (double) curVertex.getX();
+            				double getY = (double) curVertex.getY();
             				double tmp = (getX - mouseX)*(getX - mouseX)+(getY-mouseY)*(getY-mouseY);
             				if(tmp < smallestDistance)
             				{
             					smallestDistance = tmp;
-            					edgestart = c;
+            					edgestart = curVertex;
             				}
             			}
             			startgiven = true;
             		}
             		else
             		{
-                		double smallestDistance= (circles.get(0).getX() - mouseX)*(circles.get(0).getX() - mouseX)+(circles.get(0).getY()-mouseY)*(circles.get(0).getY()-mouseY);
-            			edgeend = circles.get(0);
-            			for(Circle c: circles)
+                		double smallestDistance= (graph.vertexSet.get(0).getX() - mouseX)*(graph.vertexSet.get(0).getX() - mouseX)+(graph.vertexSet.get(0).getY()-mouseY)*(graph.vertexSet.get(0).getY()-mouseY);
+            			edgeend = graph.vertexSet.get(0);
+            			Enumeration<Vertex> v = graph.vertexSet.elements();
+            			while(v.hasMoreElements())
             			{
-            				double getX = (double) c.getX();
-            				double getY = (double) c.getY();
+            				Vertex curVertex = v.nextElement();
+            				double getX = (double) curVertex.getX();
+            				double getY = (double) curVertex.getY();
             				double tmp = (getX - mouseX)*(getX - mouseX)+(getY-mouseY)*(getY-mouseY);
             				if(tmp < smallestDistance)
             				{
             					smallestDistance = tmp;
-            					edgeend = c;
+            					edgeend = curVertex;
             				}
             			}
             			if(! addEdgeClicked )
             			{
-            				removeEdge(edgestart.getIndex(), edgeend.getIndex());
+            				graph.removeEdge(edgestart, edgeend);
             			}
             			else
             			{
-            				addEdge(edgestart.getIndex(), edgeend.getIndex(), 1);
+            				graph.addEdge(edgestart, edgeend,1);
             				addEdgeClicked = false;
             			}
             			repaint();
@@ -360,19 +359,19 @@ public class DrawPanel extends JPanel
 				
     			
     			// collect all edges to be removed
-				int tmp1 = blueCircle.getIndex();
+				Vertex tmp1 = blueVertex;
 				
 				//Carmens method
-    			List<Integer> edgesToRemove = graph.outEdges.get(tmp1);
+    			List<Edge> edgesToRemove = graph.outEdges.get(tmp1.getIndex());
     			// Zielknoten
-    			List<Integer> edgesToRemove2 = graph.inEdges.get(tmp1);
+    			List<Edge> edgesToRemove2 = graph.inEdges.get(tmp1.getIndex());
     			
     			if(edgesToRemove != null)
     			{
     				int edges2Remove = edgesToRemove.size();
         			for(int i=0; i < edges2Remove; i++)
             		{
-            				removeEdge(tmp1, edgesToRemove.get(0));
+        				graph.removeEdge(edgesToRemove.get(0).getStart(), edgesToRemove.get(0).getEnd());
             				//System.out.println("removed");
             		}
     			}
@@ -383,19 +382,19 @@ public class DrawPanel extends JPanel
         			System.out.println(edges2Remove2);
         			for(int i=0; i < edges2Remove2; i++)
             		{
-            				removeEdge(edgesToRemove2.get(0), tmp1);
-            				//System.out.println("removed2");
+        				graph.removeEdge(edgesToRemove2.get(0).getStart(), edgesToRemove2.get(0).getEnd());
+            			//System.out.println("removed2");
             		}
     			}
 
-    			circles.set(blueCircle.getIndex(), new Circle(0,-5,-5,blueCircle.getIndex()));
-				graph.removeVertex(blueCircle.getIndex());
+    			//circles.set(blueCircle.getIndex(), new Circle(0,-5,-5,blueCircle.getIndex()));
+				graph.removeVertex(blueVertex.getIndex());
     			
     			clickedRemoveVertex = false;
     			col = Color.CYAN;
     			repaint();
     			col = Color.BLACK;
-    			blueCircle = new Circle(0,0,-1000000, -5);
+    			blueVertex = new Vertex(0,0,0);
     			repaint();
     			frame.dispose();
 				
@@ -409,7 +408,7 @@ public class DrawPanel extends JPanel
 			public void actionPerformed(ActionEvent e) 
 			{
 				col = Color.BLACK;
-				blueCircle = new Circle(0,0,-1000000, -5);
+				blueVertex = new Vertex(0,0,0);
 				repaint();
 				frame.dispose();
 			}
@@ -420,7 +419,7 @@ public class DrawPanel extends JPanel
 			  public void windowClosing(WindowEvent we) 
 			  {
 				  col = Color.BLACK;
-					blueCircle = new Circle(0,0,-1000000, -5);
+					blueVertex = new Vertex(0,0,0);
 					repaint();
 					frame.dispose();
 			  }
@@ -434,81 +433,7 @@ public class DrawPanel extends JPanel
 	}
 	
 	
-	// NEW
-	public boolean addEdge(int cid1, int cid2, int weight) 
-	{
-		
-			boolean success = graph.addEdge(cid1, cid2, weight);
-			if(success)
-			{
-				if(lines.containsKey(cid1))
-				{
-					List<Line> curList = lines.get(cid1);
-					// die circles sind nicht sortiert! ordne circleindex zu!
-					Circle c1 = circles.get(cid1);
-					Circle c2 = circles.get(cid2);
-					Line lineToAdd = new Line(c1,c2,weight);
-					if(curList == null) 
-					{
-						List<Line> curList1 = new ArrayList<Line>();
-						curList1.add(lineToAdd);
-						lines.put(cid1, curList1);
-					}
-					else 
-					{
-						curList.add(lineToAdd);
-						lines.put(cid1, curList);
-					}
-				}
-				
-				else
-				{
-					List<Line> curList = new ArrayList<Line>();
 	
-					Circle c1 = circles.get(cid1);
-					Circle c2 = circles.get(cid2);
-					Line lineToAdd = new Line(c1,c2,weight);
-					curList.add(lineToAdd);
-					lines.put(cid1, curList);		
-				}			
-			}
-			repaint();
-			return success;
-			
-	}
-
-	
-	public void removeEdge(int cid1, int cid2)
-	{
-		
-		boolean success = graph.removeEdge(cid1, cid2);
-		if(success)
-		{
-			List<Line> curList = lines.get(cid1);
-			// anscheinend Fehler, weil curList.indexOf(cid2) = -1, da cid2 nicht in curList
-			// in curList gibt es eine Line mit c1.getIndex() = cid1 und c2.getIndex = cid2
-			int indexToRemove= -5;
-			Circle c1, c2;
-			int circle1, circle2 = -2;
-			//for( Line l : curList)
-			for(int i=0; i<curList.size(); i=i+1)
-			{
-				Line tmp = curList.get(i);
-				c1 = tmp.getC1();
-				c2 = tmp.getC2();
-				circle1 = c1.getIndex();
-				circle2 = c2.getIndex();
-				if(circle1 == cid1 & circle2==cid2)
-				{
-					indexToRemove = i;
-				}
-			}
-			
-			curList.remove(indexToRemove);
-			lines.put(cid1, curList);
-		}
-		repaint();
-	}
 	
 	
 	
@@ -563,47 +488,56 @@ public class DrawPanel extends JPanel
 		}
 				
 		
-		//lblMouseCoords.setText("coords: (" + mouseX + ", " + mouseY + ")");
-		Enumeration<List<Line>> lineIterator = lines.elements();
-		while(lineIterator.hasMoreElements())
+		// draw inEdges
+		Enumeration<List<Edge>> edgeIterator = graph.inEdges.elements();
+		while(edgeIterator.hasMoreElements())
 		{
-			List<Line> curList = lineIterator.nextElement();
-			// hier geändert
-			
+			List<Edge> curList = edgeIterator.nextElement();
 			for(int i=0; i < curList.size(); i = i+1)
 			{
-				Line lineToDraw = curList.get(i);
+				Edge edgeToDraw = curList.get(i);
 				//g.setColor(col);
-				g.setColor(lineToDraw.getColor());
-				lineToDraw.drawArrowLine(g, 8, 8);
+				g.setColor(edgeToDraw.getColor());
+				edgeToDraw.drawArrowLine(g, 8, 8);
 			}
 		}
 		
-		
-		for (Circle c : circles) 
+		// draw outEdges
+		edgeIterator = graph.outEdges.elements();
+		while(edgeIterator.hasMoreElements())
 		{
-			g.setColor(c.getColor());
-			c.draw(g);
+			List<Edge> curList = edgeIterator.nextElement();
+			for(int i=0; i < curList.size(); i = i+1)
+			{
+				Edge edgeToDraw = curList.get(i);
+				//g.setColor(col);
+				g.setColor(edgeToDraw.getColor());
+				edgeToDraw.drawArrowLine(g, 8, 8);
+			}
+		}
+		
+		Enumeration<Vertex> v = graph.vertexSet.elements();
+		while(v.hasMoreElements()) 
+		{
+			Vertex curVertex = v.nextElement();
+			g.setColor(curVertex.getColor());
+			curVertex.draw(g);
 			g.setColor(Color.WHITE); // textcolor for vertex numbers
-			g.drawString(String.valueOf(c.getIndex()), c.getX() - 5, c.getY() + 3);
+			g.drawString(String.valueOf(curVertex.getIndex()), curVertex.getX() - 5, curVertex.getY() + 3);
 			g.setColor(col);
 		}
 		
-		if(blueCircle.getRadius() != -1)
+		if(blueVertex.getRadius() != 0)
 		{
 			g.setColor(Color.CYAN);
-			g.fillOval(blueCircle.getX()-blueCircle.getRadius(), blueCircle.getY()-blueCircle.getRadius(), blueCircle.getRadius()*2, blueCircle.getRadius()*2);
+			g.fillOval(blueVertex.getX()-blueVertex.getRadius(), blueVertex.getY()-blueVertex.getRadius(), blueVertex.getRadius()*2, blueVertex.getRadius()*2);
 			g.setColor(col);
 		}
 	}
 	
 	public void reset()
 	{
-		lines.clear(); //removes all lines
-		circles.clear(); // removes all circles
-		circleindex = 0;
-		blueLines.clear();
-		blueCircle = new Circle(0,0,-1000000,-5);
+		blueVertex = new Vertex(0,0,0);
 		loadedFile = false;
 		graph = new Graph();
 		numberOfEdges = 0;
@@ -613,9 +547,21 @@ public class DrawPanel extends JPanel
 		
 		repaint();
 	}
+	
+	public boolean removeEdge(int a, int b)
+	{
+		boolean removed = false;
+		// find the edge in the graph that needs to be removed
+		if(graph.vertexSet.containsKey(a) & graph.vertexSet.containsKey(b))
+		{
+			Vertex start = graph.vertexSet.get(a);
+			Vertex end = graph.vertexSet.get(b);
+			removed = graph.removeEdge(start, end);
+		}
+		return removed;
+	}
 
 	
-	// CAREFUL
 	public boolean loadFile(String path)
 	{
 		reset();
@@ -632,28 +578,7 @@ public class DrawPanel extends JPanel
 				int numberOfVertices = 0;
 				numberOfEdges = 0;
 				fileIn = new Scanner(new File(path));
-				// first there needs to be given the number of vertices
-				/*if(fileIn.hasNextInt())
-				{
-					numberOfVertices = fileIn.nextInt();
-					//System.out.println("number of vertices: "+numberOfVertices);
-				}
-				else
-				{
-					missingNV = true;
-					System.out.println("error");
-				}
-				// next information is the number of edges
-				if(fileIn.hasNextInt())
-				{
-					numberOfEdges = fileIn.nextInt();
-					//System.out.println("number of edges: "+numberOfEdges);
-				}
-				else
-				{
-					missingNE = true;
-					System.out.println("error2");
-				}*/
+				
 				String v = fileIn.nextLine();
 				String c1 = "(\\d+)";
 				Pattern c2 = Pattern.compile(c1);
@@ -688,11 +613,6 @@ public class DrawPanel extends JPanel
 					return false;
 				}
 				
-				
-				
-				//fileIn.nextLine();
-				circles = new ArrayList<Circle>(numberOfVertices);
-				lines = new Hashtable<Integer, List<Line>>();
 						
 						
 				for(int i = 0; i < numberOfVertices; i ++ )
@@ -702,11 +622,7 @@ public class DrawPanel extends JPanel
 					int x = rand.nextInt(950)+50;
 					// CAREFUL
 					double yCoord = (1+i) *(800/(numberOfVertices+2));
-					Circle tmp = new Circle(10, x, (int) yCoord, circleindex);
-					circleindex = circleindex+1;
-					circles.add(i, tmp);
-					//circles.add(i, new Circle(10, x, ((1+i) *(800/(numberOfVertices+2)))));
-					graph.addVertex(new Vertex(x,i *(800/numberOfEdges)));
+					graph.addVertex(new Vertex(10, x, (int) yCoord));
 				}
 				
 				
@@ -792,12 +708,12 @@ public class DrawPanel extends JPanel
 			        	boolean success = false;
 			        	if(weight == -1)
 			        	{
-			        		success = addEdge(firstVertex, secondVertex,1);
+			        		success = graph.addEdge(graph.vertexSet.get(firstVertex), graph.vertexSet.get(secondVertex),1);
 			        	}
 			        	else
 			        	{
 			        		//System.out.println("WEIGHTED EDGE");
-			        		success = addEdge(firstVertex, secondVertex, weight);
+			        		success = graph.addEdge(graph.vertexSet.get(firstVertex), graph.vertexSet.get(secondVertex),weight);
 			        	}
 			        	if(success)
 			        	{
@@ -890,16 +806,6 @@ public class DrawPanel extends JPanel
 	public void setBackground(String b)
 	{
 		this.background = b;
-	}
-	
-	public ArrayList<Circle> getCircles()
-	{
-		return circles;
-	}
-	
-	public Hashtable<Integer, List<Line>> getLines()
-	{
-		return lines;
 	}
 	
 	

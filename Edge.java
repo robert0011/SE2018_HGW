@@ -9,7 +9,7 @@ import java.awt.Graphics;
 class Edge
 {
 	Vertex start, end;
-	private double weight;
+	private int weight;
 	private Color col = Color.BLACK;
 	// normal constructor for unweighted edges
 	public Edge(Vertex start, Vertex end) 
@@ -20,7 +20,7 @@ class Edge
 	
 	}
 	// overload constructor for weighted edges
-	public Edge(Vertex start, Vertex end, double weight) 
+	public Edge(Vertex start, Vertex end, int weight) 
 	{
 		this.start = start;
 		this.end = end;
@@ -52,12 +52,17 @@ class Edge
 		return start;
 	}
 	
+	public void setStart(Vertex v)
+	{
+		start = v;
+	}
+	
 	public Vertex getEnd()
 	{
 		return end;
 	}
 	
-	public double getWeight()
+	public int getWeight()
 	{
 		return weight;
 	}

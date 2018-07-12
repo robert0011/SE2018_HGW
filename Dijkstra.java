@@ -1,6 +1,7 @@
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -10,16 +11,16 @@ class Dijkstra
 {
 	public static boolean finished = false;
 	public static int start;
-	public static List<Line> startEdges = new ArrayList<Line>();
+	public static List<Edge> startEdges = new ArrayList<Edge>();
 	public static Dijkstravertex curVertex;
 	private static int end;
 	public static Hashtable<Integer, Dijkstravertex> unvisitedHash;
 	public static List<Dijkstravertex> visited;
 	public int steps = 0;
-	public Circle startCircle;
+	public Vertex startVertex;
 	private Queue<Dijkstravertex> unvisited = new PriorityQueue<>(distanceComparator);
 	
-	public Dijkstra(int s, int e,ArrayList<Circle> c, Hashtable<Integer, List<Line>> l)
+	public Dijkstra(int s, int e, Graph g)
 	{
 		start = s;
 		end = e;
@@ -27,40 +28,39 @@ class Dijkstra
 		unvisitedHash = new Hashtable<Integer, Dijkstravertex>();
 		visited = new ArrayList<Dijkstravertex>();
 		
-		// add all circles but the start circle to the queue
+		// add all vertices but the start vertex to the queue
 		Dijkstravertex vToAdd;
-		for(Circle c1 : c)
+		Enumeration<Vertex> v = g.vertexSet.elements();
+		while(v.hasMoreElements())
 		{
-			if(c1.getIndex() != s)
+			Vertex curVertex = v.nextElement();
+			if(curVertex.getIndex() != s)
 			{
-				vToAdd = new Dijkstravertex(c1);
+				vToAdd = new Dijkstravertex(curVertex);
 				
-				List<Line> edgesToAdd = new ArrayList<Line>();
-				if(l.containsKey(c1.getIndex()))
+				if(g.outEdges.containsKey(curVertex.getIndex()))
 				{
-					// this might exist but be empty
-					if(l.get(c1.getIndex()).size() != 0)
-					{
-						System.out.println("adding edge(s) to circle "+c1.getIndex());
-						edgesToAdd = l.get(c1.getIndex());
-						vToAdd.setEdges(edgesToAdd);
-					}
+					List<Edge> edgesToAdd = g.outEdges.get(curVertex.getIndex());
+					vToAdd.setEdges(edgesToAdd);
+					unvisited.add(vToAdd);
+					unvisitedHash.put(curVertex.getIndex(), vToAdd);
 				}
-				unvisited.add(vToAdd);
-				unvisitedHash.put(c1.getIndex(), vToAdd);
+				
 				
 			}
 			else
 			{
-				startCircle = c1;
-				if(l.containsKey(s))
+				startVertex = curVertex;
+				// add outcoming edges to the start vertex
+				if(g.outEdges.containsKey(s))
 				{
-					System.out.println("adding edge(s) to startvertex "+c1.getIndex());
-					startEdges = l.get(s);
+					System.out.println("adding edge(s) to startvertex "+curVertex.getIndex());
+					startEdges = g.outEdges.get(s);
 				}
+				
 				else 
 				{
-					startEdges = new ArrayList<Line>();
+					startEdges = new ArrayList<Edge>();
 				}
 
 			}
@@ -88,7 +88,7 @@ class Dijkstra
 				
 				@Override
 				public int compare(Dijkstravertex v1, Dijkstravertex v2) {
-					return v1.getCircle().getIndex()-v2.getCircle().getIndex();
+					return v1.getVertex().getIndex()-v2.getVertex().getIndex();
 		        }
 			};
 		
@@ -100,7 +100,7 @@ class Dijkstra
 		if(steps != 0)
 		{
 			// set the color of the current vertex and its edges of the step before to gray
-			curVertex.getCircle().setColor(Color.GRAY);
+			curVertex.getVertex().setColor(Color.GRAY);
 			if(curVertex.getEdges() != null && curVertex.getEdges().size() != 0)
 			{
 				for(int i = 0; i<curVertex.getEdges().size(); i=i+1)
@@ -109,7 +109,7 @@ class Dijkstra
 				}
 			}
 			curVertex.setVisited(true);
-			unvisitedHash.remove(curVertex.getCircle().getIndex());
+			unvisitedHash.remove(curVertex.getVertex().getIndex());
 			
 			curVertex = unvisited.poll();
 			
@@ -118,14 +118,14 @@ class Dijkstra
 		}
 		else // steps = 0
 		{
-			startCircle.setColor(Color.GREEN);
-			Dijkstravertex start = new Dijkstravertex(startCircle);
+			startVertex.setColor(Color.GREEN);
+			Dijkstravertex start = new Dijkstravertex(startVertex);
 			start.setDistance(0);
 			start.setVisited(true);
 			start.setEdges(startEdges);
 			visited.add(start);
 			curVertex = start;
-			System.out.println("start vertex: "+curVertex.getCircle().getIndex()+", number of edges: "+curVertex.getEdges().size());
+			System.out.println("start vertex: "+curVertex.getVertex().getIndex()+", number of edges: "+curVertex.getEdges().size());
 			if(this.start == -1)
 			{
 				System.out.println("start was -1.");
@@ -135,25 +135,25 @@ class Dijkstra
 		
 		
 		
-		if(curVertex == null || curVertex.getDistance() == (int) Double.POSITIVE_INFINITY || curVertex.getCircle().getIndex() == end)
+		if(curVertex == null || curVertex.getDistance() == (int) Double.POSITIVE_INFINITY || curVertex.getVertex().getIndex() == end)
 		{
 			System.out.println("reached the end!");
 			finished = true;
-			if(curVertex != null && curVertex.getCircle().getIndex() == end)
+			if(curVertex != null && curVertex.getVertex().getIndex() == end)
 			{
-				curVertex.getCircle().setColor(Color.GRAY);
+				curVertex.getVertex().setColor(Color.GRAY);
 				visited.add(curVertex);
 			}
 			
 		}
 		else
 		{
-			System.out.println("current vertex: "+curVertex.getCircle().getIndex());
-			curVertex.getCircle().setColor(Color.GREEN);
+			System.out.println("current vertex: "+curVertex.getVertex().getIndex());
+			curVertex.getVertex().setColor(Color.GREEN);
 			visited.add(curVertex);
 			// for the current vertex consider all of its unvisited neighbors
 						// and recalculate their distance to the start-vertex
-					List<Line> edgesToCheck = curVertex.getEdges();
+					List<Edge> edgesToCheck = curVertex.getEdges();
 					if(edgesToCheck == null | edgesToCheck.size() == 0)
 					{
 						System.out.println("no edges to check.");
@@ -161,22 +161,22 @@ class Dijkstra
 					}
 					else
 					{
-						System.out.println("current vertex: "+curVertex.getCircle().getIndex());
+						System.out.println("current vertex: "+curVertex.getVertex().getIndex());
 						System.out.println("number of edges to check: "+edgesToCheck.size());
 						for(int i = 0; i<=edgesToCheck.size()-1; i=i+1)
 						{
 							if(edgesToCheck.size() != 0)
 							{
 								System.out.println("checking edges");
-								Line curLine = edgesToCheck.get(i);
-								int possibleDist = curLine.getWeight()+curVertex.getDistance();
-								int destination = curLine.getC2().getIndex();
+								Edge curEdge = edgesToCheck.get(i);
+								int possibleDist = curEdge.getWeight()+curVertex.getDistance();
+								int destination = curEdge.getEnd().getIndex();
 								if(unvisitedHash.containsKey(destination))
 								{
 									// not sure if this works
 									curVertex.getEdges().get(i).setColor(Color.GREEN);
 									Dijkstravertex tmp = unvisitedHash.get(destination);
-									int currentBestDist = tmp.getDistance();
+									double currentBestDist = tmp.getDistance();
 									if(possibleDist < currentBestDist)
 									{
 										unvisitedHash.remove(destination);
@@ -195,7 +195,7 @@ class Dijkstra
 										//tmp.setPrecursor(curVertex.getCircle().getIndex());
 										unvisitedHash.put(destination, tmp);
 										unvisited.add(tmp);
-										System.out.println("updated distance of circle "+tmp.getCircle().getIndex()+" to "+tmp.getDistance());
+										System.out.println("updated distance of circle "+tmp.getVertex().getIndex()+" to "+tmp.getDistance());
 										
 									}
 								}
@@ -214,17 +214,17 @@ class Dijkstra
 	
 	public void recolor()
 	{
-		List<Line>grayEdges;
+		List<Edge>grayEdges;
 		// all visited vertices and their edges need to be set black again
 		for(Dijkstravertex d : visited)
 		{
-			d.getCircle().setColor(Color.BLACK);
+			d.getVertex().setColor(Color.BLACK);
 			grayEdges = d.getEdges();
 			if(grayEdges != null && grayEdges.size() != 0)
 			{
-				for(Line l : grayEdges)
+				for(Edge e : grayEdges)
 				{
-					l.setColor(Color.BLACK);
+					e.setColor(Color.BLACK);
 				}
 			}
 			this.steps = 0;
@@ -249,11 +249,11 @@ class Dijkstra
 		// this should be end
 		Dijkstravertex curIndex = curVertex;
 		ArrayList<Dijkstravertex> path = new ArrayList<Dijkstravertex>();
-		if(curVertex.getCircle().getIndex() == end)
+		if(curVertex.getVertex().getIndex() == end)
 		{
 			path.add(curVertex);
 			
-			while(curIndex.getCircle().getIndex() != startCircle.getIndex())
+			while(curIndex.getVertex().getIndex() != startVertex.getIndex())
 			{
 				curIndex = curIndex.getPrecursor();
 				
@@ -271,7 +271,7 @@ class Dijkstra
 			System.out.println("visited:");
 			for(Dijkstravertex d : visited)
 			{
-				System.out.println("Vertex "+d.getCircle().getIndex()+" has precursor "+d.getPrecursor()+".");
+				System.out.println("Vertex "+d.getVertex().getIndex()+" has precursor "+d.getPrecursor()+".");
 			}
 		}
 		return path;
