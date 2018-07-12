@@ -42,20 +42,21 @@ class Dijkstra
 				{
 					List<Edge> edgesToAdd = g.outEdges.get(curVertex.getIndex());
 					vToAdd.setEdges(edgesToAdd);
-					unvisited.add(vToAdd);
-					unvisitedHash.put(curVertex.getIndex(), vToAdd);
 				}
+				unvisited.add(vToAdd);
+				unvisitedHash.put(curVertex.getIndex(), vToAdd);
 				
 				
 			}
 			else
 			{
 				startVertex = curVertex;
-				// add outcoming edges to the start vertex
+				// add outgoing edges to the start vertex
 				if(g.outEdges.containsKey(s))
 				{
-					System.out.println("adding edge(s) to startvertex "+curVertex.getIndex());
 					startEdges = g.outEdges.get(s);
+					System.out.println("adding " +startEdges.size() + " edge(s) to startvertex "+curVertex.getIndex());
+					
 				}
 				
 				else 
@@ -64,6 +65,19 @@ class Dijkstra
 				}
 
 			}
+		}
+		if(g.vertexSet.containsKey(3))
+		{
+			System.out.println("vertex 3 is contained in the graph.");
+		}
+		if(g.outEdges.containsKey(2))
+		{
+			System.out.println("vertex "+g.outEdges.get(2).get(0).getEnd().getIndex()+" is connected to vertex 2.");
+			System.out.println("edge 2 3 is contained.");
+		}
+		if(unvisitedHash.containsKey(3))
+		{
+			System.out.println("unvisitedHash contains vertex 3.");
 		}
 		
 		
@@ -110,6 +124,7 @@ class Dijkstra
 			}
 			curVertex.setVisited(true);
 			unvisitedHash.remove(curVertex.getVertex().getIndex());
+			System.out.println("removing vertex "+curVertex.getVertex().getIndex()+" from unvisitedHash." );
 			
 			curVertex = unvisited.poll();
 			
@@ -171,8 +186,14 @@ class Dijkstra
 								Edge curEdge = edgesToCheck.get(i);
 								int possibleDist = curEdge.getWeight()+curVertex.getDistance();
 								int destination = curEdge.getEnd().getIndex();
+								
+								if(!unvisitedHash.containsKey(destination))
+								{
+									System.out.println("unvisitedHash does not contain vertex "+destination);
+								}
 								if(unvisitedHash.containsKey(destination))
 								{
+									System.out.println("vertex "+destination+" is still unvisited.");
 									// not sure if this works
 									curVertex.getEdges().get(i).setColor(Color.GREEN);
 									Dijkstravertex tmp = unvisitedHash.get(destination);
@@ -180,19 +201,10 @@ class Dijkstra
 									if(possibleDist < currentBestDist)
 									{
 										unvisitedHash.remove(destination);
+										System.out.println("removing vertex "+destination+" from unvisitedHash.");
 										unvisited.remove(tmp);
 										tmp.setDistance(possibleDist);
-										/*if(steps == 0)
-										{
-											tmp.setPrecursor(start);
-										}
-										else
-										{
-											tmp.setPrecursor(curVertex.getCircle().getIndex());
-											
-										}*/
 										tmp.setPrecursor(curVertex);
-										//tmp.setPrecursor(curVertex.getCircle().getIndex());
 										unvisitedHash.put(destination, tmp);
 										unvisited.add(tmp);
 										System.out.println("updated distance of circle "+tmp.getVertex().getIndex()+" to "+tmp.getDistance());
