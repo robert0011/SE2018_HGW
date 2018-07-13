@@ -223,13 +223,7 @@ public class DrawPanel extends JPanel
                 				int edges2Move = edgesToMove.size();
                     			for(int i=0; i < edges2Move; i++)
                         		{
-                    				/*int movingindex = edgesToMove.get(0);
-                    				removeEdge(movedCircle.getIndex(),movingindex);
-                    				repaint();
-                    				//falsch
-                    				addEdge(movedCircle.getIndex(),movingindex,1);
-                    				repaint();*/
-                    				Edge edge = edgesToMove.get(i);
+                    			    Edge edge = edgesToMove.get(i);
                     				edge.setStart(movedVertex);
                     				
                     				
@@ -243,14 +237,7 @@ public class DrawPanel extends JPanel
                     			
                     			for(int i=0; i < edges2Move2; i++)
                         		{
-                    				//System.out.println(edges2Move2);
-                    				/*int movingindex = edgesToMove2.get(0);
-                    				removeEdge(movingindex, movedCircle.getIndex());
-                    				repaint();	
-                    				// falsch
-                    				addEdge(movingindex, movedCircle.getIndex(),1);
-                    				repaint();*/
-                    				Edge edge = edgesToMove2.get(i);
+                    		        Edge edge = edgesToMove2.get(i);
                     				edge.setEnd(movedVertex);
                     				
                            		}
@@ -307,10 +294,8 @@ public class DrawPanel extends JPanel
             	{
             		if(! startgiven)
             		{
-            			
-            			double smallestDistance = (graph.vertexSet.get(0).getX() - mouseX)*(graph.vertexSet.get(0).getX() - mouseX)+(graph.vertexSet.get(0).getY()-mouseY)*(graph.vertexSet.get(0).getY()-mouseY);
+            			smallestDistance = (graph.vertexSet.get(0).getX() - mouseX)*(graph.vertexSet.get(0).getX() - mouseX)+(graph.vertexSet.get(0).getY()-mouseY)*(graph.vertexSet.get(0).getY()-mouseY);
             			edgestart = graph.vertexSet.get(0);
-            			System.out.println(graph.vertexSet.get(0));
             			Enumeration<Vertex> v = graph.vertexSet.elements();
             			
             			while(v.hasMoreElements())
@@ -357,10 +342,7 @@ public class DrawPanel extends JPanel
             			startgiven = false;
             			addOrRemoveEdgeClicked = false;          			
             		}
-            		
-            		
-            	}
-            	
+            	}          	
             }
 
             @Override
@@ -388,8 +370,6 @@ public class DrawPanel extends JPanel
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
-				
-    			
     			// collect all edges to be removed
 				Vertex tmp1 = blueVertex;
 				
@@ -454,14 +434,8 @@ public class DrawPanel extends JPanel
 		frame.getContentPane().add(txt);
 		frame.getContentPane().add(ok);
 		frame.getContentPane().add(btnCancel);
-		frame.setVisible(true);
-		
+		frame.setVisible(true);	
 	}
-	
-	
-	
-	
-	
 	
 	public void removeVertex()
 	{
@@ -481,9 +455,11 @@ public class DrawPanel extends JPanel
 	    int[] ys = new int[h];
 	    for (y = 0; y < h; y++)
 	        ys[y] = y * hh / h;
-	    for (x = 0; x < w; x++) {
+	    for (x = 0; x < w; x++) 
+	    {
 	        int newX = x * ww / w;
-	        for (y = 0; y < h; y++) {
+	        for (y = 0; y < h; y++) 
+	        {
 	            int col = src.getRGB(newX, ys[y]);
 	            img.setRGB(x, y, col);
 	        }
@@ -576,7 +552,7 @@ public class DrawPanel extends JPanel
 		marked = false;
 		moved = true;
 		addOrRemoveEdgeClicked = false;
-		boolean addEdgeClicked = false;
+		addEdgeClicked = false;
 		startgiven = false;
 		
 		// reset graph and parameter for loading a graph
