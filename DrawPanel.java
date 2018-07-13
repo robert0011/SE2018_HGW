@@ -43,6 +43,7 @@ public class DrawPanel extends JPanel
 	public boolean addOrRemoveEdgeClicked = false;
 	public static boolean addEdgeClicked = false;
 	public static boolean startgiven = false;
+	public static boolean showWeights = false;
 	Color col = Color.BLACK;
 	public String background = ".\\img\\backgroundImage.jpg";
 	
@@ -489,34 +490,33 @@ public class DrawPanel extends JPanel
 			e.printStackTrace();
 		}
 				
-		
-		// draw inEdges
-		Enumeration<List<Edge>> edgeIterator = graph.inEdges.elements();
-		while(edgeIterator.hasMoreElements())
-		{
-			List<Edge> curList = edgeIterator.nextElement();
-			for(int i=0; i < curList.size(); i = i+1)
-			{
-				Edge edgeToDraw = curList.get(i);
-				//g.setColor(col);
-				g.setColor(edgeToDraw.getColor());
-				edgeToDraw.drawArrowLine(g, 8, 8);
-			}
-		}
-		
 		// draw outEdges
-		edgeIterator = graph.outEdges.elements();
-		while(edgeIterator.hasMoreElements())
-		{
-			List<Edge> curList = edgeIterator.nextElement();
-			for(int i=0; i < curList.size(); i = i+1)
-			{
-				Edge edgeToDraw = curList.get(i);
-				//g.setColor(col);
-				g.setColor(edgeToDraw.getColor());
-				edgeToDraw.drawArrowLine(g, 8, 8);
-			}
-		}
+				Enumeration<List<Edge>> edgeIterator = graph.outEdges.elements();
+				Font currentFont = g.getFont();
+				Font myFont = new Font ("Comic Sans MS", 1, 15);
+				g.setFont(myFont);
+				while(edgeIterator.hasMoreElements())
+				{
+					List<Edge> curList = edgeIterator.nextElement();
+					for(int i=0; i < curList.size(); i = i+1)
+					{
+						Edge edgeToDraw = curList.get(i);
+						//g.setColor(col);
+						g.setColor(edgeToDraw.getColor());
+						edgeToDraw.drawArrowLine(g, 8, 8);
+						if(showWeights)
+						{
+							int x1 = edgeToDraw.getStart().getX();
+							int y1 = edgeToDraw.getStart().getY();
+							int x2 = edgeToDraw.getEnd().getX();
+							int y2 = edgeToDraw.getEnd().getY();
+							double point1 = (x1+x2)/2;
+							double point2 = (y1+y2)/2;
+							g.drawString(String.valueOf(edgeToDraw.getWeight()), (int)point1, (int)point2);
+						}
+					}
+				}
+				g.setFont(currentFont);
 		
 		Enumeration<Vertex> v = graph.vertexSet.elements();
 		while(v.hasMoreElements()) 

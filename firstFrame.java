@@ -127,6 +127,23 @@ public class firstFrame {
 			}
 		});
 		
+		JCheckBox checkbox = new JCheckBox("show weights");
+		checkbox.setSelected(false);
+		mnEdge.add(checkbox);
+		checkbox.addActionListener(new ActionListener() {
+		    @Override
+		    public void actionPerformed(ActionEvent event) {
+		        JCheckBox cb = (JCheckBox) event.getSource();
+		        if (cb.isSelected()) {
+		            drawPanel.showWeights = true;
+		            drawPanel.repaint();
+		        } else {
+		        	drawPanel.showWeights = false;
+		        	drawPanel.repaint();
+		        }
+		    }
+		});
+		
 		//edge menu items
 		JMenuItem mntmEdgeAdd = new JMenuItem("add");
 		mnEdge.add(mntmEdgeAdd);
