@@ -62,6 +62,11 @@ class Edge
 		return end;
 	}
 	
+	public void setEnd(Vertex v)
+	{
+		end = v;
+	}
+	
 	public int getWeight()
 	{
 		return weight;
