@@ -3,6 +3,7 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -14,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Scanner;
@@ -43,12 +45,10 @@ public class DrawPanel extends JPanel
 	public boolean addOrRemoveEdgeClicked = false;
 	public static boolean addEdgeClicked = false;
 	public static boolean startgiven = false;
-	public static boolean showWeights = false;
 	Color col = Color.BLACK;
 	public String background = ".\\img\\backgroundImage.jpg";
 	
 	public static Graph graph = new Graph();
-	//public static int circleindex = 0;
 	
 	int numberOfVertices;
 	int numberOfEdges;
@@ -490,33 +490,34 @@ public class DrawPanel extends JPanel
 			e.printStackTrace();
 		}
 				
+		
+		// draw inEdges
+		Enumeration<List<Edge>> edgeIterator = graph.inEdges.elements();
+		while(edgeIterator.hasMoreElements())
+		{
+			List<Edge> curList = edgeIterator.nextElement();
+			for(int i=0; i < curList.size(); i = i+1)
+			{
+				Edge edgeToDraw = curList.get(i);
+				//g.setColor(col);
+				g.setColor(edgeToDraw.getColor());
+				edgeToDraw.drawArrowLine(g, 8, 8);
+			}
+		}
+		
 		// draw outEdges
-				Enumeration<List<Edge>> edgeIterator = graph.outEdges.elements();
-				Font currentFont = g.getFont();
-				Font myFont = new Font ("Comic Sans MS", 1, 15);
-				g.setFont(myFont);
-				while(edgeIterator.hasMoreElements())
-				{
-					List<Edge> curList = edgeIterator.nextElement();
-					for(int i=0; i < curList.size(); i = i+1)
-					{
-						Edge edgeToDraw = curList.get(i);
-						//g.setColor(col);
-						g.setColor(edgeToDraw.getColor());
-						edgeToDraw.drawArrowLine(g, 8, 8);
-						if(showWeights)
-						{
-							int x1 = edgeToDraw.getStart().getX();
-							int y1 = edgeToDraw.getStart().getY();
-							int x2 = edgeToDraw.getEnd().getX();
-							int y2 = edgeToDraw.getEnd().getY();
-							double point1 = (x1+x2)/2;
-							double point2 = (y1+y2)/2;
-							g.drawString(String.valueOf(edgeToDraw.getWeight()), (int)point1, (int)point2);
-						}
-					}
-				}
-				g.setFont(currentFont);
+		edgeIterator = graph.outEdges.elements();
+		while(edgeIterator.hasMoreElements())
+		{
+			List<Edge> curList = edgeIterator.nextElement();
+			for(int i=0; i < curList.size(); i = i+1)
+			{
+				Edge edgeToDraw = curList.get(i);
+				//g.setColor(col);
+				g.setColor(edgeToDraw.getColor());
+				edgeToDraw.drawArrowLine(g, 8, 8);
+			}
+		}
 		
 		Enumeration<Vertex> v = graph.vertexSet.elements();
 		while(v.hasMoreElements()) 
@@ -596,6 +597,7 @@ public class DrawPanel extends JPanel
 				int numberOfVertices = 0;
 				numberOfEdges = 0;
 				fileIn = new Scanner(new File(path));
+				ArrayList<Edge> edgelist = new ArrayList<Edge>();
 				
 				String v = fileIn.nextLine();
 				String c1 = "(\\d+)";
@@ -631,16 +633,21 @@ public class DrawPanel extends JPanel
 					return false;
 				}
 				
+				Toolkit tk = Toolkit.getDefaultToolkit();
+				int frameWidth = ((int) tk.getScreenSize().getWidth());
+				int frameHeight = ((int) tk.getScreenSize().getHeight());
 						
 						
 				for(int i = 0; i < numberOfVertices; i ++ )
 				{
-					//random value between 5 and 1195
 					Random rand = new Random();
-					int x = rand.nextInt(950)+50;
-					// CAREFUL
-					double yCoord = (1+i) *(800/(numberOfVertices+2));
-					graph.addVertex(new Vertex(10, x, (int) yCoord));
+					/* int randomNum = rand.nextInt((max - min) + 1) + min;
+					 * max for x is frameWidth * (3/4) and for y frameHeight * (3/4)
+					 * min for x is frameWidth * (1/4) and for y frameHeight * (1/4)
+					 */
+					int xCoord = rand.nextInt(frameWidth/2)+150;
+					int yCoord = rand.nextInt(frameHeight/2)+150;
+					graph.addVertex(new Vertex(10, xCoord, yCoord));
 				}
 				
 				
@@ -683,10 +690,7 @@ public class DrawPanel extends JPanel
 			        	String test = matcher1.group(2);
 			        	String test2 = matcher1.group(3);
 			        	firstVertex = Integer.parseInt(test);
-			        	secondVertex = Integer.parseInt(test2);
-			        	/*System.out.println("first vertex: "+Integer.parseInt(test));
-			        	System.out.println("second vertex: "+Integer.parseInt(test2));*/
-			        	
+			        	secondVertex = Integer.parseInt(test2);		        	
 			        }
 			        
 			        if(matchesType2)
@@ -696,8 +700,7 @@ public class DrawPanel extends JPanel
 			        	String test3 = matcher2.group(4);
 			        	firstVertex = Integer.parseInt(test);
 			        	secondVertex = Integer.parseInt(test2);
-			        	weight = Integer.parseInt(test3);
-			        	
+			        	weight = Integer.parseInt(test3);	
 			        }
 			        
 			        if(matchesType3 & !matchesType4)
@@ -727,11 +730,13 @@ public class DrawPanel extends JPanel
 			        	if(weight == -1)
 			        	{
 			        		success = graph.addEdge(graph.vertexSet.get(firstVertex), graph.vertexSet.get(secondVertex),1);
+			        		edgelist.add(new Edge(graph.vertexSet.get(firstVertex), graph.vertexSet.get(secondVertex),1));
 			        	}
 			        	else
 			        	{
 			        		//System.out.println("WEIGHTED EDGE");
 			        		success = graph.addEdge(graph.vertexSet.get(firstVertex), graph.vertexSet.get(secondVertex),weight);
+			        		edgelist.add(new Edge(graph.vertexSet.get(firstVertex), graph.vertexSet.get(secondVertex),weight));
 			        	}
 			        	if(success)
 			        	{
@@ -746,8 +751,10 @@ public class DrawPanel extends JPanel
 			        else
 			        {
 			        	couldNotReadAnEdge = true;
-			        }
+			        }  
 				}
+				
+				ForceDirected eades = new ForceDirected(graph.vertexSet, edgelist);
 				
 				//closes scanner
 				fileIn.close();
@@ -768,6 +775,8 @@ public class DrawPanel extends JPanel
 				{
 					return true;
 				}
+				
+				
 				
 				
 					
@@ -803,7 +812,8 @@ public class DrawPanel extends JPanel
 		
 		if(numberOfEdges != currrentNumberOfEdges)
 		{
-			frame.getContentPane().add(txt1);		}
+			frame.getContentPane().add(txt1);		
+		}
 		if(couldNotReadAnEdge)
 		{
 			frame.getContentPane().add(txt2);

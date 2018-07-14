@@ -60,7 +60,7 @@ public class firstFrame {
 	 */
 	private void initialize()
 	{
-		frame = new JFrame("Graph-Toolbox v 0.5");
+		frame = new JFrame("Graph-Toolbox v 0.9");
 		frame.getContentPane().setBackground(Color.BLACK);
 		frame.setBackground(new Color(184, 134, 11));
 		//frame.setBounds(50, 50, 1300, 800);
@@ -125,23 +125,6 @@ public class firstFrame {
 				drawPanel.repaint();
 				drawPanel.removeVertex();		
 			}
-		});
-		
-		JCheckBox checkbox = new JCheckBox("show weights");
-		checkbox.setSelected(false);
-		mnEdge.add(checkbox);
-		checkbox.addActionListener(new ActionListener() {
-		    @Override
-		    public void actionPerformed(ActionEvent event) {
-		        JCheckBox cb = (JCheckBox) event.getSource();
-		        if (cb.isSelected()) {
-		            drawPanel.showWeights = true;
-		            drawPanel.repaint();
-		        } else {
-		        	drawPanel.showWeights = false;
-		        	drawPanel.repaint();
-		        }
-		    }
 		});
 		
 		//edge menu items
