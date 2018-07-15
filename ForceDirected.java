@@ -36,6 +36,7 @@ class ForceDirected
 	Vertex v;
 	Vertex w;
 	List<Edge> edgelist;
+	boolean adjacent = false;
 	
 	
 	/**
@@ -71,6 +72,7 @@ class ForceDirected
 						// calculation of the euclidean distance 
 						term = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1); 
 						distance = Math.sqrt(term);
+						adjacent = false;
 										
 						for(Edge e : edgelist)
 						{
@@ -82,125 +84,129 @@ class ForceDirected
 								
 								//calculate force between adjacent vertices
 								springForce = CONSTANTONE * Math.log(distance/CONSTANTTWO);
-								
-								/* if the x-coordinate of v is on the right side of w 
-								 * (v.getX() is bigger than w.getX()) so we have to 
-								 * reduce the x-coordinate of v to reduce the distance between v and w
-								 */
-								if(v.getX() > w.getX())
-								{
-									newXCoordForV = (int) (v.getX() - (CONSTANTFOUR*springForce));
-								}
-								else
-								{
-									newXCoordForV = (int) (v.getX() + (CONSTANTFOUR*springForce));
-								}
-								
-								/*
-								 * 
-								 */
-								if(v.getY() > w.getY())
-								{
-									newYCoordForV = (int) (v.getY() + (CONSTANTFOUR*springForce));
-								}
-								else
-								{
-									newYCoordForV = (int) (v.getY() - (CONSTANTFOUR*springForce));
-								}
-								// check for x coords 
-								if(newXCoordForV > 100 && newXCoordForV < (frameWidth-150))
-								{
-									//check for y coords
-									if(newYCoordForV > 100 && newYCoordForV < (frameHeight-150))
-									{
-										newV = new Vertex(v.getRadius(),newXCoordForV, newYCoordForV);
-									}
-									else
-									{
-										newV = new Vertex(v.getRadius(),newXCoordForV, v.getY());
-									}
-								}
-								else
-								{
-									if(newYCoordForV > 100 && newYCoordForV < (frameHeight-150))
-									{
-										newV = new Vertex(v.getRadius(),v.getX(), newYCoordForV);
-									}
-									else
-									{
-										newV = new Vertex(v.getRadius(),v.getX(), v.getY());
-									}
-								}	
+								adjacent = true;
 							}
-							
-
-							/* if edgelist do not contain the edge then are the two vertices non-adjacent and repel each other
-							 * 
+						}
+						if(adjacent)
+						{	
+							/* if the x-coordinate of v is on the right side of w 
+							 * (v.getX() is bigger than w.getX()) so we have to 
+							 * reduce the x-coordinate of v to reduce the distance between v and w
 							 */
+							if(v.getX() > w.getX())
+							{
+								newXCoordForV = (int) (v.getX() - (CONSTANTFOUR*springForce));
+							}
 							else
 							{
-								//calculate repulsion of non-adjacent vertices
-								if(distance == 0)
+								newXCoordForV = (int) (v.getX() + (CONSTANTFOUR*springForce));
+							}
+							
+							/*
+							 * 
+							 */
+							if(v.getY() > w.getY())
+							{
+								newYCoordForV = (int) (v.getY() + (CONSTANTFOUR*springForce));
+							}
+							else
+							{
+								newYCoordForV = (int) (v.getY() - (CONSTANTFOUR*springForce));
+							}
+							// check for x coords 
+							if(newXCoordForV > 100 && newXCoordForV < (frameWidth-150))
+							{
+								//check for y coords
+								if(newYCoordForV > 100 && newYCoordForV < (frameHeight-150))
 								{
-									// repel overlapping 
-									repulsionOfNonadjacentVertices = 400;
+									newV = new Vertex(v.getRadius(),newXCoordForV, newYCoordForV);
 								}
 								else
 								{
-									repulsionOfNonadjacentVertices = CONSTANTTHREE/(distance*distance);
+									newV = new Vertex(v.getRadius(),newXCoordForV, v.getY());
 								}
-								
-								/* if the x-coordinate of v is on the right side of w 
-								 * (v.getX() is bigger than w.getX()) so we have to 
-								 * reduce the x-coordinate of v to reduce the distance between v and w
-								 */
-								if(v.getX() >= w.getX())
+							}
+							else
+							{
+								if(newYCoordForV > 100 && newYCoordForV < (frameHeight-150))
 								{
-									newXCoordForV = (int) (v.getX() + (CONSTANTFOUR*repulsionOfNonadjacentVertices));
+									newV = new Vertex(v.getRadius(),v.getX(), newYCoordForV);
 								}
 								else
 								{
-									newXCoordForV = (int) (v.getX() - (CONSTANTFOUR*repulsionOfNonadjacentVertices));			
+									newV = new Vertex(v.getRadius(),v.getX(), v.getY());
 								}
-								if(v.getY() >= w.getY())
-								{
-									newYCoordForV = (int) (v.getY() + (CONSTANTFOUR*repulsionOfNonadjacentVertices));
-								}
-								else
-								{
-									newYCoordForV = (int) (v.getY() - (CONSTANTFOUR*repulsionOfNonadjacentVertices));
-								}
-								
-								if(newXCoordForV > 100 && newXCoordForV < (frameWidth-150))
-								{
-									if(newYCoordForV > 100 && newYCoordForV < (frameHeight-150))
-									{
-										newV = new Vertex(v.getRadius(),newXCoordForV, newYCoordForV);
-									}
-									else
-									{
-										newV = new Vertex(v.getRadius(),newXCoordForV, v.getY());
-									}
-								}
-								else
-								{
-									if(newYCoordForV > 100 && newYCoordForV < (frameHeight-150))
-									{
-										newV = new Vertex(v.getRadius(),v.getX(), newYCoordForV);
-									}
-									else
-									{
-										newV = new Vertex(v.getRadius(),v.getX(), v.getY());
-									}
-								}
-							}		
-							vertices.get(j).setX(newV.getX()); 
-							vertices.get(j).setY(newV.getY());	
+							}	
 						}
+							
+
+						/* if edgelist do not contain the edge then are the two vertices non-adjacent and repel each other
+						 * 
+						 */
+						else
+						{
+							//calculate repulsion of non-adjacent vertices
+							if(distance == 0)
+							{
+								// repel overlapping 
+								repulsionOfNonadjacentVertices = 40;
+							}
+							else
+							{
+								repulsionOfNonadjacentVertices = CONSTANTTHREE/(distance*distance);
+							}
+							
+							/* if the x-coordinate of v is on the right side of w 
+							 * (v.getX() is bigger than w.getX()) so we have to 
+							 * reduce the x-coordinate of v to reduce the distance between v and w
+							 */
+							if(v.getX() >= w.getX())
+							{
+								newXCoordForV = (int) (v.getX() + (2*CONSTANTFOUR*repulsionOfNonadjacentVertices));
+							}
+							else
+							{
+								newXCoordForV = (int) (v.getX() - (2*CONSTANTFOUR*repulsionOfNonadjacentVertices));			
+							}
+							if(v.getY() >= w.getY())
+							{
+								newYCoordForV = (int) (v.getY() + (2*CONSTANTFOUR*repulsionOfNonadjacentVertices));
+							}
+							else
+							{
+								newYCoordForV = (int) (v.getY() - (2*CONSTANTFOUR*repulsionOfNonadjacentVertices));
+							}
+							
+							if(newXCoordForV > 100 && newXCoordForV < (frameWidth-150))
+							{
+								if(newYCoordForV > 100 && newYCoordForV < (frameHeight-150))
+								{
+									newV = new Vertex(v.getRadius(),newXCoordForV, newYCoordForV);
+								}
+								else
+								{
+									newV = new Vertex(v.getRadius(),newXCoordForV, v.getY());
+								}
+							}
+							else
+							{
+								if(newYCoordForV > 100 && newYCoordForV < (frameHeight-150))
+								{
+									newV = new Vertex(v.getRadius(),v.getX(), newYCoordForV);
+								}
+								else
+								{
+									newV = new Vertex(v.getRadius(),v.getX(), v.getY());
+								}
+							}
+						}		
+						vertices.get(j).setX(newV.getX()); 
+						vertices.get(j).setY(newV.getY());	
 					}
 				}
 			}
-		}	
+		}
+		
 		//separate overlapping vertices after the final step of th
 		for(int j = 0; j < vertices.size()-1; j++)
 		{
@@ -216,10 +222,13 @@ class ForceDirected
 					x2 = w.getX();
 					y2 = w.getY();
 					
-					if(v.getX() == w.getX() && v.getY() == w.getY())
+					term = (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1); 
+					distance = Math.sqrt(term);
+					
+					if(distance <= 30)
 					{
-						vertices.get(j).setX(vertices.get(j).getX()+25); 
-						vertices.get(j).setY(vertices.get(j).getY()+25);	
+						vertices.get(k).setX(vertices.get(k).getX()+30); 
+						vertices.get(k).setY(vertices.get(k).getY()+30);	
 					}
 				}
 			}
