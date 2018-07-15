@@ -1,6 +1,7 @@
 //import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -254,7 +255,12 @@ public class firstFrame {
 			public void actionPerformed(ActionEvent loadingAction) 
 			{
 				drawPanel.reset();
-				drawPanel.loadFile(".\\EXgraph.txt");
+				try {
+					drawPanel.loadFile(".\\EXgraph.txt");
+				} catch (FileNotFoundException e) {
+					// problems with the file are handled in the class DrawPanel
+					System.out.println("EXgraph.txt could not be found.");
+				}
 				drawPanel.repaint();
 			}
 		});
@@ -268,7 +274,12 @@ public class firstFrame {
 				OeffnenDialogClass odc = new OeffnenDialogClass();
 		        String file = odc.oeffnen();
 		        System.out.println(file);
-		        drawPanel.loadFile(file);
+		        try {
+					drawPanel.loadFile(file);
+				} catch (FileNotFoundException e) {
+					// problems with the file are handled in the class DrawPanel
+					System.out.println("Your file could not be found.");
+				}
 		        drawPanel.repaint();
 			}
 		});

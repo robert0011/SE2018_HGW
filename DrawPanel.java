@@ -737,7 +737,7 @@ public class DrawPanel extends JPanel
 	}
 
 	
-	public boolean loadFile(String path)
+	public boolean loadFile(String path) throws FileNotFoundException
 	{
 		reset();
 		boolean txt = path.endsWith(".txt");
@@ -747,12 +747,13 @@ public class DrawPanel extends JPanel
 		}
 		else
 		{
-			Scanner fileIn;
+			File file = new File(path);
 			try
 			{
+				
 				int numberOfVertices = 0;
 				numberOfEdges = 0;
-				fileIn = new Scanner(new File(path));
+				Scanner fileIn = new Scanner(file);
 				ArrayList<Edge> edgelist = new ArrayList<Edge>();
 				
 				String v = fileIn.nextLine();
@@ -941,13 +942,14 @@ public class DrawPanel extends JPanel
 				
 					
 			} 
-			catch (java.io.FileNotFoundException e) 
+			catch (FileNotFoundException e) 
 			{
-				
-				//e.printStackTrace();
 				System.out.println("no such file.");
-				return false;
+				JOptionPane.showMessageDialog(null, "The file "+path+" does not exist.");
+				throw e;
+				
 			}
+			
 		}	
 	}
 
