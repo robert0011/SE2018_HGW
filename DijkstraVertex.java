@@ -5,7 +5,6 @@ class Dijkstravertex
 {
 	private Vertex v;
 	Dijkstravertex precursor;
-	private int distance;
 	private boolean visited;
 	private List<Edge> edges;
 	
@@ -13,8 +12,6 @@ class Dijkstravertex
 	public Dijkstravertex(Vertex v)
 	{
 		this.v = v;
-		//precursor = -1;
-		distance = (int) Double.POSITIVE_INFINITY;
 		visited = false;
 		edges = new ArrayList<Edge>();
 	}
@@ -24,10 +21,6 @@ class Dijkstravertex
 		precursor = p;
 	}
 	
-	public void setDistance(int d)
-	{
-		distance = d;
-	}
 	
 	public void setVisited(boolean v)
 	{
@@ -44,10 +37,6 @@ class Dijkstravertex
 		return precursor;
 	}
 	
-	public int getDistance()
-	{
-		return distance;
-	}
 	
 	public boolean visited()
 	{

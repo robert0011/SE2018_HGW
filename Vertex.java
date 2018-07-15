@@ -12,6 +12,7 @@ class Vertex
 	String color; // for later vertex coloring
 	private int x, y, r; // x- and y coordinate, radius, index of the vertex
 	private int vertexindex = -1;
+	private int vertexDistance = (int) Double.POSITIVE_INFINITY;
 	private Color col = Color.BLACK;
 	
 	
@@ -28,19 +29,9 @@ class Vertex
 		return x;
 	}
 	
-	public void setX(int x)
-	{
-		this.x = x;
-	}
-	
 	public int getY() 
 	{
 		return y; 
-	}
-	
-	public void setY(int y)
-	{
-		this.y = y;
 	}
 	
 	public int getRadius() 
@@ -53,6 +44,21 @@ class Vertex
 		vertexindex = ind;
 	}
 	
+	public void setX(int x)
+	{
+		this.x = x;
+	}
+	
+	public void setY(int y)
+	{
+		this.y = y;
+	}
+	
+	public void setRadius(int r)
+	{
+		this.r = r;
+	}
+	
 	public int getIndex()
 	{
 		return vertexindex;
@@ -63,9 +69,19 @@ class Vertex
 		return col;
 	}
 	
+	public int getDistance()
+	{
+		return vertexDistance;
+	}
+	
 	public void setColor(Color c)
 	{
 		this.col = c;
+	}
+	
+	public void setDistance(int w)
+	{
+		vertexDistance = w;
 	}
 	
 	public void draw(Graphics g) 

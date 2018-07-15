@@ -15,6 +15,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -25,9 +26,11 @@ import java.util.Random;
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.text.NumberFormatter;
 import javax.swing.JOptionPane;
 
 public class DrawPanel extends JPanel 
@@ -37,6 +40,7 @@ public class DrawPanel extends JPanel
 	public static Vertex edgestart;
 	public static Vertex edgeend;
 	
+	public static boolean menuDisabled = false;
 	static boolean loadedFile = false;
 	public static boolean clickedRemoveVertex = false;
 	public static boolean clickedMoveVertex = false;
@@ -45,10 +49,14 @@ public class DrawPanel extends JPanel
 	public boolean addOrRemoveEdgeClicked = false;
 	public static boolean addEdgeClicked = false;
 	public static boolean startgiven = false;
+	public static boolean showWeights = false;
+	public static boolean showVertexWeights = false; //for Dijkstra
+	Font vertexWFont = new Font ("Chalkboard", 1, 15);
 	Color col = Color.BLACK;
 	public String background = ".\\img\\backgroundImage.jpg";
 	
 	public static Graph graph = new Graph();
+	//public static int circleindex = 0;
 	
 	int numberOfVertices;
 	int numberOfEdges;
@@ -122,35 +130,47 @@ public class DrawPanel extends JPanel
                     			// a graph is loaded and a vertex shall be removed
                         		if(clickedRemoveVertex)
                         		{
-                        			//Vertex curVertex = new Vertex(10, mouseX, mouseY);
-                        			//blueVertex = curVertex;
-                        			
-                        			smallestDistance = (0 - mouseX)*(0 - mouseX)+(0-mouseY)*(0-mouseY); 
-                        			//double smallestDistance= (graph.vertexSet.get(0).getX() - mouseX)*(graph.vertexSet.get(0).getX() - mouseX)+(graph.vertexSet.get(0).getY() - mouseY)*(graph.vertexSet.get(0).getY() - mouseY);
-                        			//blueVertex = graph.vertexSet.get(0);
-                        			Enumeration<Vertex> v = graph.vertexSet.elements();
-                        			while(v.hasMoreElements())
+                        			if(graph != null && graph.vertexSet != null && !graph.vertexSet.isEmpty())
                         			{
-                        				Vertex curVertex = v.nextElement();
-                        				double getX = (double) curVertex.getX();
-                        				double getY = (double) curVertex.getY();
-                        				double tmp = (getX - mouseX)*(getX - mouseX)+(getY-mouseY)*(getY-mouseY);
-                        				if(tmp < smallestDistance)
+                        				Enumeration<Vertex> existingVertices = graph.vertexSet.elements();
+                        				if(existingVertices.hasMoreElements())
                         				{
-                        					smallestDistance = tmp;
-                        					blueVertex = curVertex;
+                        					Vertex existingVertex = existingVertices.nextElement();
+                        					smallestDistance = (existingVertex.getX() - mouseX)*(existingVertex.getX() - mouseX)+(existingVertex.getX()-mouseY)*(existingVertex.getX()-mouseY); 
+                        					blueVertex = existingVertex;
+                                			Enumeration<Vertex> v = graph.vertexSet.elements();
+                                			while(v.hasMoreElements())
+                                			{
+                                				Vertex curVertex = v.nextElement();
+                                				double getX = (double) curVertex.getX();
+                                				double getY = (double) curVertex.getY();
+                                				double tmp = (getX - mouseX)*(getX - mouseX)+(getY-mouseY)*(getY-mouseY);
+                                				if(tmp < smallestDistance)
+                                				{
+                                					smallestDistance = tmp;
+                                					blueVertex = curVertex;
+                                				}
+                                			}
+                                			
+                                			
+                                			// invoke function for actual deletion of the marked vertex and its edges
+                                			createRemoveVertexFrame();
+                                			// print remaining number of vertices
+                                			System.out.println("size of vertex set after ieration: "+graph.vertexSet.size());
+                                			// process of removing vertex is finished, reset boolean for further deltions
+                                			clickedRemoveVertex = false;
+                                			repaint();
                         				}
+                        				
                         			}
                         			
-                        			
-                        			// invoke fuction for actual deletion of the marked vertex and its edges
-                        			createRemoveVertexFrame();
-                        			// print remaining number of vertices
-                        			System.out.println("size of vertex set after ieration: "+graph.vertexSet.size());
-                        			// process of removing vertex is finished, reset boolean for further deltions
-                        			clickedRemoveVertex = false;
-                        			repaint();
                         		}
+                        		else
+                    			{
+                    				// in this case the vertexSet is empty and the action does not make sense
+                    				resetBooleans();
+                    				JOptionPane.showMessageDialog(null, "This action does not make sense.");
+                    			}
                         		
                         	}
                         	else
@@ -185,26 +205,39 @@ public class DrawPanel extends JPanel
                         		// remove vertex is clicked and no graph is loaded
                         		else
                         		{
-                        			// if you try to set the smallest distance according to vertex 0 you will get an error if you delete vertex 0
-                        			smallestDistance = (0 - mouseX)*(0 - mouseX)+(0-mouseY)*(0-mouseY);
-                        			//smallestDistance = (graph.vertexSet.get(0).getX() - mouseX)*(graph.vertexSet.get(0).getX() - mouseX)+(graph.vertexSet.get(0).getY()-mouseY)*(graph.vertexSet.get(0).getY()-mouseY);
-                            		//blueVertex = graph.vertexSet.get(0);
-                        		
-                        			Enumeration<Vertex> v = graph.vertexSet.elements();
-                        			while(v.hasMoreElements())
+                        			if(graph != null && graph.vertexSet != null && !graph.vertexSet.isEmpty())
                         			{
-                        				Vertex curVertex = v.nextElement();
-                        				double tmp = (curVertex.getX() - mouseX)*(curVertex.getX() - mouseX)+(curVertex.getY()-mouseY)*(curVertex.getY()-mouseY);
-                        			//	double dist = Math.sqrt(tmp);
-                        				if(tmp < smallestDistance)
+                        				Enumeration<Vertex> existingVertices = graph.vertexSet.elements();
+                        				if(existingVertices.hasMoreElements())
                         				{
-                        					smallestDistance = tmp;
-                        					blueVertex = curVertex;	
+                        					Vertex existingVertex = existingVertices.nextElement();
+                        					smallestDistance = (existingVertex.getX() - mouseX)*(existingVertex.getX() - mouseX)+(existingVertex.getX()-mouseY)*(existingVertex.getX()-mouseY);
+                                			blueVertex = existingVertex;
+                                		
+                                			Enumeration<Vertex> v = graph.vertexSet.elements();
+                                			while(v.hasMoreElements())
+                                			{
+                                				Vertex curVertex = v.nextElement();
+                                				double tmp = (curVertex.getX() - mouseX)*(curVertex.getX() - mouseX)+(curVertex.getY()-mouseY)*(curVertex.getY()-mouseY);
+                                				if(tmp < smallestDistance)
+                                				{
+                                					smallestDistance = tmp;
+                                					blueVertex = curVertex;	
+                                				}
+                                			}
+                                			
+                                			repaint();
+                                			createRemoveVertexFrame();  
                         				}
+                        				
                         			}
-                        			
-                        			repaint();
-                        			createRemoveVertexFrame();      			
+                        			else
+                        			{
+                        				// in this case the vertexSet is empty and the action does not make sense
+                        				resetBooleans();
+                        				JOptionPane.showMessageDialog(null, "This action does not make sense.");
+                        			}
+                        			    			
                         		}
                         	}
                     	}
@@ -260,34 +293,50 @@ public class DrawPanel extends JPanel
                 		//mark the vertex to move
                 		if(!marked)
                 		{
-                			smallestDistance = (0 - mouseX)*(0 - mouseX)+(0-mouseY)*(0-mouseY);
-                    		//double smallestDistance= (graph.vertexSet.get(0).getX() - mouseX)*(graph.vertexSet.get(0).getX() - mouseX)+(graph.vertexSet.get(0).getY()-mouseY)*(graph.vertexSet.get(0).getY()-mouseY);
-                			//blueVertex = graph.vertexSet.get(0);
-                			
-                			Enumeration<Vertex> v = graph.vertexSet.elements();
-                			while(v.hasMoreElements())
+                			if(graph != null && graph.vertexSet != null && !graph.vertexSet.isEmpty())
                 			{
-                				Vertex curVertex = v.nextElement();
-                				double getX = (double) curVertex.getX();
-                				double getY = (double) curVertex.getY();
-                				double tmp = (getX - mouseX)*(getX - mouseX)+(getY-mouseY)*(getY-mouseY);
-                				if(tmp < smallestDistance)
+                				Enumeration<Vertex> existingVertices = graph.vertexSet.elements();
+                				if(existingVertices.hasMoreElements())
                 				{
-                					smallestDistance = tmp;
-                					blueVertex = curVertex;
+                					Vertex existingVertex = existingVertices.nextElement();
+                					smallestDistance = (existingVertex.getX() - mouseX)*(existingVertex.getX() - mouseX)+(existingVertex.getX()-mouseY)*(existingVertex.getX()-mouseY);
+                            		blueVertex = existingVertex;
+                        			
+                        			Enumeration<Vertex> v = graph.vertexSet.elements();
+                        			while(v.hasMoreElements())
+                        			{
+                        				Vertex curVertex = v.nextElement();
+                        				double getX = (double) curVertex.getX();
+                        				double getY = (double) curVertex.getY();
+                        				double tmp = (getX - mouseX)*(getX - mouseX)+(getY-mouseY)*(getY-mouseY);
+                        				if(tmp < smallestDistance)
+                        				{
+                        					smallestDistance = tmp;
+                        					blueVertex = curVertex;
+                        				}
+                        			}
+                        			// the vertex is now marked
+                        			marked = true;
+                        			// the vertex hat not been moved yet
+                        			moved = false;
                 				}
+                				
                 			}
-                			// the vertex is now marked
-                			marked = true;
-                			// the vertex hat not been moved yet
-                			moved = false;
+                			else
+                			{
+                				// in this case the vertexSet is empty and the action does not make sense
+                				resetBooleans();
+                				JOptionPane.showMessageDialog(null, "This action does not make sense.");
+                			}
+                			
                 		}
             			repaint();
             			col = Color.CYAN;
             			repaint();
             			col = Color.BLACK; 
             			clickedMoveVertex = false;
-            			repaint();	
+            			repaint();
+            			resetBooleans();
                 	}
             	} 
             	// either add vertex or remove edge is clicked
@@ -295,53 +344,89 @@ public class DrawPanel extends JPanel
             	{
             		if(! startgiven)
             		{
-            			smallestDistance = (graph.vertexSet.get(0).getX() - mouseX)*(graph.vertexSet.get(0).getX() - mouseX)+(graph.vertexSet.get(0).getY()-mouseY)*(graph.vertexSet.get(0).getY()-mouseY);
-            			edgestart = graph.vertexSet.get(0);
-            			Enumeration<Vertex> v = graph.vertexSet.elements();
-            			
-            			while(v.hasMoreElements())
+            			if(graph != null && graph.vertexSet != null && !graph.vertexSet.isEmpty())
             			{
-            				Vertex curVertex = v.nextElement();
-            				double getX = (double) curVertex.getX();
-            				double getY = (double) curVertex.getY();
-            				double tmp = (getX - mouseX)*(getX - mouseX)+(getY-mouseY)*(getY-mouseY);
-            				if(tmp < smallestDistance)
+            				Enumeration<Vertex> existingVertices = graph.vertexSet.elements();
+            				if(existingVertices.hasMoreElements())
             				{
-            					smallestDistance = tmp;
-            					edgestart = curVertex;
+            					Vertex existingVertex = existingVertices.nextElement();
+                				smallestDistance = (existingVertex.getX() - mouseX)*(existingVertex.getX() - mouseX)+(existingVertex.getY()-mouseY)*(existingVertex.getY()-mouseY);
+                    			edgestart = existingVertex;
+                    			Enumeration<Vertex> v = graph.vertexSet.elements();
+                    			
+                    			while(v.hasMoreElements())
+                    			{
+                    				Vertex curVertex = v.nextElement();
+                    				double getX = (double) curVertex.getX();
+                    				double getY = (double) curVertex.getY();
+                    				double tmp = (getX - mouseX)*(getX - mouseX)+(getY-mouseY)*(getY-mouseY);
+                    				if(tmp < smallestDistance)
+                    				{
+                    					smallestDistance = tmp;
+                    					edgestart = curVertex;
+                    				}
+                    			}
+                    			startgiven = true;
             				}
-            			}
-            			startgiven = true;
-            		}
-            		else
-            		{
-                		double smallestDistance= (graph.vertexSet.get(0).getX() - mouseX)*(graph.vertexSet.get(0).getX() - mouseX)+(graph.vertexSet.get(0).getY()-mouseY)*(graph.vertexSet.get(0).getY()-mouseY);
-            			edgeend = graph.vertexSet.get(0);
-            			Enumeration<Vertex> v = graph.vertexSet.elements();
-            			while(v.hasMoreElements())
-            			{
-            				Vertex curVertex = v.nextElement();
-            				double getX = (double) curVertex.getX();
-            				double getY = (double) curVertex.getY();
-            				double tmp = (getX - mouseX)*(getX - mouseX)+(getY-mouseY)*(getY-mouseY);
-            				if(tmp < smallestDistance)
-            				{
-            					smallestDistance = tmp;
-            					edgeend = curVertex;
-            				}
-            			}
-            			if(! addEdgeClicked )
-            			{
-            				graph.removeEdge(edgestart, edgeend);
+            				
             			}
             			else
             			{
-            				graph.addEdge(edgestart, edgeend,1);
-            				addEdgeClicked = false;
+            				// in this case the vertexSet is empty and the action does not make sense
+            				resetBooleans();
+            				JOptionPane.showMessageDialog(null, "This action does not make sense.");
+            			}
+            			
+            		}
+            		else
+            		{
+            			if(graph != null && graph.vertexSet != null && !graph.vertexSet.isEmpty())
+            			{
+            				Enumeration<Vertex> existingVertices = graph.vertexSet.elements();
+            				if(existingVertices.hasMoreElements())
+            				{
+            					Vertex existingVertex = existingVertices.nextElement();
+            					double smallestDistance= (existingVertex.getX() - mouseX)*(existingVertex.getX() - mouseX)+(existingVertex.getY()-mouseY)*(existingVertex.getY()-mouseY);
+                    			edgeend = existingVertex;
+                    			Enumeration<Vertex> v = graph.vertexSet.elements();
+                    			while(v.hasMoreElements())
+                    			{
+                    				Vertex curVertex = v.nextElement();
+                    				double getX = (double) curVertex.getX();
+                    				double getY = (double) curVertex.getY();
+                    				double tmp = (getX - mouseX)*(getX - mouseX)+(getY-mouseY)*(getY-mouseY);
+                    				if(tmp < smallestDistance)
+                    				{
+                    					smallestDistance = tmp;
+                    					edgeend = curVertex;
+                    				}
+                    			}
+            				}
+            				
+            			}
+            			else
+            			{
+            				// in this case the vertexSet is empty and the action does not make sense
+            				resetBooleans();
+            				JOptionPane.showMessageDialog(null, "This action does not make sense.");
+            			}
+                		
+            			if(! addEdgeClicked )
+            			{
+            				graph.removeEdge(edgestart, edgeend);
+            				// an edge was removed or added, now other actions can be performed
+                			resetBooleans();
+            			}
+            			else
+            			{
+            				createAddEdgeFrame();
+            				// an edge was removed or added, now other actions can be performed
+                			resetBooleans();
             			}
             			repaint();
             			startgiven = false;
-            			addOrRemoveEdgeClicked = false;          			
+            			addOrRemoveEdgeClicked = false; 
+            			
             		}
             	}          	
             }
@@ -363,6 +448,7 @@ public class DrawPanel extends JPanel
 		
 		JLabel txt = new JLabel();
 		txt.setText("Would you like to remove the blue Vertex?");
+		resetBooleans();
 		
 		JButton ok = new JButton("OK");
 		ok.addActionListener(new ActionListener() 
@@ -438,6 +524,66 @@ public class DrawPanel extends JPanel
 		frame.setVisible(true);	
 	}
 	
+	public void createAddEdgeFrame()
+	{
+		JFrame frame = new JFrame("adding an edge");
+		frame.getContentPane().setLayout(null);
+		frame.setBounds(350, 250, 275, 120);
+		
+		
+		JLabel txt = new JLabel();
+		txt.setText("Please enter the weight of the new edge.");
+		txt.setBounds(0, 0, 300, 20);
+		NumberFormat format = NumberFormat.getInstance();
+	    NumberFormatter formatter = new NumberFormatter(format);
+	    formatter.setValueClass(Integer.class);
+	    formatter.setMinimum(0);
+	    formatter.setMaximum((int) Double.POSITIVE_INFINITY);
+	    formatter.setAllowsInvalid(false);
+	    // If you want the value to be committed on each keystroke instead of focus lost
+	    formatter.setCommitsOnValidEdit(true);
+	    JFormattedTextField field = new JFormattedTextField(formatter);
+	    //field.setValue(1);
+	    field.setBounds(30, 30, 40, 25);
+
+		
+		JButton ok = new JButton("OK");
+		ok.setBounds(70, 30, 60, 25);
+		ok.addActionListener(new ActionListener() 
+		{
+			
+			@Override
+			public void actionPerformed(ActionEvent e) 
+			{
+				boolean success = true;
+				if(field.getValue() != null)
+				{
+					int weight = (int) field.getValue();
+					success = graph.addEdge(edgestart, edgeend,weight);
+					addEdgeClicked = false;
+					repaint();
+					frame.dispose();
+				}
+				else
+				{
+					JOptionPane.showMessageDialog(null, "You did not enter a weight.");
+					
+				}
+				if(!success)
+				{
+					JOptionPane.showMessageDialog(null, "The edge could not be added. Probably it already exists.");
+				}
+				
+    			
+			}
+		});
+		frame.getContentPane().add(txt);
+		frame.getContentPane().add(field);
+		frame.getContentPane().add(ok);
+		frame.setVisible(true);	
+
+	}
+	
 	public void removeVertex()
 	{
 		col = Color.GRAY;
@@ -490,23 +636,11 @@ public class DrawPanel extends JPanel
 			e.printStackTrace();
 		}
 				
-		
-		// draw inEdges
-		Enumeration<List<Edge>> edgeIterator = graph.inEdges.elements();
-		while(edgeIterator.hasMoreElements())
-		{
-			List<Edge> curList = edgeIterator.nextElement();
-			for(int i=0; i < curList.size(); i = i+1)
-			{
-				Edge edgeToDraw = curList.get(i);
-				//g.setColor(col);
-				g.setColor(edgeToDraw.getColor());
-				edgeToDraw.drawArrowLine(g, 8, 8);
-			}
-		}
-		
 		// draw outEdges
-		edgeIterator = graph.outEdges.elements();
+		Enumeration<List<Edge>> edgeIterator = graph.outEdges.elements();
+		Font currentFont = g.getFont();
+		Font myFont = new Font ("Comic Sans MS", 1, 15);
+		g.setFont(myFont);
 		while(edgeIterator.hasMoreElements())
 		{
 			List<Edge> curList = edgeIterator.nextElement();
@@ -516,9 +650,20 @@ public class DrawPanel extends JPanel
 				//g.setColor(col);
 				g.setColor(edgeToDraw.getColor());
 				edgeToDraw.drawArrowLine(g, 8, 8);
+				if(showWeights)
+				{
+					int x1 = edgeToDraw.getStart().getX();
+					int y1 = edgeToDraw.getStart().getY();
+					int x2 = edgeToDraw.getEnd().getX();
+					int y2 = edgeToDraw.getEnd().getY();
+					double point1 = (x1+x2)/2;
+					double point2 = (y1+y2)/2;
+					g.drawString(String.valueOf(edgeToDraw.getWeight()), (int)point1, (int)point2);
+				}
 			}
 		}
-		
+		g.setFont(currentFont);
+	
 		Enumeration<Vertex> v = graph.vertexSet.elements();
 		while(v.hasMoreElements()) 
 		{
@@ -527,6 +672,16 @@ public class DrawPanel extends JPanel
 			curVertex.draw(g);
 			g.setColor(Color.WHITE); // textcolor for vertex numbers
 			g.drawString(String.valueOf(curVertex.getIndex()), curVertex.getX() - 5, curVertex.getY() + 3);
+			if(showVertexWeights)
+			{
+				if(curVertex.getDistance() != (int) Double.POSITIVE_INFINITY)
+				{
+					g.setFont(vertexWFont);
+					g.drawString(String.valueOf(curVertex.getDistance()), curVertex.getX() +15, curVertex.getY() + 15);
+					g.setFont(currentFont);
+				}
+				
+			}
 			g.setColor(col);
 		}
 		
@@ -555,6 +710,7 @@ public class DrawPanel extends JPanel
 		addOrRemoveEdgeClicked = false;
 		addEdgeClicked = false;
 		startgiven = false;
+		menuDisabled = false;
 		
 		// reset graph and parameter for loading a graph
 		graph = new Graph();
@@ -633,13 +789,14 @@ public class DrawPanel extends JPanel
 					return false;
 				}
 				
+						
 				Toolkit tk = Toolkit.getDefaultToolkit();
 				int frameWidth = ((int) tk.getScreenSize().getWidth());
 				int frameHeight = ((int) tk.getScreenSize().getHeight());
-						
-						
+				
 				for(int i = 0; i < numberOfVertices; i ++ )
 				{
+					//random value between 5 and 1195
 					Random rand = new Random();
 					/* int randomNum = rand.nextInt((max - min) + 1) + min;
 					 * max for x is frameWidth * (3/4) and for y frameHeight * (3/4)
@@ -690,7 +847,10 @@ public class DrawPanel extends JPanel
 			        	String test = matcher1.group(2);
 			        	String test2 = matcher1.group(3);
 			        	firstVertex = Integer.parseInt(test);
-			        	secondVertex = Integer.parseInt(test2);		        	
+			        	secondVertex = Integer.parseInt(test2);
+			        	/*System.out.println("first vertex: "+Integer.parseInt(test));
+			        	System.out.println("second vertex: "+Integer.parseInt(test2));*/
+			        	
 			        }
 			        
 			        if(matchesType2)
@@ -700,7 +860,8 @@ public class DrawPanel extends JPanel
 			        	String test3 = matcher2.group(4);
 			        	firstVertex = Integer.parseInt(test);
 			        	secondVertex = Integer.parseInt(test2);
-			        	weight = Integer.parseInt(test3);	
+			        	weight = Integer.parseInt(test3);
+			        	
 			        }
 			        
 			        if(matchesType3 & !matchesType4)
@@ -730,13 +891,19 @@ public class DrawPanel extends JPanel
 			        	if(weight == -1)
 			        	{
 			        		success = graph.addEdge(graph.vertexSet.get(firstVertex), graph.vertexSet.get(secondVertex),1);
-			        		edgelist.add(new Edge(graph.vertexSet.get(firstVertex), graph.vertexSet.get(secondVertex),1));
+			        		if(success)
+			        		{
+			        			edgelist.add(new Edge(graph.vertexSet.get(firstVertex), graph.vertexSet.get(secondVertex),1));
+					        }
 			        	}
 			        	else
 			        	{
 			        		//System.out.println("WEIGHTED EDGE");
 			        		success = graph.addEdge(graph.vertexSet.get(firstVertex), graph.vertexSet.get(secondVertex),weight);
-			        		edgelist.add(new Edge(graph.vertexSet.get(firstVertex), graph.vertexSet.get(secondVertex),weight));
+			        		if(success)
+			        		{
+			        			edgelist.add(new Edge(graph.vertexSet.get(firstVertex), graph.vertexSet.get(secondVertex),weight));
+					        }
 			        	}
 			        	if(success)
 			        	{
@@ -751,11 +918,10 @@ public class DrawPanel extends JPanel
 			        else
 			        {
 			        	couldNotReadAnEdge = true;
-			        }  
+			        }
 				}
 				
-				ForceDirected eades = new ForceDirected(graph.vertexSet, edgelist);
-				
+				//ForceDirected eades = new ForceDirected(graph.vertexSet, edgelist);
 				//closes scanner
 				fileIn.close();
 				loadedFile = true;
@@ -777,15 +943,14 @@ public class DrawPanel extends JPanel
 				}
 				
 				
-				
-				
 					
 			} 
-			catch (FileNotFoundException e) 
+			catch (java.io.FileNotFoundException e) 
 			{
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				return true;
+				
+				//e.printStackTrace();
+				System.out.println("no such file.");
+				return false;
 			}
 		}	
 	}
@@ -812,8 +977,7 @@ public class DrawPanel extends JPanel
 		
 		if(numberOfEdges != currrentNumberOfEdges)
 		{
-			frame.getContentPane().add(txt1);		
-		}
+			frame.getContentPane().add(txt1);		}
 		if(couldNotReadAnEdge)
 		{
 			frame.getContentPane().add(txt2);
@@ -834,6 +998,24 @@ public class DrawPanel extends JPanel
 	public void setBackground(String b)
 	{
 		this.background = b;
+	}
+	
+	public void resetBooleans()
+	{
+		// for removing one special circle
+		//blueVertex;
+		//edgestart;
+		//edgeend;
+		menuDisabled = false;
+		//static boolean loadedFile = false;
+		clickedRemoveVertex = false;
+		clickedMoveVertex = false;
+		//marked = false;
+		//moved = true;
+		addOrRemoveEdgeClicked = false;
+		addEdgeClicked = false;
+		startgiven = false;
+		//public static boolean showWeights = false;
 	}
 	
 	

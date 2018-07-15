@@ -94,7 +94,7 @@ class Dijkstra
 			
 			@Override
 			public int compare(Dijkstravertex v1, Dijkstravertex v2) {
-				return v1.getDistance()-v2.getDistance();
+				return v1.getVertex().getDistance()-v2.getVertex().getDistance();
 	        }
 		};
 		
@@ -135,7 +135,7 @@ class Dijkstra
 		{
 			startVertex.setColor(Color.GREEN);
 			Dijkstravertex start = new Dijkstravertex(startVertex);
-			start.setDistance(0);
+			start.getVertex().setDistance(0);
 			start.setVisited(true);
 			start.setEdges(startEdges);
 			visited.add(start);
@@ -150,7 +150,7 @@ class Dijkstra
 		
 		
 		
-		if(curVertex == null || curVertex.getDistance() == (int) Double.POSITIVE_INFINITY || curVertex.getVertex().getIndex() == end)
+		if(curVertex == null || curVertex.getVertex().getDistance() == (int) Double.POSITIVE_INFINITY || curVertex.getVertex().getIndex() == end)
 		{
 			System.out.println("reached the end!");
 			finished = true;
@@ -184,7 +184,7 @@ class Dijkstra
 							{
 								System.out.println("checking edges");
 								Edge curEdge = edgesToCheck.get(i);
-								int possibleDist = curEdge.getWeight()+curVertex.getDistance();
+								int possibleDist = curEdge.getWeight()+curVertex.getVertex().getDistance();
 								int destination = curEdge.getEnd().getIndex();
 								
 								if(!unvisitedHash.containsKey(destination))
@@ -197,17 +197,17 @@ class Dijkstra
 									// not sure if this works
 									curVertex.getEdges().get(i).setColor(Color.GREEN);
 									Dijkstravertex tmp = unvisitedHash.get(destination);
-									double currentBestDist = tmp.getDistance();
+									double currentBestDist = tmp.getVertex().getDistance();
 									if(possibleDist < currentBestDist)
 									{
 										unvisitedHash.remove(destination);
 										System.out.println("removing vertex "+destination+" from unvisitedHash.");
 										unvisited.remove(tmp);
-										tmp.setDistance(possibleDist);
+										tmp.getVertex().setDistance(possibleDist);
 										tmp.setPrecursor(curVertex);
 										unvisitedHash.put(destination, tmp);
 										unvisited.add(tmp);
-										System.out.println("updated distance of circle "+tmp.getVertex().getIndex()+" to "+tmp.getDistance());
+										System.out.println("updated distance of circle "+tmp.getVertex().getIndex()+" to "+tmp.getVertex().getDistance());
 										
 									}
 								}
@@ -231,6 +231,7 @@ class Dijkstra
 		for(Dijkstravertex d : visited)
 		{
 			d.getVertex().setColor(Color.BLACK);
+			d.getVertex().setDistance((int) Double.POSITIVE_INFINITY);
 			grayEdges = d.getEdges();
 			if(grayEdges != null && grayEdges.size() != 0)
 			{

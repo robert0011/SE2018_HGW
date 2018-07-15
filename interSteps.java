@@ -3,13 +3,15 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 class interSteps
 {
-	//private Graph graph;
 	private static String algorithm;
-	// DrawPanel with lines and circles
 	private DrawPanel d;
-	public static int start;
+	
+	// for the Dijkstra
+	public static int start = -1;
 	public static int end;
 	Dijkstra testDijkstra;
 	private boolean reachedEnd = false;
@@ -32,7 +34,7 @@ class interSteps
 	
 	public interSteps()
 	{
-		start = -1;
+		//start = -1;
 	}
 	
 	public String getAlgorithm()
@@ -63,6 +65,17 @@ class interSteps
 		}
 	
 	}
+	
+	public void skipDijkstraToEnd()
+	{
+		while(!reachedEnd)
+		{
+			stepwise("Dijkstra");
+		}
+		showPath();
+	}
+	
+	
 	
 	public void recolor()
 	{
@@ -110,7 +123,7 @@ class interSteps
 		Edge tmp2;
 		for(int i = 0; i<path.size(); i = i+1)
 		{
-			// last vertex = end has no edge to color
+			//if last vertex = end, then there is no edge to color
 			if(i != 0)
 			{
 				List<Edge> search = path.get(i).getEdges();
@@ -128,6 +141,11 @@ class interSteps
 			tmp.getVertex().setColor(Color.BLUE);
 			
 		}
+		if(path.size() == 0)
+		{
+			JOptionPane.showMessageDialog(null, "There is no path that connects the vertices you entered.");
+		}
+		//show the blue path
 		d.repaint();
 	}
 }
