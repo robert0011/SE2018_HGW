@@ -921,7 +921,7 @@ public class DrawPanel extends JPanel
 			        }
 				}
 				
-				//ForceDirected eades = new ForceDirected(graph.vertexSet, edgelist);
+				ForceDirected eades = new ForceDirected(graph.vertexSet, edgelist);
 				//closes scanner
 				fileIn.close();
 				loadedFile = true;
