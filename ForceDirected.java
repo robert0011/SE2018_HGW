@@ -82,12 +82,13 @@ class ForceDirected
 								
 								//calculate force between adjacent vertices
 								springForce = CONSTANTONE * Math.log(distance/CONSTANTTWO);
+								
+								/* if the x-coordinate of v is on the right side of w 
+								 * (v.getX() is bigger than w.getX()) so we have to 
+								 * reduce the x-coordinate of v to reduce the distance between v and w
+								 */
 								if(v.getX() > w.getX())
 								{
-									/* if the x-coordinate of v is on the right side of w 
-									 * (v.getX() is bigger than w.getX()) so we have to 
-									 * reduce the x-coordinate of v to reduce the distance between v and w
-									 */
 									newXCoordForV = (int) (v.getX() - (CONSTANTFOUR*springForce));
 								}
 								else
@@ -95,6 +96,9 @@ class ForceDirected
 									newXCoordForV = (int) (v.getX() + (CONSTANTFOUR*springForce));
 								}
 								
+								/*
+								 * 
+								 */
 								if(v.getY() > w.getY())
 								{
 									newYCoordForV = (int) (v.getY() + (CONSTANTFOUR*springForce));
@@ -130,19 +134,26 @@ class ForceDirected
 							}
 							
 
-							//if edgelist do not contain the edge then are the two vertices non-adjacent and repel each other 
+							/* if edgelist do not contain the edge then are the two vertices non-adjacent and repel each other
+							 * 
+							 */
 							else
 							{
 								//calculate repulsion of non-adjacent vertices
 								if(distance == 0)
 								{
+									// repel overlapping 
 									repulsionOfNonadjacentVertices = 400;
 								}
 								else
 								{
 									repulsionOfNonadjacentVertices = CONSTANTTHREE/(distance*distance);
 								}
-							
+								
+								/* if the x-coordinate of v is on the right side of w 
+								 * (v.getX() is bigger than w.getX()) so we have to 
+								 * reduce the x-coordinate of v to reduce the distance between v and w
+								 */
 								if(v.getX() >= w.getX())
 								{
 									newXCoordForV = (int) (v.getX() + (CONSTANTFOUR*repulsionOfNonadjacentVertices));
@@ -186,6 +197,29 @@ class ForceDirected
 							vertices.get(j).setX(newV.getX()); 
 							vertices.get(j).setY(newV.getY());	
 						}
+					}
+				}
+			}
+		}	
+		//separate overlapping vertices after the final step of th
+		for(int j = 0; j < vertices.size()-1; j++)
+		{
+			v = vertices.get(j);
+			x1 = v.getX();
+			y1 = v.getY();
+			for(int k = 0; k < vertices.size()-1; k++)
+			{
+				// do nothing for identical vertices
+				if(k != j)
+				{
+					w = vertices.get(k);
+					x2 = w.getX();
+					y2 = w.getY();
+					
+					if(v.getX() == w.getX() && v.getY() == w.getY())
+					{
+						vertices.get(j).setX(vertices.get(j).getX()+25); 
+						vertices.get(j).setY(vertices.get(j).getY()+25);	
 					}
 				}
 			}

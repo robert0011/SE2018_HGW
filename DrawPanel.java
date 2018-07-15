@@ -796,14 +796,10 @@ public class DrawPanel extends JPanel
 				
 				for(int i = 0; i < numberOfVertices; i ++ )
 				{
-					//random value between 5 and 1195
+					//random distribution of the loaded vertices
 					Random rand = new Random();
-					/* int randomNum = rand.nextInt((max - min) + 1) + min;
-					 * max for x is frameWidth * (3/4) and for y frameHeight * (3/4)
-					 * min for x is frameWidth * (1/4) and for y frameHeight * (1/4)
-					 */
-					int xCoord = rand.nextInt(frameWidth/2)+150;
-					int yCoord = rand.nextInt(frameHeight/2)+150;
+					int xCoord = rand.nextInt(frameWidth/2)+frameWidth/4;
+					int yCoord = rand.nextInt(frameHeight/2)+frameWidth/8;
 					graph.addVertex(new Vertex(10, xCoord, yCoord));
 				}
 				
