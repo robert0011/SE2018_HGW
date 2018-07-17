@@ -10,8 +10,13 @@ import java.util.Hashtable;
 /**
  *  <p>
  * An algorithm that calculates an more aesthetically pleasing layout for the loaded graph. <br>
- * This approach uses a combination of the springforcebased force directed layout algorithms <br>
- * by Eades and Fruchterman &amp; Reingold.
+ * This approach uses the springforcebased force directed layout algorithm by Eades. <br>
+ * </p>
+ * <p>
+ * This algorithm relocates the vertices of the graph <br>
+ * according to the physical idea of springs and electric charges.<br>
+ * Nonadjacent vertices repel each other, like they have the same electric charge. <br>
+ * The edge between two adjacent vertices operates like a spring, which attract the adjacent vertices. <br>
  * </p>
  * @author C. Bruckmann, R. Wagner
  */
@@ -24,22 +29,25 @@ class ForceDirected
 	 * </p>
 	 */
 	int CONSTANTONE = 2;
+	
 	/**
 	 * <p>
 	 * Constant from the Eades approach is empirically determined as 1.
 	 * </p>
 	 */
 	int CONSTANTTWO = 1;
+	
 	/**
 	 * <p>
 	 * Constant from the Eades approach is empirically determined as 0.1.
 	 * </p>
 	 */
 	double CONSTANTTHREE = 0.1;
+	
 	/**
 	 * <p>
-	 * The amount of iterations of the whole algorithmn.<br>
-	 * An amount of 100 repetitions is recommended.
+	 * The amount of iterations of the whole algorithm.<br>
+	 * An amount of 100 repetitions is recommended for most graphs.
 	 * </p>
 	 */
 	int REPETITIONS = 100;
@@ -99,38 +107,38 @@ class ForceDirected
 	
 	/**
 	 * <p>
-	 * Variable for the value of affecting force on the vertices.<br>
-	 * The formula is based on the Fruchterman &amp; Reingold algorithm. <br>
-	 * It is calculated like this: <br>
-	 * repulsionOfNonadjacentVertices = ((frameWidth*frameHeight)/#vertices) / distance
+	 * Variable for the value of the repulsion of two vertices. <br>
+	 * The calculated force is based on the inverse square law. <br>
+	 * It is calculated with following formula: <br>
+	 *  repulsionOfTwoVertices = 1 / distance<sup>2</sup> <br>
 	 * </p>
 	 */
-	double repulsionOfNonadjacentVertices;
+	double repulsionOfTwoVertices;
 	
 	/**
 	 * <p>
-	 * Variable used for the calculation of the x-coordinate of the vertex newV.
+	 * Variable used for the calculation of the repulsion force.
 	 * </p>
 	 */
 	int newXCoordForV;
 	
 	/**
 	 * <p>
-	 * Variable for the calculation of the y-coordinate of the vertex newV.
+	 * Variable for the calculation of the x-coordinate of the vertex newV.
 	 * </p> 
 	 */
 	int newYCoordForV;
 	
 	/**
 	 * <p>
-	 * A vertex which conatins the new calculated coordinates for the adjustment of the vertices of the given vertex set.
+	 *  Variable for the calculation of the y-coordinate of the vertex newV.
 	 * </p>
 	 */
 	Vertex newV;
 	
 	/**
 	 * <p>
-	 * A vertex used for calculations.
+	 * A vertex containing the new calculated coordinates for the later replacement of the "old" vertex v.
 	 * </p>
 	 */
 	Vertex v;
@@ -140,6 +148,29 @@ class ForceDirected
 	 * Another vertex used for calculations.
 	 * </p>
 	 */
+	
+	int newXCoordForW;
+	
+	/**
+	 * <p>
+	 * Variable for the calculation of the x-coordinate of the vertex newW.
+	 * </p> 
+	 */
+	int newYCoordForW;
+	
+	/**
+	 * <p>
+	 * Variable for the calculation of the y-coordinate of the vertex newW.
+	 * </p>
+	 */
+	Vertex newW;
+	
+	/**
+	 * <p>
+	 * A vertex containing the new calculated coordinates for the later replacement of the "old" vertex w.
+	 * </p>
+	 */
+	
 	Vertex w;
 	
 	/**
@@ -150,12 +181,15 @@ class ForceDirected
 	boolean adjacent = false;
 	
 	/**
-	 * 
+	 * <p>
+	 * This constructor is needed for the force directed algorithm.
+	 * </p>
 	 * @param vertices A hashtable of the loaded graph consisting of Integer as keys and vertices as values.
 	 * @param edgelist An arraylist consisting of the edges of the loaded graph.
 	 */
 	public ForceDirected(Hashtable<Integer, Vertex> vertices, ArrayList<Edge> edgelist)
 	{
+		// toolkit for getting the screensize for the calculation of the boundaries
 		Toolkit tk = Toolkit.getDefaultToolkit();
 		int frameWidth = ((int) tk.getScreenSize().getWidth());
 		int frameHeight = ((int) tk.getScreenSize().getHeight());
@@ -183,63 +217,93 @@ class ForceDirected
 						distance = Math.sqrt(term);
 						adjacent = false;
 						newXCoordForV = v.getX();
+						newYCoordForV = v.getY();
 										
 						for(Edge e : edgelist)
 						{
 							
-							// if edgelist contains edge vw or wv then v and w are adjacent
-						
-							if((e.getStart().getIndex() == j & e.getEnd().getIndex() == k) || (e.getStart().getIndex() == k & e.getEnd().getIndex() == j))
+							if(!adjacent)
 							{
-								
-								//calculate force between adjacent vertices
-								springForce = CONSTANTONE * Math.log(distance/CONSTANTTWO);
-								adjacent = true;
+								// if edgelist contains edge vw or wv then v and w are adjacent
+								if((e.getStart().getIndex() == j & e.getEnd().getIndex() == k) || (e.getStart().getIndex() == k & e.getEnd().getIndex() == j))
+								{
+									
+									//calculate force between adjacent vertices
+									springForce = CONSTANTONE * Math.log(distance/CONSTANTTWO);
+									adjacent = true;
+								}
 							}
 						}
+						
+						/* if two vertices are adjacent the spring between these vertices attract each other
+						 * if two vertices are not adjacent then there is no attraction between them
+						 */
 						if(adjacent)
 						{	
 							/* if  v.getX() is bigger than w.getX() then we have to 
 							 * reduce the x-coordinate of v to reduce the distance between v and w
+							 * for w we have to increase the x-coordinate to reduce the distance between v and w
 							 */
 							if(v.getX() > w.getX())
 							{
 								newXCoordForV = (int) (v.getX() - (CONSTANTTHREE*springForce));
+								newXCoordForW = (int) (w.getX() + (CONSTANTTHREE*springForce));
+								
 							}
 							else
 							{
 								newXCoordForV = (int) (v.getX() + (CONSTANTTHREE*springForce));
+								newXCoordForW = (int) (w.getX() - (CONSTANTTHREE*springForce));
+							}
+							
+							/* if  v.getY() is bigger than w.getY() then we have to 
+							 * reduce the y-coordinate of v to reduce the distance between v and w
+							 * for w we have to increase the y-coordinate to reduce the distance between v and w
+							 */
+							if(v.getY() > w.getY())
+							{
+								newYCoordForV = (int) (v.getY() - (CONSTANTTHREE*springForce));
+								newYCoordForW = (int) (w.getY() + (CONSTANTTHREE*springForce));
+								
+							}
+							else
+							{
+								newYCoordForV = (int) (v.getY() + (CONSTANTTHREE*springForce));
+								newYCoordForW = (int) (w.getY() - (CONSTANTTHREE*springForce));
 							}
 						}
 							
-						/* if edgelist do not contain the edge then are the two vertices non-adjacent and repel each other
-						 * the calculation of the repulsion is based on the Fruchterman Reingold algortihm
+						/* the vertices repel each other (this resembles the idea of electrical forces, where
+						 * every vertex has the same charge)
 						 */
-						double areaCoeffizient = Math.sqrt((frameWidth * frameHeight) / vertices.size());
-						repulsionOfNonadjacentVertices = areaCoeffizient*areaCoeffizient / distance;
+						else
+						{
+							repulsionOfTwoVertices = 1/(distance*distance);
+							
+							/* if  v.getX() is bigger than w.getX() then we have to 
+							 * increase the x-coordinate of v to rise the distance between v and w
+							 */
+							if(v.getX() >= w.getX())
+							{
+								newXCoordForV = (int) (newXCoordForV + (CONSTANTTHREE*repulsionOfTwoVertices));
+							}
+							else
+							{
+								newXCoordForV = (int) (newXCoordForV - (CONSTANTTHREE*repulsionOfTwoVertices));		
+							}
+							/* if v.getY() is bigger than w.getY() then we have to 
+							 * increase the y-coordinate of v to rise the distance between v and w
+							 */
+							if(v.getY() >= w.getY())
+							{
+								newYCoordForV = (int) (newYCoordForV + (CONSTANTTHREE*repulsionOfTwoVertices));
+							}
+							else
+							{
+								newYCoordForV = (int) (newYCoordForV - (CONSTANTTHREE*repulsionOfTwoVertices));
+							}
+						}
 						
-						/* if  v.getX() is bigger than w.getX() then we have to 
-						 * increase the x-coordinate of v to rise the distance between v and w
-						 */
-						if(v.getX() >= w.getX())
-						{
-							newXCoordForV = (int) (newXCoordForV + (CONSTANTTHREE*repulsionOfNonadjacentVertices));
-						}
-						else
-						{
-							newXCoordForV = (int) (newXCoordForV - (CONSTANTTHREE*repulsionOfNonadjacentVertices));		
-						}
-						/* if v.getY() is bigger than w.getY() then we have to 
-						 * increase the y-coordinate of v to rise the distance between v and w
-						 */
-						if(v.getY() >= w.getY())
-						{
-							newYCoordForV = (int) (newYCoordForV + (CONSTANTTHREE*repulsionOfNonadjacentVertices));
-						}
-						else
-						{
-							newYCoordForV = (int) (newYCoordForV - (CONSTANTTHREE*repulsionOfNonadjacentVertices));
-						}
 						
 						// check whether the new coordinates are in the proper draw area (between the given boundaries) or not
 						if(newXCoordForV > 100 && newXCoordForV < (frameWidth-150))
@@ -265,9 +329,39 @@ class ForceDirected
 							}
 						}
 						
+						// no check the coordinates for w
+						if(newXCoordForW > 100 && newXCoordForW < (frameWidth-150))
+						{
+							if(newYCoordForW > 100 && newYCoordForW < (frameHeight-150))
+							{
+								newW = new Vertex(w.getRadius(),newXCoordForW, newYCoordForW);
+							}
+							else
+							{
+								newW = new Vertex(w.getRadius(),newXCoordForW, w.getY());
+							}
+						}
+						else
+						{
+							if(newYCoordForW > 100 && newYCoordForW < (frameHeight-150))
+							{
+								newW = new Vertex(w.getRadius(),w.getX(), newYCoordForW);
+							}
+							else
+							{
+								newW = new Vertex(w.getRadius(),w.getX(), w.getY());
+							}
+						}
+						
 						//actual change the coordinates of v according to the calculations
 						v.setX(newV.getX()); 
-						v.setY(newV.getY());	
+						v.setY(newV.getY());
+						if(adjacent)
+						{
+							w.setX(newW.getX());
+							w.setY(newW.getY());
+						}
+						
 					}
 				}
 			}
@@ -296,19 +390,19 @@ class ForceDirected
 					{
 						if(v.getX() >= frameWidth/2)
 						{
-							v.setX(v.getX() - 40); 
+							v.setX(v.getX() - 30); 
 						}
 						else
 						{
-							v.setX(v.getX() + 40);
+							v.setX(v.getX() + 30);
 						}
 						if(v.getY() >= frameHeight/2)
 						{
-							v.setY(v.getY() - 40);
+							v.setY(v.getY() - 30);
 						}
 						else
 						{
-							v.setY(v.getY() + 40);
+							v.setY(v.getY() + 30);
 						}
 					}
 				}
