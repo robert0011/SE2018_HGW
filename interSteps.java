@@ -42,37 +42,61 @@ class interSteps
 		return algorithm;
 	}
 	
-	public void stepwise(String a)
+	/**
+	 * 
+	 * @param a
+	 * @return Returns true if Dijkstra is chosen and Dijkstra.checkParameters() returns true
+	 */
+	public boolean stepwise(String a)
 	{
 		if(testDijkstra.steps == 0)
 		{
 			testDijkstra.setFinished(false);
 		}
 		
+		boolean toReturn = false;
 		if(this.getAlgorithm().equals("Dijkstra"))
 		{
-			algDijkstra(start, end);
+			toReturn = algDijkstra(start, end);
 		}
+		return toReturn;
 	}
 	
-	public void algDijkstra(int start, int end)
+	public boolean algDijkstra(int start, int end)
 	{
-		testDijkstra.performAStep();
+		boolean toReturn = false; 
+		// NEW
+		if(d.graph != null && d.graph.vertexSet != null && d.graph.vertexSet.containsKey(start) && d.graph.vertexSet.containsKey(end))
+		{
+			toReturn = testDijkstra.performAStep();
+		}
 		d.repaint();
 		if(testDijkstra.reachedEnd())
 		{
 			reachedEnd = true;
 		}
+		return toReturn;
 	
 	}
 	
-	public void skipDijkstraToEnd()
+	public ArrayList<Dijkstravertex> skipDijkstraToEnd()
 	{
-		while(!reachedEnd)
+		boolean ok = true;
+		while(!reachedEnd & ok)
 		{
-			stepwise("Dijkstra");
+			ok = stepwise("Dijkstra");
 		}
-		showPath();
+		
+		if(ok)
+		{
+			showPath();
+			return testDijkstra.getPath();
+		}
+		else
+		{
+			return new ArrayList<Dijkstravertex>();
+		}
+		
 	}
 	
 	
@@ -108,12 +132,16 @@ class interSteps
 		algorithm = new String();
 		start = -1;
 		end = -1;
-		testDijkstra.unvisitedHash = new Hashtable<Integer, Dijkstravertex>();;
+		testDijkstra.unvisitedHash = new Hashtable<Integer, Dijkstravertex>();
 	  	testDijkstra.visited = new ArrayList<Dijkstravertex>();
 		reachedEnd = false;
 		testDijkstra.steps = 0;
 		testDijkstra.startVertex = null;
 		testDijkstra.curVertex = null;
+		// if move or remove vertex was clicked and an algorithm is performed before the action is performed
+			// the blue vertex is recolored after call of this function
+		
+		d.blueVertex = new Vertex(0,0,0);
 	}
 	
 	public void showPath()

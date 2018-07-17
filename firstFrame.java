@@ -74,7 +74,7 @@ public class firstFrame {
 	 */
 	private void initialize()
 	{
-		frame = new JFrame("Graph-Toolbox v 0.5");
+		frame = new JFrame("Graph-Toolbox");
 		frame.getContentPane().setBackground(Color.BLACK);
 		frame.setBackground(new Color(184, 134, 11));
 		//frame.setBounds(50, 50, 1300, 800);
@@ -137,7 +137,7 @@ public class firstFrame {
 					}
 					else
 					{
-						System.out.println("menu disabled");
+						//System.out.println("menu disabled");
 						JOptionPane.showMessageDialog(null, "Please finish your action.");
 						
 					}
@@ -163,7 +163,7 @@ public class firstFrame {
 					drawPanel.menuDisabled = true;				}
 				else
 				{
-					System.out.println("menu disabled");
+					//System.out.println("menu disabled");
 					JOptionPane.showMessageDialog(null, "Please finish your action.");
 				}
 				
@@ -214,7 +214,7 @@ public class firstFrame {
 				}
 				else
 				{
-					System.out.println("menu disabled");
+					//System.out.println("menu disabled");
 					JOptionPane.showMessageDialog(null, "Please finish your action.");
 				}
 				
@@ -240,7 +240,7 @@ public class firstFrame {
 				}
 				else
 				{
-					System.out.println("menu disabled");
+					//System.out.println("menu disabled");
 					JOptionPane.showMessageDialog(null, "Please finish your action.");
 				}
 				
@@ -259,7 +259,7 @@ public class firstFrame {
 					drawPanel.loadFile(".\\EXgraph.txt");
 				} catch (FileNotFoundException e) {
 					// problems with the file are handled in the class DrawPanel
-					System.out.println("EXgraph.txt could not be found.");
+					//System.out.println("EXgraph.txt could not be found.");
 				}
 				drawPanel.repaint();
 			}
@@ -273,12 +273,12 @@ public class firstFrame {
 				drawPanel.reset();
 				OeffnenDialogClass odc = new OeffnenDialogClass();
 		        String file = odc.oeffnen();
-		        System.out.println(file);
+		        //System.out.println(file);
 		        try {
 					drawPanel.loadFile(file);
 				} catch (FileNotFoundException e) {
 					// problems with the file are handled in the class DrawPanel
-					System.out.println("Your file could not be found.");
+					//System.out.println("Your file could not be found.");
 				}
 		        drawPanel.repaint();
 			}
@@ -435,33 +435,35 @@ public class firstFrame {
 				
 				if(testTheSteps == null || testTheSteps.start == -1)
 				{
-					System.out.println("testTheSteps = null");
-					System.out.println("");
-					if(drawPanel.graph != null && drawPanel.graph.vertexSet != null)
+					//System.out.println("testTheSteps = null");
+					//System.out.println("");
+					
+					if(field1.getValue() != null & field2.getValue() != null)
 					{
-						if(field1.getValue() != null & field2.getValue() != null)
-						{
-							if(drawPanel.graph.vertexSet.containsKey(field1.getValue()) & drawPanel.graph.vertexSet.containsKey(field2.getValue()))
-							{	
-								testTheSteps = new interSteps(drawPanel, "Dijkstra", (int) field1.getValue(), (int) field2.getValue());
-								testTheSteps.stepwise("Dijkstra");
-								btnSkip.setEnabled(true);
-							}
-							else
-							{
-								JOptionPane.showMessageDialog(null, "At least one of the vertices you entered does not exist in the graph.");
-								frame.dispose();
-								enable();
-							}
 							
-						}
-						else
+						testTheSteps = new interSteps(drawPanel, "Dijkstra", (int) field1.getValue(), (int) field2.getValue());
+						boolean success = testTheSteps.stepwise("Dijkstra");
+						btnSkip.setEnabled(true);
+						
+						if(!success)
 						{
-							JOptionPane.showMessageDialog(null, "You did not enter any vertex.");
 							frame.dispose();
+							// NEW
+							testTheSteps.destruct();
+							
 							enable();
 						}
+							
+						
+						
 					}
+					else
+					{
+						JOptionPane.showMessageDialog(null, "You did not fill in the vertices.");
+						frame.dispose();
+						enable();
+					}
+					
 					
 				}
 				else
@@ -497,14 +499,15 @@ public class firstFrame {
 				  	enable();
 				  	if(testTheSteps != null && testTheSteps.testDijkstra != null && testTheSteps.testDijkstra.curVertex != null)
 				  	{
-				  		ArrayList<Dijkstravertex> p = testTheSteps.testDijkstra.getPath();
-					  	if(p != null)
+				  		//ArrayList<Dijkstravertex> p = testTheSteps.testDijkstra.getPath();
+					  	/*if(p != null)
 					  	{
 					  		createPathFrame();
-					  	}
+					  	}*/
 					  	drawPanel.showVertexWeights = false;
 					  	testTheSteps.recolor();
 					  	testTheSteps.destruct();
+					  	//testTheSteps = new interSteps();
 				  	}
 				  	
 				  	frame.dispose();
@@ -663,11 +666,11 @@ public class firstFrame {
 		frame.setVisible(true);		
 	}
 	
-	public static void createPathFrame()
+	/*public static void createPathFrame()
 	{
 		ArrayList<Dijkstravertex> p = testTheSteps.testDijkstra.getPath();
-		System.out.println("");
-		System.out.println("Path:");
+		//System.out.println("");
+		//System.out.println("Path:");
 		if(p != null && p.size()!=0)
 		{
 			for(Dijkstravertex i : p)
@@ -676,5 +679,5 @@ public class firstFrame {
 			}
 		}
 		System.out.println("");
-	}
+	}*/
 }

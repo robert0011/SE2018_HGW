@@ -156,7 +156,7 @@ public class DrawPanel extends JPanel
                                 			// invoke function for actual deletion of the marked vertex and its edges
                                 			createRemoveVertexFrame();
                                 			// print remaining number of vertices
-                                			System.out.println("size of vertex set after ieration: "+graph.vertexSet.size());
+                                			//System.out.println("size of vertex set after ieration: "+graph.vertexSet.size());
                                 			// process of removing vertex is finished, reset boolean for further deltions
                                 			clickedRemoveVertex = false;
                                 			repaint();
@@ -561,11 +561,15 @@ public class DrawPanel extends JPanel
 					int weight = (int) field.getValue();
 					success = graph.addEdge(edgestart, edgeend,weight);
 					addEdgeClicked = false;
+					// really NEW
+					blueVertex = new Vertex (0,0,0);
 					repaint();
 					frame.dispose();
 				}
 				else
 				{
+					// really NEW
+					blueVertex = new Vertex (0,0,0);
 					JOptionPane.showMessageDialog(null, "You did not enter a weight.");
 					
 				}
@@ -737,13 +741,20 @@ public class DrawPanel extends JPanel
 	}
 
 	
+	/**
+	 * Returns false if a non- .txt file is chosen or if the path does not exist or if there are any inconsistencies in the file.
+	 * Returns true if the file could be read in without any problems.
+	 * @param path
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	public boolean loadFile(String path) throws FileNotFoundException
 	{
 		reset();
 		boolean txt = path.endsWith(".txt");
 		if(!txt) {
 			JOptionPane.showMessageDialog(null, "Please choose a .txt file.");
-			return true;
+			return false;
 		}
 		else
 		{
@@ -931,7 +942,7 @@ public class DrawPanel extends JPanel
 					missingNV = false;
 					missingNE = false;
 					duplicateEdge = false;
-					return true;
+					return false;
 					
 				}
 				else
@@ -944,7 +955,6 @@ public class DrawPanel extends JPanel
 			} 
 			catch (FileNotFoundException e) 
 			{
-				System.out.println("no such file.");
 				JOptionPane.showMessageDialog(null, "The file "+path+" does not exist.");
 				throw e;
 				
@@ -967,7 +977,7 @@ public class DrawPanel extends JPanel
 		JLabel txt1 = new JLabel("<html>The number of edges given in line 2 is not equal to the number of actually read edges.<br>  </html>");
 		JLabel txt2 = new JLabel("<html>Failed to read an edge.<br> </html>");
 		JLabel txt3 = new JLabel("<html>The number of vertices is not given in line 1 or the number of edges is not given in line 2.<br> </html>");
-		JLabel txt4 = new JLabel("<html>File contains a duplicate edge.<br> </html>");
+		JLabel txt4 = new JLabel("<html>File contains a duplicate edge or an edge with a non-existent vertex.<br> </html>");
 		text.setBounds(0, 0, 600, 50);
 		txt1.setBounds(0, 100, 600, 50);
 		txt2.setBounds(0, 200, 600, 50);

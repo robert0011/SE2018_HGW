@@ -1,206 +1,233 @@
+import org.junit.*;
+import static org.junit.Assert.*;
+
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Queue;
 
-import junit.framework.TestCase;
-
-public class DijkstraTester extends TestCase
+public class DijkstraTester
 {
-	public void test()
+	/**
+	 * 
+	 * @param a
+	 * @param b
+	 * @return Returns true if the indices of the vertices in a correspond to the integers in b
+	 */
+	public boolean identicalLists(ArrayList<Dijkstravertex> a, ArrayList<Integer> b)
 	{
-		Circle c0 = new Circle(10, 1, 2, 0);
-		Circle c1 = new Circle(10, 2, 3, 1);
-		Circle c2 = new Circle(10, 1, 2, 2);
-		Circle c3 = new Circle(10, 1, 2, 3);
-		Line l1 = new Line(c0,c1,1);
-		Line l2 = new Line(c2,c3,5);
-		ArrayList<Circle> circles = new ArrayList<Circle>();
-		circles.add(c0);
-		circles.add(c1);
-		circles.add(c2);
-		circles.add(c3);
-		System.out.println("Size of circles: "+circles.size());
-		Hashtable<Integer, List<Line>> lines = new Hashtable<Integer, List<Line>>();
-		List<Line> curr = new ArrayList<Line>();
-		curr.add(l1);
-		lines.put(c0.getIndex(),curr);
-		
-		curr = new ArrayList<Line>();
-		curr.add(l2);
-		lines.put(c2.getIndex(),curr);
-		
-		Dijkstra testDijkstra = new Dijkstra(2, 3, circles, lines);
-		System.out.println("start:  "+testDijkstra.start);
-		
-		
-		Queue<Dijkstravertex> testQ = testDijkstra.getQueue();
-		System.out.println("size of queue: "+testQ.size());
-		Dijkstravertex d1 = new Dijkstravertex(c0);
-		d1.setDistance(5);
-		Dijkstravertex d2 = new Dijkstravertex(c1);
-		d2.setDistance(1);
-		testQ.add(d1);
-		testQ.add(d2);
-		System.out.println("size of queue: "+testQ.size());
-		
-		int queueSize = testQ.size();
-		testDijkstra.performAStep();
-		System.out.println("first call of performAStep(): ");
-		for(int i=1; i<= queueSize; i=i+1)
+		boolean identical = true;
+		for(int i = 0; i < a.size(); i = i+1)
 		{
-			System.out.println("size of the queue unvisited: "+testQ.size()+ ", i= "+i);
-	
-			Dijkstravertex currQelement = testQ.remove();
-			System.out.println(currQelement.getDistance());
+			try
+			{
+				if(a.get(i).getVertex().getIndex() != b.get(i))
+				{
+					identical = false;
+				}
+			}
+			catch(NullPointerException e)
+			{
+				// a exception is thrown when the lists do not have the same length
+					// or something is wrong with a Dijkstravertex
+				return false;
+			}
 		}
+		return identical;
+	}
+	
+	/**
+	 * Verifies that a path is found if there exists one.
+	 */
+	@Test
+	public void pathExists()
+	{
+		DrawPanel drawPanel = new DrawPanel();
+		try {
+			drawPanel.loadFile("EXgraph.txt");
+		} catch (FileNotFoundException e) {
+			assertTrue("File was not found.",false);
+		}
+		interSteps testInterSteps = new interSteps(drawPanel,"Dijkstra",1,7);
+		ArrayList<Dijkstravertex> path = testInterSteps.skipDijkstraToEnd();
 		
-		testDijkstra.performAStep();
+		// the path should be (it is saved backwards) 7,5,2,1
+		ArrayList<Integer> expectedPath = new ArrayList<Integer>();
+		expectedPath.add(7);
+		expectedPath.add(5);
+		expectedPath.add(2);
+		expectedPath.add(1);
+		
+		// check if the expected path was found
+		boolean success = identicalLists(path,expectedPath);
+		// expectedPath is the only possible path here
+		assertTrue("The correct path was not found.", success);
 		
 	}
 	
-	public void test2()
+	
+	/**
+	 * Verifies that no path is found if one of the given vertices does not exist in the graph and that no exception is thrown.
+	 */
+	@Test
+	public void incorrectVertices()
 	{
-		System.out.println("");
-		System.out.println("second test:");
-		Circle c0 = new Circle(10, 1, 2, 0);
-		Circle c1 = new Circle(10, 2, 3, 1);
-		Circle c2 = new Circle(10, 1, 2, 2);
-		Circle c3 = new Circle(10, 1, 2, 3);
-		Circle c4 = new Circle(10, 1, 2, 4);
-		Line l1 = new Line(c0,c1,1);
-		Line l2 = new Line(c1,c2,5);
-		Line l3 = new Line(c1,c3,3);
-		Line l4 = new Line(c2,c4,1);
-		Line l5 = new Line(c3,c4,6);
-		ArrayList<Circle> circles = new ArrayList<Circle>();
-		circles.add(c0);
-		circles.add(c1);
-		circles.add(c2);
-		circles.add(c3);
-		circles.add(c4);
-		Hashtable<Integer, List<Line>> lines = new Hashtable<Integer, List<Line>>();
-		
-		// create List of Lines for Circle c0
-		List<Line> tmp = new ArrayList<Line>();
-		tmp.add(l1);
-		lines.put(c0.getIndex(), tmp);
-		
-		// create List of Lines for Circle c1
-		tmp = new ArrayList<Line>();
-		tmp.add(l2);
-		tmp.add(l3);
-		lines.put(c1.getIndex(), tmp);
-		
-		// create List of Lines for Circle c2
-		tmp = new ArrayList<Line>();
-		tmp.add(l4);
-		lines.put(c2.getIndex(), tmp);
-		
-		// create List of Lines for Circle c3
-		tmp = new ArrayList<Line>();
-		tmp.add(l5);
-		lines.put(c3.getIndex(), tmp);
-		
-		// Circle c4 has no outgoing edges
-		
-		
-		Dijkstra testDijkstra = new Dijkstra(0, 4, circles, lines);
-		Queue<Dijkstravertex> testQ = testDijkstra.getQueue();
-		System.out.println("before call of performAStep(): ");
-		System.out.println("initial testDijkstra queue size: "+testDijkstra.getQueue().size());
-		
-		int queueSize = testQ.size();
-		for(int i=1; i<= queueSize; i=i+1)
-		{
-			System.out.println("size of the queue unvisited: "+testQ.size()+ ", i= "+i);
-	
-			Dijkstravertex currQelement = testQ.remove();
-			System.out.println("Circle: "+currQelement.getCircle().getIndex()+", distance: "+ currQelement.getDistance());
+		// please notice: since the constructor of interSteps expects the vertices to be given as integers, they can not be null
+		DrawPanel drawPanel = new DrawPanel();
+		try {
+			drawPanel.loadFile("EXgraph.txt");
+		} catch (FileNotFoundException e) {
+			assertTrue("File was not found.",false);
 		}
-		System.out.println("testDijkstra queue size: "+testDijkstra.getQueue().size());
-		
-		
-		testDijkstra = new Dijkstra(0, 4, circles, lines);
-		System.out.println("");
-		System.out.println("first call of performAStep(): ");
-		testDijkstra.performAStep();
-		testQ = testDijkstra.getQueue();
-		queueSize = testQ.size();
-		for(int i=1; i<= queueSize; i=i+1)
+		try
 		{
-			System.out.println("size of the queue unvisited: "+testQ.size()+ ", i= "+i);
-	
-			Dijkstravertex currQelement = testQ.remove();
-			System.out.println("Circle: "+currQelement.getCircle().getIndex()+", distance: "+ currQelement.getDistance());
+			// EXgraph.txt provides vertices 0 to 9, so there is no vertex 10
+			interSteps testInterSteps = new interSteps(drawPanel,"Dijkstra",1,10);
+			ArrayList<Dijkstravertex> path = testInterSteps.skipDijkstraToEnd();
+			assertEquals("The path should be empty.",path.size(),0);
 		}
-		
-		testDijkstra = new Dijkstra(0, 4, circles, lines);
-		System.out.println("");
-		System.out.println("second call of performAStep(): ");
-		testDijkstra.performAStep();
-		testDijkstra.performAStep();
-		testQ = testDijkstra.getQueue();
-		queueSize = testQ.size();
-		for(int i=1; i<= queueSize; i=i+1)
+		catch(Exception e)
 		{
-			System.out.println("size of the queue unvisited: "+testQ.size()+ ", i= "+i);
-	
-			Dijkstravertex currQelement = testQ.remove();
-			System.out.println("Circle: "+currQelement.getCircle().getIndex()+", distance: "+ currQelement.getDistance());
+			assertTrue("Exception was thrown.",false);
 		}
-		
-		testDijkstra = new Dijkstra(0, 4, circles, lines);
-		System.out.println("");
-		System.out.println("third call of performAStep(): ");
-		testDijkstra.performAStep();
-		testDijkstra.performAStep();
-		testDijkstra.performAStep();
-		testQ = testDijkstra.getQueue();
-		queueSize = testQ.size();
-		for(int i=1; i<= queueSize; i=i+1)
-		{
-			System.out.println("size of the queue unvisited: "+testQ.size()+ ", i= "+i);
-	
-			Dijkstravertex currQelement = testQ.remove();
-			System.out.println("Circle: "+currQelement.getCircle().getIndex()+", distance: "+ currQelement.getDistance());
-		}
-		
-		testDijkstra = new Dijkstra(0, 4, circles, lines);
-		System.out.println("");
-		System.out.println("fourth call of performAStep(): ");
-		testDijkstra.performAStep();
-		testDijkstra.performAStep();
-		testDijkstra.performAStep();
-		testDijkstra.performAStep();
-		testQ = testDijkstra.getQueue();
-		queueSize = testQ.size();
-		for(int i=1; i<= queueSize; i=i+1)
-		{
-			System.out.println("size of the queue unvisited: "+testQ.size()+ ", i= "+i);
-	
-			Dijkstravertex currQelement = testQ.remove();
-			System.out.println("Circle: "+currQelement.getCircle().getIndex()+", distance: "+ currQelement.getDistance());
-		}
-		
-		testDijkstra = new Dijkstra(0, 4, circles, lines);
-		System.out.println("");
-		System.out.println("fifth call of performAStep(): ");
-		testDijkstra.performAStep();
-		testDijkstra.performAStep();
-		testDijkstra.performAStep();
-		testDijkstra.performAStep();
-		testDijkstra.performAStep();
-		testQ = testDijkstra.getQueue();
-		queueSize = testQ.size();
-		for(int i=1; i<= queueSize; i=i+1)
-		{
-			System.out.println("size of the queue unvisited: "+testQ.size()+ ", i= "+i);
-	
-			Dijkstravertex currQelement = testQ.remove();
-			System.out.println("Circle: "+currQelement.getCircle().getIndex()+", distance: "+ currQelement.getDistance());
-		}
-		
 		
 	}
+	
+	/**
+	 * Verifies that the path from a vertex to itself is found and has weight 0
+	 */
+	@Test
+	public void pathToItself()
+	{
+		DrawPanel drawPanel = new DrawPanel();
+		try {
+			drawPanel.loadFile("EXgraph.txt");
+		} catch (FileNotFoundException e) {
+			assertTrue("File was not found.",false);
+		}
+		
+		// edge 1,1 does not exist, but the path from 1 to 1 should be found
+		try
+		{
+			interSteps testInterSteps = new interSteps(drawPanel,"Dijkstra",1,1);
+			ArrayList<Dijkstravertex> path = testInterSteps.skipDijkstraToEnd();
+			assertEquals("The path should contain 1 vertex.",path.size(),1);
+			// expected path: 1
+			ArrayList<Integer> expectedPath = new ArrayList<Integer>();
+			expectedPath.add(1);
+			boolean success = identicalLists(path, expectedPath);
+			assertTrue("The path computed is not the same as the expected path.", success);
+			
+			// the weight of the path should be 0
+			assertEquals("The distance from a vertex to itself is not 0.",path.get(0).getVertex().getDistance(),0);
+		}
+		catch(Exception e)
+		{
+			assertTrue("Exception was thrown.",false);
+		}
+		
+		// even if the edge 1,1 exists, the distance should still be 0
+			// vertex 1 exists in the graph
+		Vertex v1 = drawPanel.graph.vertexSet.get(1);
+		drawPanel.graph.addEdge(v1, v1, 5);
+		try
+		{
+			interSteps testInterSteps = new interSteps(drawPanel,"Dijkstra",1,1);
+			ArrayList<Dijkstravertex> path = testInterSteps.skipDijkstraToEnd();
+			assertEquals("The path should contain 1 vertex.",path.size(),1);
+			// expected path: 1
+			ArrayList<Integer> expectedPath = new ArrayList<Integer>();
+			expectedPath.add(1);
+			boolean success = identicalLists(path, expectedPath);
+			assertTrue("The path computed is not the same as the expected path.", success);
+			
+			// the weight of the path should be 0
+			assertEquals("The distance from a vertex to itself is not 0.",path.get(0).getVertex().getDistance(),0);
+		}
+		catch(Exception e)
+		{
+			assertTrue("Exception was thrown.",false);
+		}
+		
+	}
+	
+	/**
+	 * Verifies that no path is found when the start vertex is isolated and that no exception is thrown.
+	 */
+	@Test
+	public void isolatedStart()
+	{
+		DrawPanel drawPanel = new DrawPanel();
+		try {
+			drawPanel.loadFile("EXgraph.txt");
+		} catch (FileNotFoundException e) {
+			assertTrue("File was not found.",false);
+		}
+		
+		
+		try
+		{
+			// Vertex 0 is isolated
+			interSteps testInterSteps = new interSteps(drawPanel,"Dijkstra",0,1);
+			ArrayList<Dijkstravertex> path = testInterSteps.skipDijkstraToEnd();
+			assertEquals("There should be no path.",0,path.size());
+		}
+		catch(Exception e)
+		{
+			assertTrue("Exception was thrown.",false);
+		}
+	}
+	
+	/**
+	 * Verifies that no path is found when the end vertex is isolated and that no exception is thrown.
+	 */
+	@Test
+	public void isolatedEnd()
+	{
+		DrawPanel drawPanel = new DrawPanel();
+		try {
+			drawPanel.loadFile("EXgraph.txt");
+		} catch (FileNotFoundException e) {
+			assertTrue("File was not found.",false);
+		}
+		
+		
+		try
+		{
+			// Vertex 0 is isolated
+			interSteps testInterSteps = new interSteps(drawPanel,"Dijkstra",1,0);
+			ArrayList<Dijkstravertex> path = testInterSteps.skipDijkstraToEnd();
+			assertEquals("There should be no path.",0,path.size());
+		}
+		catch(Exception e)
+		{
+			assertTrue("Exception was thrown.",false);
+		}
+	}
+	
+	/**
+	 * Verifies that no path is found if there actually is no path while both vertices are not isolated. No exception should be thrown.
+	 */
+	@Test
+	public void noPath()
+	{
+		DrawPanel drawPanel = new DrawPanel();
+		try {
+			drawPanel.loadFile("EXgraph.txt");
+		} catch (FileNotFoundException e) {
+			assertTrue("File was not found.",false);
+		}
+		
+		try
+		{
+			// in EXgraph.txt there is no path between vertices 5 and 6
+				// and they are both not isolated
+			interSteps testInterSteps = new interSteps(drawPanel,"Dijkstra",5,6);
+			ArrayList<Dijkstravertex> path = testInterSteps.skipDijkstraToEnd();
+			assertEquals("There should be no path.",0,path.size());
+		}
+		catch(Exception e)
+		{
+			assertTrue("Exception was thrown.",false);
+		}
+	}
+	
 }

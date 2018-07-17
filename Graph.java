@@ -29,13 +29,19 @@ public class Graph implements GraphInterface
 	 */
 	public boolean addVertex(Vertex v)
 	{
-			Vertex vertexToAdd = v;
-			vertexToAdd.setIndex(vertexlabel);
-			vertexSet.put(vertexlabel, vertexToAdd);
-			vertexlabel = vertexlabel +1;
-			return true;
-		
-		
+			if(v != null)
+			{
+				Vertex vertexToAdd = v;
+				vertexToAdd.setIndex(vertexlabel);
+				vertexSet.put(vertexlabel, vertexToAdd);
+				vertexlabel = vertexlabel +1;
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+			
 	}
 	
 	
@@ -45,62 +51,71 @@ public class Graph implements GraphInterface
 	 */
 	public boolean addEdge(Vertex start, Vertex end, int weight)
 	{
-		
-		Edge edgeToAdd = new Edge(start,end,weight);
-		
-		// first check whether this edge already exists
-		boolean edgeExists = false;
-		if(outEdges.containsKey(start.getIndex()))
+		if(start != null & end != null)
 		{
-			List<Edge> curr = outEdges.get(start.getIndex());
-			for(Edge e : curr)
+			Edge edgeToAdd = new Edge(start,end,weight);
+			
+			// first check whether this edge already exists
+			boolean edgeExists = false;
+			if(outEdges.containsKey(start.getIndex()))
 			{
-				if(e.getStart().getIndex()==start.getIndex() && e.getEnd().getIndex()==end.getIndex())
+				List<Edge> curr = outEdges.get(start.getIndex());
+				for(Edge e : curr)
 				{
-					edgeExists = true;
+					if(start != null && end != null && e.getStart().getIndex()==start.getIndex() && e.getEnd().getIndex()==end.getIndex())
+					{
+						edgeExists = true;
+					}
 				}
+				
 			}
 			
-		}
-		
-		
-		//check whether the vertices exist
-		if(!edgeExists & vertexSet.containsKey(start.getIndex()) & vertexSet.containsKey(end.getIndex()))
+			
+			//check whether the vertices exist
+			if(!edgeExists && start != null && end != null && vertexSet.containsKey(start.getIndex()) && vertexSet.containsKey(end.getIndex()))
 
-		{
+			{
+				
+				// add the edge from start to end to outEdges of start
+				List<Edge> curList = outEdges.get(start.getIndex());
+				if(curList == null) {
+					List<Edge> curList1 = new ArrayList<Edge>();
+					curList1.add(edgeToAdd);
+					outEdges.put(start.getIndex(), curList1);
+				}
+				else {
+					curList.add(edgeToAdd);
+					outEdges.put(start.getIndex(), curList);
+				}
+				
+				
 			
-			// add the edge from start to end to outEdges of start
-			List<Edge> curList = outEdges.get(start.getIndex());
-			if(curList == null) {
-				List<Edge> curList1 = new ArrayList<Edge>();
-				curList1.add(edgeToAdd);
-				outEdges.put(start.getIndex(), curList1);
+				// add the edge from start to end to inEdges of end
+				curList = inEdges.get(end.getIndex());
+				
+				if(curList == null) {
+					List<Edge> curList1 = new ArrayList<Edge>();
+					curList1.add(edgeToAdd);
+					inEdges.put(end.getIndex(), curList1);
+				}
+				else {
+					curList.add(edgeToAdd);
+					inEdges.put(end.getIndex(), curList);
+				}
+				return true;
 			}
-			else {
-				curList.add(edgeToAdd);
-				outEdges.put(start.getIndex(), curList);
+			else
+			{
+				return false;
 			}
-			
-			
-		
-			// add the edge from start to end to inEdges of end
-			curList = inEdges.get(end.getIndex());
-			
-			if(curList == null) {
-				List<Edge> curList1 = new ArrayList<Edge>();
-				curList1.add(edgeToAdd);
-				inEdges.put(end.getIndex(), curList1);
-			}
-			else {
-				curList.add(edgeToAdd);
-				inEdges.put(end.getIndex(), curList);
-			}
-			return true;
 		}
+		
 		else
 		{
 			return false;
 		}
+		
+
 		
 	
 	}
@@ -125,22 +140,25 @@ public class Graph implements GraphInterface
 	// just the indices of the vertices
 	public boolean removeEdge(Vertex start, Vertex end)
 	{
-		// first check whether this edge exists
 		boolean edgeExists = false;
-		if(outEdges.containsKey(start.getIndex()))
+		// first check whether this edge exists
+		if(start != null & end != null)
 		{
-			List<Edge> curr = outEdges.get(start.getIndex());
-			for(int i =0; i< curr.size(); i=i+1)
+			if(outEdges.containsKey(start.getIndex()))
 			{
-				if(curr.get(i).getStart().getIndex() == start.getIndex() & curr.get(i).getEnd().getIndex()==end.getIndex())
+				List<Edge> curr = outEdges.get(start.getIndex());
+				for(int i =0; i< curr.size(); i=i+1)
 				{
-					//fraglich
-					//edgeToRemove = e;
-					curr.remove(i);
-					edgeExists = true;
+					if(curr.get(i).getStart().getIndex() == start.getIndex() & curr.get(i).getEnd().getIndex()==end.getIndex())
+					{
+						curr.remove(i);
+						edgeExists = true;
+					}
 				}
 			}
 		}
+		
+		
 		
 		// the edge must also be in inEdges
 		if(edgeExists)
