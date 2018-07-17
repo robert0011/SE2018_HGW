@@ -343,7 +343,7 @@ public class GraphTester
 	}
 	
 	/**
-	 * Verifies that an edge with weight < 0 is added but converted to weight 0
+	 * Verifies that an edge with weight < 0 (but correct) is added but converted to weight 0
 	 */
 	@Test
 	public void testAddEdge4()

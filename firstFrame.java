@@ -507,7 +507,8 @@ public class firstFrame {
 					  	drawPanel.showVertexWeights = false;
 					  	testTheSteps.recolor();
 					  	testTheSteps.destruct();
-					  	//testTheSteps = new interSteps();
+					  	// really NEW
+					  	testTheSteps = new interSteps();
 				  	}
 				  	
 				  	frame.dispose();

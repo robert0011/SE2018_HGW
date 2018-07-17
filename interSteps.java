@@ -70,6 +70,10 @@ class interSteps
 		{
 			toReturn = testDijkstra.performAStep();
 		}
+		else
+		{
+			JOptionPane.showMessageDialog(null, "At least one of the vertices does not exist.");
+		}
 		d.repaint();
 		if(testDijkstra.reachedEnd())
 		{
