@@ -75,50 +75,58 @@ public class GraphTester
 	
 	/**
 	 * Returns true if all the edges (given in edges) with corresponding weights (given in weights) are contained in the graph.
-	 * For simplicity every vertex is restricted to have one or no edge.
 	 * @param d
 	 * @param edges
 	 * @param weights
 	 * @return
 	 * @throws NullPointerException
 	 */
-    public boolean testEdges(Graph graph,Hashtable<Integer,Integer> edges, Hashtable<Integer,Integer>weights) throws NullPointerException
+    public boolean testEdges(Graph graph,Hashtable<Integer,List<Integer>> edges, Hashtable<Integer,Integer>weights) throws NullPointerException
     {
     	boolean foundAll = true;
 		boolean found = false;
+		// go through the list of integers and find them in the actually edges
     	Enumeration<Integer> edgeKeys = edges.keys();
-    	int weightIndex = 0;
     	while(edgeKeys.hasMoreElements())
     	{
     		found = false;
     		Integer curStart = edgeKeys.nextElement();
-    		Integer curEnd = edges.get(curStart);
     		try
     		{
-    			List<Edge> list = graph.outEdges.get(curStart);
-    			for(int i = 0; i<list.size(); i = i+1)
+    			List<Integer> elementsToFindInTheGraph = edges.get(curStart);
+    			//List<Edge> list = graph.outEdges.get(curStart);
+    			// list is a list of edges which needs to correspond to edges (a list of integers)
+    			for(int i = 0; i < elementsToFindInTheGraph.size(); i = i+1)
     			{
-    				if(list.get(i).getEnd().getIndex() == curEnd)
+    				int EndToFind = elementsToFindInTheGraph.get(i);
+    				for(int j = 0; j < graph.outEdges.get(curStart).size(); j = j+1)
     				{
-    					if(list.get(i).getWeight() == weights.get(curStart))
-    					{
-    						found = true;
-    					}
-    					
+    					Edge potEdge = graph.outEdges.get(curStart).get(j);
+    					int potEnd = potEdge.getEnd().getIndex();
+    					if(EndToFind == potEnd)
+        				{
+        					// the weights have to be the same as well
+        					if(potEdge.getWeight() == weights.get(curStart))
+        					{
+        						found = true;
+        					}
+        					
+        				}
     				}
+    				
     			}
     		}
     		catch(NullPointerException e)
     		{
     			// if some list entry does not exist, an exception is thrown
     				// and should be re-thrown
+    			System.out.println("Edge finder throws exception.");
     			throw e;
     		}
     		if(!found)
     		{
     			foundAll = false;
     		}
-    		weightIndex = weightIndex+1;
     	}
     	return foundAll;
     }
@@ -133,7 +141,7 @@ public class GraphTester
 		assertNotNull("Graph should != null after call of constructor", g);
 		assertEquals("Size of vertexSet should return 0", 0, g.vertexSet.size());
 		assertEquals("Size of outEdges should return 0", 0, g.outEdges.size());
-		assertEquals("Size of inEdges should return 0", 0, g.outEdges.size());
+		assertEquals("Size of inEdges should return 0", 0, g.inEdges.size());
 
 	}
 	
@@ -318,28 +326,52 @@ public class GraphTester
 		graph.addVertex(v5);
 		
 		graph.addEdge(v0, v2, 1);
+		graph.addEdge(v0, v4, 10);
 		graph.addEdge(v1, v5, 5);
 		graph.addEdge(v3, v2, 3);
 		graph.addEdge(v5, v1, 1);
+		graph.addEdge(v5, v0, 1);
 		
 		// check if everything was added correctly
 			// check the size of the edgeset
-		boolean success = testEdgeSetSize(4,graph);
+		boolean success = testEdgeSetSize(6,graph);
 		assertTrue("Not every edge was added (but should).",success);
 		
 			// check if all expected edges exist
-		Hashtable<Integer, Integer> edges = new Hashtable<Integer, Integer>();
-		edges.put(0, 2);
-		edges.put(1, 5);
-		edges.put(3, 2);
-		edges.put(5, 1);
+		Hashtable<Integer, List<Integer>> edges = new Hashtable<Integer, List<Integer>>();
+		List<Integer> curEnds = new ArrayList<Integer>();
+			// first list the edges of vertex v0
+		curEnds.add(2);
+		curEnds.add(4);
+		edges.put(0, curEnds);
+			// edges of v1
+		curEnds = new ArrayList<Integer>();
+		curEnds.add(5);
+		edges.put(1, curEnds);
+			// edges of v3
+		curEnds = new ArrayList<Integer>();
+		curEnds.add(2);
+		edges.put(3, curEnds);
+			//edges of v5
+		curEnds = new ArrayList<Integer>();
+		curEnds.add(1);
+		curEnds.add(0);
+		edges.put(5, curEnds);
 		Hashtable<Integer, Integer> weights = new Hashtable<Integer, Integer>();
 		weights.put(0, 1);
 		weights.put(1, 5);
 		weights.put(3, 3);
 		weights.put(5, 1);
-		success = testEdges(graph,edges,weights);
-		assertTrue("Something went wrong when adding the edges.", success);
+		try
+		{
+			success = testEdges(graph,edges,weights);
+			assertTrue("Something went wrong when adding the edges.", success);
+		}
+		catch(NullPointerException e)
+		{
+			assertTrue("Something went wrong when adding the edges, exception was thrown.", false);
+		}
+		
 	}
 	
 	/**
@@ -376,10 +408,19 @@ public class GraphTester
 		assertTrue("An edge with weight 0 should be added.",success);
 		
 		// check if edge v0,v1 has weight1, edge v2,v3 has weight 0 and edge v4,v5  has weight 0
-		Hashtable<Integer,Integer> edges = new Hashtable<Integer,Integer>();
-		edges.put(0, 1);
-		edges.put(2, 3);
-		edges.put(4, 5);
+		Hashtable<Integer,List<Integer>> edges = new Hashtable<Integer,List<Integer>>();
+		List<Integer> curEnds = new ArrayList<Integer>();
+			// first list the edges of vertex v0
+		curEnds.add(1);
+		edges.put(0, curEnds);
+			// edges of v2
+		curEnds = new ArrayList<Integer>();
+		curEnds.add(3);
+		edges.put(2, curEnds);
+			// edges of v4
+		curEnds = new ArrayList<Integer>();
+		curEnds.add(5);
+		edges.put(4, curEnds);
 		
 		Hashtable<Integer,Integer> weights = new Hashtable<Integer,Integer>();
 		weights.put(0, 1);
@@ -389,8 +430,16 @@ public class GraphTester
 		success = testEdgeSetSize(3,graph);
 		assertTrue("The graph should contain three edges.",success);
 		
-		success = testEdges(graph,edges,weights);
-		assertTrue("Something went wrong with the weights.", success);
+		try
+		{
+			success = testEdges(graph,edges,weights);
+			assertTrue("Something went wrong with the weights.", success);
+		}
+		catch(NullPointerException e)
+		{
+			assertTrue("Something went wrong with the weights, exception was thrown.", false);
+		}
+		
 	
 	}
 	
@@ -434,6 +483,9 @@ public class GraphTester
 		assertTrue("Edge should be added.", success);
 		
 		success = graph.addEdge(v0, v1, 5);
+		assertFalse("Edge v0,v1 already exists, should not be added.", success);
+		
+		success = graph.addEdge(v0, v1, 6);
 		assertFalse("Edge v0,v1 already exists, should not be added.", success);
 	}
 	
@@ -527,21 +579,33 @@ public class GraphTester
 		vertices.add(2);
 		vertices.add(3);
 		boolean success = testVertexSet(vertices,graph);
-		assertTrue("Something went wrong with rhe vertices.",success);
+		assertTrue("Something went wrong with the vertices.",success);
 		
 			// check if the size of the edgeSet is as expected
 		success = testEdgeSetSize(2,graph);
 		assertTrue("The size of the edgeset is not as expected.", success);
 		
-			// check if all expected edges are contained
-		Hashtable<Integer,Integer> edges = new Hashtable<Integer,Integer>();
-		edges.put(2, 0);
-		edges.put(1, 3);
+			// check if all expected edges are contained ( v2,v0 and v1,v3 )
+		Hashtable<Integer,List<Integer>> edges = new Hashtable<Integer,List<Integer>>();
+		List<Integer> curEnds = new ArrayList<Integer>();
+		curEnds.add(0);
+		edges.put(2, curEnds);
+		curEnds = new ArrayList<Integer>();
+		curEnds.add(3);
+		edges.put(1, curEnds);
 		Hashtable<Integer,Integer> weights = new Hashtable<Integer,Integer>();
 		weights.put(2, 1);
 		weights.put(1, 4);
-		success = testEdges(graph,edges,weights);
-		assertTrue("Something went wrong with the edges.",success);
+		try
+		{
+			success = testEdges(graph,edges,weights);
+			assertTrue("Something went wrong with the edges.",success);
+		}
+		catch(NullPointerException e)
+		{
+			assertTrue("Something went wrong with the edges, exception thrown.",false);
+		}
+		
 		
 	}
 	

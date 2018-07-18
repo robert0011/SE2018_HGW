@@ -1,71 +1,34 @@
 import java.util.*; // for sets
 
 /**
- * <p>
- * The graph class delivers the basic structure for most functionalities of this toolbox.<br>
- * This graph is directed and consists of vertices and edges, the edges can either be weighted<br>
- * or  unweighted. 
- * </p>
- * @author C. Bruckmann, R. Wagner
+ * Class for the graph used by our developed software.
+ * @author Bruckmann C., Wagner R.
  *
  */
 public class Graph implements GraphInterface
 {
-	/**
-	 * <p>
-	 * An integer which contains the vertexnumber.
-	 * </p>
-	 */
 	int vertexlabel = 0;
-
-	/**
-	 * <p>
-	 * A hashtabele consisting of integers as keys and vertices as values.<br>
-	 * The integer represents the 'vertex number' and the vertex is the corresponding vertex.
-	 * </p>
-	 */
+	// initialize the set for the edges and vertices for the graph
 	public Hashtable<Integer,Vertex> vertexSet;
 	
-	/**
-	 * <p>
-	 * A hashtabele consisting of integers as keys and a list of edges as value.<br>
-	 * The integer represents the vertex and the list of edges represents the edges, <br>
-	 * which have this particular vertex as their start vertex.
-	 * </p>
-	 */
 	public Hashtable<Integer, List<Edge>> outEdges;
-	
-	/**
-	 * <p>
-	 * A hashtabele consisting of integers as keys and a list of edges as value.<br>
-	 * The integer represents the vertex and the list of edges represents the edges, <br>
-	 * which have this particular vertex as their end vertex.
-	 * </p>
-	 */
 	public Hashtable<Integer, List<Edge>> inEdges;
 	
-	/**
-	 * <p>
-	 * Constructor for the graph object.
-	 * </p>
-	 */
 	public Graph() 
 	{
 		
 		this.vertexlabel = 0;
+		
 		this.vertexSet = new Hashtable<Integer,Vertex>();
 		this.outEdges = new Hashtable<Integer, List<Edge>>();
 		this.inEdges = new Hashtable<Integer, List<Edge>>();
 	}
 	
 	/**
-	 * <p>
-	 * Function which adds new vertices to the graph. Returns true if the addition was successful.
-	 * </p>
+	 * 
 	 */
 	public boolean addVertex(Vertex v)
 	{
-			//vertex is not null, so it is addable, return true
 			if(v != null)
 			{
 				Vertex vertexToAdd = v;
@@ -74,7 +37,6 @@ public class Graph implements GraphInterface
 				vertexlabel = vertexlabel +1;
 				return true;
 			}
-			// input is null, so no actual vertex to add, return false
 			else
 			{
 				return false;
@@ -85,13 +47,10 @@ public class Graph implements GraphInterface
 	
 	
 	/**
-	 * <p>
-	 * Function which adds new edges to the graph. Returns true if the addition was successful.
-	 * </p> 
+	 * 
 	 */
 	public boolean addEdge(Vertex start, Vertex end, int weight)
 	{
-		// only add an edge if the start and end vertex are not null
 		if(start != null & end != null)
 		{
 			Edge edgeToAdd = new Edge(start,end,weight);
@@ -114,17 +73,17 @@ public class Graph implements GraphInterface
 			
 			//check whether the vertices exist
 			if(!edgeExists && start != null && end != null && vertexSet.containsKey(start.getIndex()) && vertexSet.containsKey(end.getIndex()))
+
 			{
+				
 				// add the edge from start to end to outEdges of start
 				List<Edge> curList = outEdges.get(start.getIndex());
-				if(curList == null) 
-				{
+				if(curList == null) {
 					List<Edge> curList1 = new ArrayList<Edge>();
 					curList1.add(edgeToAdd);
 					outEdges.put(start.getIndex(), curList1);
 				}
-				else 
-				{
+				else {
 					curList.add(edgeToAdd);
 					outEdges.put(start.getIndex(), curList);
 				}
@@ -134,14 +93,12 @@ public class Graph implements GraphInterface
 				// add the edge from start to end to inEdges of end
 				curList = inEdges.get(end.getIndex());
 				
-				if(curList == null) 
-				{
+				if(curList == null) {
 					List<Edge> curList1 = new ArrayList<Edge>();
 					curList1.add(edgeToAdd);
 					inEdges.put(end.getIndex(), curList1);
 				}
-				else 
-				{
+				else {
 					curList.add(edgeToAdd);
 					inEdges.put(end.getIndex(), curList);
 				}
@@ -157,14 +114,14 @@ public class Graph implements GraphInterface
 		{
 			return false;
 		}
+		
+
+		
+	
 	}
 	
 	
-	/**
-	 * <p>
-	 * Function to delete a vertex from the graph, retruns true if the deletion was successful.
-	 * </p>
-	 */
+	
 	public boolean removeVertex(int remove) 
 	{
 		if(vertexSet.containsKey(remove))
@@ -175,14 +132,12 @@ public class Graph implements GraphInterface
 		else
 		{
 			return false;
-		}		
+		}
+		
 	}
 	
-	/**
-	 * <p>
-	 * Function to delete an edge from the graph, retruns true if the deletion was successful.
-	 * </p>
-	 */
+	
+	// just the indices of the vertices
 	public boolean removeEdge(Vertex start, Vertex end)
 	{
 		boolean edgeExists = false;
@@ -202,7 +157,9 @@ public class Graph implements GraphInterface
 				}
 			}
 		}
-			
+		
+		
+		
 		// the edge must also be in inEdges
 		if(edgeExists)
 		{
@@ -219,6 +176,10 @@ public class Graph implements GraphInterface
 		else
 		{
 			return false;
-		}				
+		}
+		
+				
+				
+					
 	}
 }

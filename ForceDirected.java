@@ -1,6 +1,7 @@
 import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Random;
 /* 
  * Algorithm to beautify the layout a given graph by using Eades method
  * based on spring systems and electrical forces and the repulsion calculation
@@ -50,7 +51,7 @@ class ForceDirected
 	 * An amount of 100 repetitions is recommended for most graphs.
 	 * </p>
 	 */
-	int REPETITIONS = 100;
+	int REPETITIONS = 50;
 	
 	/**
 	 * <p>
@@ -371,7 +372,9 @@ class ForceDirected
 			}
 		}
 		
-		//separate overlapping vertices after the final step of the force directed algoritm
+		// at this stadium the cliques are supposed to be separated but the vertices within each clique will be shifted to one point
+		//separate overlapping vertices after the final step of the force directed algorithm
+		Random rand2 = new Random();
 		for(int j = 0; j < vertices.size()-1; j++)
 		{
 			v = vertices.get(j);
@@ -394,24 +397,157 @@ class ForceDirected
 					{
 						if(v.getX() >= frameWidth/2)
 						{
-							v.setX(v.getX() - 30); 
+							int randomX = rand2.nextInt(30)-15;
+							v.setX(v.getX() - randomX); 
 						}
 						else
 						{
-							v.setX(v.getX() + 30);
+							int randomX = rand2.nextInt(30)-15;
+							v.setX(v.getX() + randomX);
 						}
 						if(v.getY() >= frameHeight/2)
 						{
-							v.setY(v.getY() - 30);
+							int randomY = rand2.nextInt(30)-15;
+							v.setY(v.getY() - randomY);
 						}
 						else
 						{
-							v.setY(v.getY() + 30);
+							int randomY = rand2.nextInt(30)-15;
+							v.setY(v.getY() + randomY);
 						}
 					}
 				}
 			}
-		}	
+		}
+		
+		for(int z = 0; z <= 10; z = z+1)
+		{
+			for(int j = 0; j < vertices.size()-1; j++)
+			{
+				v = vertices.get(j);
+				x1 = v.getX();
+				y1 = v.getY();
+				for(int k = 0; k < vertices.size()-1; k++)
+				{
+					// do nothing for identical vertices
+					if(k != j)
+					{
+						w = vertices.get(k);
+						x2 = w.getX();
+						y2 = w.getY();
+						adjacent = false;
+										
+						for(Edge e : edgelist)
+						{
+							
+							if(!adjacent)
+							{
+								// if edgelist contains edge vw or wv then v and w are adjacent
+								if((e.getStart().getIndex() == j & e.getEnd().getIndex() == k) || (e.getStart().getIndex() == k & e.getEnd().getIndex() == j))
+								{
+									
+									//calculate force between adjacent vertices
+									springForce = -1 * CONSTANTONE * Math.log(distance/CONSTANTTWO);
+									adjacent = true;
+								}
+							}
+						}
+						if(adjacent)
+						{
+							/* if  v.getX() is bigger than w.getX() then we have to 
+							 * reduce the x-coordinate of v to reduce the distance between v and w
+							 * for w we have to increase the x-coordinate to reduce the distance between v and w
+							 */
+							if(v.getX() > w.getX())
+							{
+								newXCoordForV = (int) (v.getX() - (CONSTANTTHREE*springForce));
+								newXCoordForW = (int) (w.getX() + (CONSTANTTHREE*springForce));
+								
+							}
+							else
+							{
+								newXCoordForV = (int) (v.getX() + (CONSTANTTHREE*springForce));
+								newXCoordForW = (int) (w.getX() - (CONSTANTTHREE*springForce));
+							}
+							
+							/* if  v.getY() is bigger than w.getY() then we have to 
+							 * reduce the y-coordinate of v to reduce the distance between v and w
+							 * for w we have to increase the y-coordinate to reduce the distance between v and w
+							 */
+							if(v.getY() > w.getY())
+							{
+								newYCoordForV = (int) (v.getY() - (CONSTANTTHREE*springForce));
+								newYCoordForW = (int) (w.getY() + (CONSTANTTHREE*springForce));
+								
+							}
+							else
+							{
+								newYCoordForV = (int) (v.getY() + (CONSTANTTHREE*springForce));
+								newYCoordForW = (int) (w.getY() - (CONSTANTTHREE*springForce));
+							}
+							// check whether the new coordinates are in the proper draw area (between the given boundaries) or not
+							if(newXCoordForV > 100 && newXCoordForV < (frameWidth-150))
+							{
+								if(newYCoordForV > 100 && newYCoordForV < (frameHeight-150))
+								{
+									newV = new Vertex(v.getRadius(),newXCoordForV, newYCoordForV);
+								}
+								else
+								{
+									newV = new Vertex(v.getRadius(),newXCoordForV, v.getY());
+								}
+							}
+							else
+							{
+								if(newYCoordForV > 100 && newYCoordForV < (frameHeight-150))
+								{
+									newV = new Vertex(v.getRadius(),v.getX(), newYCoordForV);
+								}
+								else
+								{
+									newV = new Vertex(v.getRadius(),v.getX(), v.getY());
+								}
+							}
+							
+							// no check the coordinates for w
+							if(newXCoordForW > 100 && newXCoordForW < (frameWidth-150))
+							{
+								if(newYCoordForW > 100 && newYCoordForW < (frameHeight-150))
+								{
+									newW = new Vertex(w.getRadius(),newXCoordForW, newYCoordForW);
+								}
+								else
+								{
+									newW = new Vertex(w.getRadius(),newXCoordForW, w.getY());
+								}
+							}
+							else
+							{
+								if(newYCoordForW > 100 && newYCoordForW < (frameHeight-150))
+								{
+									newW = new Vertex(w.getRadius(),w.getX(), newYCoordForW);
+								}
+								else
+								{
+									newW = new Vertex(w.getRadius(),w.getX(), w.getY());
+								}
+							}
+							
+							//actual change the coordinates of v according to the calculations
+							v.setX(newV.getX()); 
+							v.setY(newV.getY());
+							if(adjacent)
+							{
+								w.setX(newW.getX());
+								w.setY(newW.getY());
+							}
+						}
+					}	
+				}
+			}
+		}
+		
 	}
+	
 	
 }

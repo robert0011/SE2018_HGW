@@ -7,6 +7,7 @@ import org.junit.*;
 import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.List;
@@ -69,50 +70,58 @@ public class LoadingTest {
 	
 	/**
 	 * Returns true if all the edges (given in edges) with corresponding weights (given in weights) are contained in the graph.
-	 * For simplicity every vertex is restricted to have one or no edge.
 	 * @param d
 	 * @param edges
 	 * @param weights
 	 * @return
 	 * @throws NullPointerException
 	 */
-    public boolean testEdges(DrawPanel d,Hashtable<Integer,Integer> edges, Hashtable<Integer,Integer>weights) throws NullPointerException
+    public boolean testEdges(Graph graph,Hashtable<Integer,List<Integer>> edges, Hashtable<Integer,Integer> weights) throws NullPointerException
     {
     	boolean foundAll = true;
 		boolean found = false;
+		// go through the list of integers and find them in the actually edges
     	Enumeration<Integer> edgeKeys = edges.keys();
-    	int weightIndex = 0;
     	while(edgeKeys.hasMoreElements())
     	{
     		found = false;
     		Integer curStart = edgeKeys.nextElement();
-    		Integer curEnd = edges.get(curStart);
     		try
     		{
-    			List<Edge> list = d.graph.outEdges.get(curStart);
-    			for(int i = 0; i<list.size(); i = i+1)
+    			List<Integer> elementsToFindInTheGraph = edges.get(curStart);
+    			//List<Edge> list = graph.outEdges.get(curStart);
+    			// list is a list of edges which needs to correspond to edges (a list of integers)
+    			for(int i = 0; i < elementsToFindInTheGraph.size(); i = i+1)
     			{
-    				if(list.get(i).getEnd().getIndex() == curEnd)
+    				int EndToFind = elementsToFindInTheGraph.get(i);
+    				for(int j = 0; j < graph.outEdges.get(curStart).size(); j = j+1)
     				{
-    					if(list.get(i).getWeight() == weights.get(curStart))
-    					{
-    						found = true;
-    					}
-    					
+    					Edge potEdge = graph.outEdges.get(curStart).get(j);
+    					int potEnd = potEdge.getEnd().getIndex();
+    					if(EndToFind == potEnd)
+        				{
+        					// the weights have to be the same as well
+        					if(potEdge.getWeight() == weights.get(curStart))
+        					{
+        						found = true;
+        					}
+        					
+        				}
     				}
+    				
     			}
     		}
     		catch(NullPointerException e)
     		{
     			// if some list entry does not exist, an exception is thrown
     				// and should be re-thrown
+    			System.out.println("Edge finder throws exception.");
     			throw e;
     		}
     		if(!found)
     		{
     			foundAll = false;
     		}
-    		weightIndex = weightIndex+1;
     	}
     	return foundAll;
     }
@@ -141,6 +150,7 @@ public class LoadingTest {
     public void nontxtFile()
     {
     	DrawPanel drawPanel = new DrawPanel();
+    	assertNotNull("No DrawPanel is constructed.", drawPanel);
     	boolean success = true;
 		try {
 			success = drawPanel.loadFile("EXGraph.docx");
@@ -188,10 +198,17 @@ public class LoadingTest {
     	assertTrue("Incorrect number of edges.", success);
     	
     	// the file contains the following edges: (mapping startvertex to endvertex)
-    	Hashtable<Integer,Integer> edges = new Hashtable<Integer, Integer>();
-    	edges.put(14,5);
-    	edges.put(2, 3);
-    	edges.put(5, 19);
+    	Hashtable<Integer,List<Integer>> edges = new Hashtable<Integer, List<Integer>>();
+    	List<Integer> curEnds = new ArrayList<Integer>();
+    	curEnds.add(5);
+    	edges.put(14,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(3);
+    	edges.put(2, curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(19);
+    	edges.put(5, curEnds);
+    	
     	// mapping start vertices to weights
     	Hashtable<Integer, Integer> weights = new Hashtable<Integer,Integer>();
     	weights.put(14,9);
@@ -199,7 +216,7 @@ public class LoadingTest {
     	weights.put(5,6);
     	try
     	{
-    		success = testEdges(drawPanel, edges,weights);
+    		success = testEdges(drawPanel.graph, edges,weights);
         	assertTrue("Not all edges could be found.", success);
     	}
     	catch(NullPointerException e)
@@ -236,10 +253,17 @@ public class LoadingTest {
     		// it should contain 3 edges (not 6 as specified in the file).
     	assertTrue("Incorrect number of edges", testEdgeSetSize(3,drawPanel));
     		// it should contain the following edges with the following weights
-    	Hashtable<Integer,Integer> edges = new Hashtable<Integer, Integer>();
-    	edges.put(14,5);
-    	edges.put(2, 3);
-    	edges.put(5, 19);
+    	Hashtable<Integer,List<Integer>> edges = new Hashtable<Integer, List<Integer>>();
+    	List<Integer> curEnds = new ArrayList<Integer>();
+    	curEnds.add(5);
+    	edges.put(14,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(3);
+    	edges.put(2, curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(19);
+    	edges.put(5, curEnds);
+    	
     	// mapping start vertices to weights
     	Hashtable<Integer, Integer> weights = new Hashtable<Integer,Integer>();
     	weights.put(14,9);
@@ -247,7 +271,7 @@ public class LoadingTest {
     	weights.put(5,6);
     	try
     	{
-    		success = testEdges(drawPanel, edges,weights);
+    		success = testEdges(drawPanel.graph, edges,weights);
         	assertTrue("Not all edges could be found.", success);
     	}
     	catch(NullPointerException e)
@@ -306,12 +330,23 @@ public class LoadingTest {
     		// it should contain 5 edges (one of the 6 edges in the file contains a letter).
     	assertTrue("Incorrect number of edges", testEdgeSetSize(5,drawPanel));
     		// it should contain the following edges with the following weights
-    	Hashtable<Integer,Integer> edges = new Hashtable<Integer, Integer>();
-    	edges.put(1,2);
-    	edges.put(2,4);
-    	edges.put(5,7);
-    	edges.put(6,7);
-    	edges.put(4,6);
+    	Hashtable<Integer,List<Integer>> edges = new Hashtable<Integer, List<Integer>>();
+    	List<Integer> curEnds = new ArrayList<Integer>();
+    	curEnds.add(2);
+    	edges.put(1,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(4);
+    	edges.put(2,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(7);
+    	edges.put(5,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(7);
+    	edges.put(6,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(6);
+    	edges.put(4,curEnds);
+    	
     	// mapping start vertices to weights
     	Hashtable<Integer, Integer> weights = new Hashtable<Integer,Integer>();
     	weights.put(1,1);
@@ -321,7 +356,7 @@ public class LoadingTest {
     	weights.put(4,1);
     	try
     	{
-    		success = testEdges(drawPanel, edges,weights);
+    		success = testEdges(drawPanel.graph, edges,weights);
         	assertTrue("Not all edges could be found.", success);
     	}
     	catch(NullPointerException e)
@@ -357,10 +392,17 @@ public class LoadingTest {
     		// it should contain 3 edges (the edge 15,16 in the file is unreadable).
     	assertTrue("Incorrect number of edges", testEdgeSetSize(3,drawPanel));
     		// it should contain the following edges with the following weights
-    	Hashtable<Integer,Integer> edges = new Hashtable<Integer, Integer>();
-    	edges.put(14,5);
-    	edges.put(2,3);
-    	edges.put(5,19);
+    	Hashtable<Integer,List<Integer>> edges = new Hashtable<Integer, List<Integer>>();
+    	List<Integer> curEnds = new ArrayList<Integer>();
+    	curEnds.add(5);
+    	edges.put(14,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(3);
+    	edges.put(2,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(19);
+    	edges.put(5,curEnds);
+    	
     	// mapping start vertices to weights
     	Hashtable<Integer, Integer> weights = new Hashtable<Integer,Integer>();
     	weights.put(14,9);
@@ -368,7 +410,7 @@ public class LoadingTest {
     	weights.put(5,6);
     	try
     	{
-    		success = testEdges(drawPanel, edges,weights);
+    		success = testEdges(drawPanel.graph, edges,weights);
         	assertTrue("Not all edges could be found.", success);
     	}
     	catch(NullPointerException e)
@@ -405,11 +447,20 @@ public class LoadingTest {
     		// it should contain 4 edges
     	assertTrue("Incorrect number of edges", testEdgeSetSize(4,drawPanel));
     		// it should contain the following edges with the following weights
-    	Hashtable<Integer,Integer> edges = new Hashtable<Integer, Integer>();
-    	edges.put(14,5);
-    	edges.put(2,3);
-    	edges.put(5,19);
-    	edges.put(8, 7);
+    	Hashtable<Integer,List<Integer>> edges = new Hashtable<Integer, List<Integer>>();
+    	List<Integer> curEnds = new ArrayList<Integer>();
+    	curEnds.add(5);
+    	edges.put(14,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(3);
+    	edges.put(2,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(19);
+    	edges.put(5,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(7);
+    	edges.put(8, curEnds);
+    	
     	// mapping start vertices to weights
     	Hashtable<Integer, Integer> weights = new Hashtable<Integer,Integer>();
     	weights.put(14,9);
@@ -418,7 +469,7 @@ public class LoadingTest {
     	weights.put(8,1);
     	try
     	{
-    		success = testEdges(drawPanel, edges,weights);
+    		success = testEdges(drawPanel.graph, edges,weights);
         	assertTrue("Not all edges could be found.", success);
     	}
     	catch(NullPointerException e)
@@ -454,13 +505,26 @@ public class LoadingTest {
     		// it should contain 6 edges (one edge in the file is incorrect).
     	assertTrue("Incorrect number of edges", testEdgeSetSize(6,drawPanel));
     		// it should contain the following edges with the following weights
-    	Hashtable<Integer,Integer> edges = new Hashtable<Integer, Integer>();
-    	edges.put(1,2);
-    	edges.put(2,3);
-    	edges.put(3,4);
-    	edges.put(4,5);
-    	edges.put(5,7);
-    	edges.put(6,7);
+    	Hashtable<Integer,List<Integer>> edges = new Hashtable<Integer, List<Integer>>();
+    	List<Integer> curEnds = new ArrayList<Integer>();
+    	curEnds.add(2);
+    	edges.put(1,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(3);
+    	edges.put(2,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(4);
+    	edges.put(3,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(5);
+    	edges.put(4,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(7);
+    	edges.put(5,curEnds);
+    	curEnds = new ArrayList<Integer>();
+    	curEnds.add(7);
+    	edges.put(6,curEnds);
+    	
     	// mapping start vertices to weights
     	Hashtable<Integer, Integer> weights = new Hashtable<Integer,Integer>();
     	weights.put(1,1);
@@ -471,7 +535,7 @@ public class LoadingTest {
     	weights.put(6,1);
     	try
     	{
-    		success = testEdges(drawPanel, edges,weights);
+    		success = testEdges(drawPanel.graph, edges,weights);
         	assertTrue("Not all edges could be found.", success);
     	}
     	catch(NullPointerException e)
@@ -507,8 +571,10 @@ public class LoadingTest {
     		// it should contain 1 edges (one edge in the file is incorrect).
     	assertTrue("Incorrect number of edges", testEdgeSetSize(1,drawPanel));
     		// it should contain the following edges with the following weights
-    	Hashtable<Integer,Integer> edges = new Hashtable<Integer, Integer>();
-    	edges.put(1,2);
+    	Hashtable<Integer,List<Integer>> edges = new Hashtable<Integer, List<Integer>>();
+    	List<Integer> curEnds = new ArrayList<Integer>();
+    	curEnds.add(2);
+    	edges.put(1,curEnds);
     	
     	// mapping start vertices to weights
     	Hashtable<Integer, Integer> weights = new Hashtable<Integer,Integer>();
@@ -516,7 +582,7 @@ public class LoadingTest {
     	
     	try
     	{
-    		success = testEdges(drawPanel, edges,weights);
+    		success = testEdges(drawPanel.graph, edges,weights);
         	assertTrue("Not all edges could be found.", success);
     	}
     	catch(NullPointerException e)

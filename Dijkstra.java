@@ -9,76 +9,21 @@ import java.util.Queue;
 
 import javax.swing.JOptionPane;
 
-/**
- * 
- * @author C. Bruckmann, R. Wagner
- * 
- */
 class Dijkstra
 {
-	/**
-	 * 
-	 */
 	public static boolean finished = false;
-	
-	/**
-	 * 
-	 */
 	public static int start;
-	
-	/**
-	 * 
-	 */
 	public static List<Edge> startEdges = new ArrayList<Edge>();
-	
-	/**
-	 * 
-	 */
 	public static Dijkstravertex curVertex;
-	
-	/**
-	 * 
-	 */
 	private static int end;
-	
-	/**
-	 * 
-	 */
 	public static Hashtable<Integer, Dijkstravertex> unvisitedHash;
-	
-	/**
-	 * 
-	 */
 	public static List<Dijkstravertex> visited;
-	
-	/**
-	 * 
-	 */
 	public int steps = 0;
-	
-	/**
-	 * 
-	 */
 	public Vertex startVertex;
-	
-	/**
-	 * 
-	 */
 	private Queue<Dijkstravertex> unvisited = new PriorityQueue<>(distanceComparator);
-	
-	/**
-	 * 
-	 */
 	public static boolean graphRead = true;
-	
-	/**
-	 * 
-	 */
 	public static boolean startAndEndInG = false;
 	
-	/**
-	 * 
-	 */
 	public Dijkstra(int s, int e, Graph g)
 	{
 		start = s;
@@ -115,7 +60,9 @@ class Dijkstra
 						vToAdd.setEdges(edgesToAdd);
 					}
 					unvisited.add(vToAdd);
-					unvisitedHash.put(curVertex.getIndex(), vToAdd);		
+					unvisitedHash.put(curVertex.getIndex(), vToAdd);
+					
+					
 				}
 				else
 				{
@@ -123,7 +70,9 @@ class Dijkstra
 					// add outgoing edges to the start vertex
 					if(g.outEdges.containsKey(s))
 					{
-						startEdges = g.outEdges.get(s);				
+						startEdges = g.outEdges.get(s);
+						//System.out.println("adding " +startEdges.size() + " edge(s) to startvertex "+curVertex.getIndex());
+						
 					}
 					
 					else 
@@ -133,14 +82,15 @@ class Dijkstra
 
 				}
 			}
-		}	
+		}
+
+		
+		
+		
 	}
 	
 	/**
-	 * <p>
 	 * An error message is displayed if the function returns false.
-	 * </p>
-	 * 
 	 * @return Returns true if the graph and the vertexset are not null and start and end are contained in the graph.
 	 */
 	public boolean checkParameters()
@@ -163,54 +113,32 @@ class Dijkstra
 		return ok;
 	}
 	
-	/**
-	 * <p>
-	 * Method to obtain the information whether a given vertex is not already visited.
-	 * </p
-	 * 
-	 * @return true if the given Dijkstravertex is not already visited.
-	 */
 	public Queue<Dijkstravertex> getQueue()
 	{
 		return unvisited;
 	}
 	
-	/**
-	 * 
-	 */
-	public static Comparator<Dijkstravertex> distanceComparator = new Comparator<Dijkstravertex>()
-	{
+	
+	
+	public static Comparator<Dijkstravertex> distanceComparator = new Comparator<Dijkstravertex>(){
+			
 			@Override
-			public int compare(Dijkstravertex v1, Dijkstravertex v2) 
-			{
+			public int compare(Dijkstravertex v1, Dijkstravertex v2) {
 				return v1.getVertex().getDistance()-v2.getVertex().getDistance();
 	        }
 		};
-	
-	/**
-	 * <p>
-	 * A comparator method to compare two given Dijkstravertices.
-	 * </p>
-	 * 
-	 * @return
-	 * 
-	 */
-	public static Comparator<Dijkstravertex> indexComparator = new Comparator<Dijkstravertex>()
-	{
-		@Override
-		public int compare(Dijkstravertex v1, Dijkstravertex v2) 
-		{
-			return v1.getVertex().getIndex()-v2.getVertex().getIndex();
-		}
-	};
+		
+	public static Comparator<Dijkstravertex> indexComparator = new Comparator<Dijkstravertex>(){
+				
+				@Override
+				public int compare(Dijkstravertex v1, Dijkstravertex v2) {
+					return v1.getVertex().getIndex()-v2.getVertex().getIndex();
+		        }
+			};
 		
 
 	
 	/**
-	 * <p>
-	 * 
-	 * </p>
-	 * 
 	 * @return Returns true if the graph exists and contains start and end. So it returns checkParameters()
 	 */
 	public boolean performAStep()
@@ -234,11 +162,14 @@ class Dijkstra
 				}
 				curVertex.setVisited(true);
 				unvisitedHash.remove(curVertex.getVertex().getIndex());
-				curVertex = unvisited.poll();	
+				//System.out.println("removing vertex "+curVertex.getVertex().getIndex()+" from unvisitedHash." );
+				
+				curVertex = unvisited.poll();
+				
+				
 				
 			}
-			// steps = 0
-			else
+			else // steps = 0
 			{
 				startVertex.setColor(Color.GREEN);
 				Dijkstravertex start = new Dijkstravertex(startVertex);
@@ -247,14 +178,31 @@ class Dijkstra
 				start.setEdges(startEdges);
 				visited.add(start);
 				curVertex = start;
+				//System.out.println("start vertex: "+curVertex.getVertex().getIndex()+", number of edges: "+curVertex.getEdges().size());
 				if(this.start == -1)
 				{
+					//System.out.println("start was -1.");
 					curVertex = null;
 				}
 			}
 			
+			
+			
 			if(curVertex == null || curVertex.getVertex().getDistance() == (int) Double.POSITIVE_INFINITY || curVertex.getVertex().getIndex() == end)
 			{
+				/*System.out.println("reached the end 1!");
+				if(curVertex == null)
+				{
+					System.out.println("curVertex is null!");
+				}
+				if(curVertex.getVertex().getDistance() == (int) Double.POSITIVE_INFINITY)
+				{
+					System.out.println("Distance is infinity!");
+				}
+				if(curVertex.getVertex().getIndex() == end)
+				{
+					System.out.println("Actually reached the end!");
+				}*/
 				finished = true;
 				if(curVertex != null && curVertex.getVertex().getIndex() == end && curVertex.getVertex().getDistance() != (int) Double.POSITIVE_INFINITY)
 				{
@@ -266,49 +214,60 @@ class Dijkstra
 			}
 			else
 			{
+				//System.out.println("current vertex: "+curVertex.getVertex().getIndex());
 				curVertex.getVertex().setColor(Color.GREEN);
 				visited.add(curVertex);
-				// for the current vertex consider all of its unvisited neighbors and recalculate their distance to the start-vertex
-				List<Edge> edgesToCheck = curVertex.getEdges();
-				if(edgesToCheck == null | edgesToCheck.size() == 0)
-				{
-					// the current vertex has no more edges, do nothing
-				}
-				// the current vertex has edges
-				else
-				{
-					for(int i = 0; i<=edgesToCheck.size()-1; i=i+1)
-					{
-						if(edgesToCheck.size() != 0)
+				// for the current vertex consider all of its unvisited neighbors
+							// and recalculate their distance to the start-vertex
+						List<Edge> edgesToCheck = curVertex.getEdges();
+						if(edgesToCheck == null | edgesToCheck.size() == 0)
 						{
-							Edge curEdge = edgesToCheck.get(i);
-							int possibleDist = curEdge.getWeight()+curVertex.getVertex().getDistance();
-							int destination = curEdge.getEnd().getIndex();
-									
-							if(!unvisitedHash.containsKey(destination))
-							{
-								// the hash do not contain the desired vertex, so do nothing
-							}
-							if(unvisitedHash.containsKey(destination))
-							{
-								curVertex.getEdges().get(i).setColor(Color.GREEN);
-								Dijkstravertex tmp = unvisitedHash.get(destination);
-								double currentBestDist = tmp.getVertex().getDistance();
-								if(possibleDist < currentBestDist)
-								{
-									unvisitedHash.remove(destination);
-									unvisited.remove(tmp);
-									tmp.getVertex().setDistance(possibleDist);
-									tmp.setPrecursor(curVertex);
-									unvisitedHash.put(destination, tmp);
-									unvisited.add(tmp);
-								}
-							}
+							//System.out.println("no edges to check.");
+							// the current vertex has no more edges, do nothing
 						}
+						else
+						{
+							//System.out.println("current vertex: "+curVertex.getVertex().getIndex());
+							//System.out.println("number of edges to check: "+edgesToCheck.size());
+							for(int i = 0; i<=edgesToCheck.size()-1; i=i+1)
+							{
+								if(edgesToCheck.size() != 0)
+								{
+									//System.out.println("checking edges");
+									Edge curEdge = edgesToCheck.get(i);
+									int possibleDist = curEdge.getWeight()+curVertex.getVertex().getDistance();
+									int destination = curEdge.getEnd().getIndex();
+									
+									if(!unvisitedHash.containsKey(destination))
+									{
+										//System.out.println("unvisitedHash does not contain vertex "+destination);
+									}
+									if(unvisitedHash.containsKey(destination))
+									{
+										//System.out.println("vertex "+destination+" is still unvisited.");
+										// not sure if this works
+										curVertex.getEdges().get(i).setColor(Color.GREEN);
+										Dijkstravertex tmp = unvisitedHash.get(destination);
+										double currentBestDist = tmp.getVertex().getDistance();
+										if(possibleDist < currentBestDist)
+										{
+											unvisitedHash.remove(destination);
+											//System.out.println("removing vertex "+destination+" from unvisitedHash.");
+											unvisited.remove(tmp);
+											tmp.getVertex().setDistance(possibleDist);
+											tmp.setPrecursor(curVertex);
+											unvisitedHash.put(destination, tmp);
+											unvisited.add(tmp);
+											//System.out.println("updated distance of circle "+tmp.getVertex().getIndex()+" to "+tmp.getVertex().getDistance());
+											
+										}
+									}
+								}
 								
-					}	
-				}
-				this.steps = this.steps+1;
+							}
+							
+						}
+						this.steps = this.steps+1;
 			}
 		
 			// if the checkParameters() was ok, then there were no problems in the Dijkstra
@@ -317,12 +276,11 @@ class Dijkstra
 		else
 		{
 			return false;
-		}	
+		}
+		
+		
 	}
 	
-	/**
-	 * 
-	 */
 	public void recolor()
 	{
 		List<Edge>grayEdges;
@@ -339,33 +297,23 @@ class Dijkstra
 					e.setColor(Color.BLACK);
 				}
 			}
-			this.steps = 0;	
+			this.steps = 0;
+			
 		}
 		unvisitedHash = new Hashtable<Integer, Dijkstravertex>();
 		visited = new ArrayList<Dijkstravertex>();
 	}
 	
-	/**
-	 * 
-	 */
 	public boolean reachedEnd()
 	{
 		return finished;
 	}
 	
-	/**
-	 * <p>
-	 * Setter method to set the status whether the Dijkstra is finished or not.
-	 * </p>
-	 */
 	public void setFinished(boolean b)
 	{
 		finished = b;
 	}
 	
-	/**
-	 * 
-	 */
 	public ArrayList<Dijkstravertex> getPath()
 	{
 		// this should be end
@@ -381,7 +329,20 @@ class Dijkstra
 				
 				path.add(curIndex);
 			}
+			
+			
+			
+			// print visited
+			/*System.out.println("");
+			System.out.println("visited:");
+			for(Dijkstravertex d : visited)
+			{
+				System.out.println("Vertex "+d.getVertex().getIndex()+" has precursor "+d.getPrecursor()+".");
+			}*/
 		}
-		return path;		
+		return path;
+		
 	}
+	
+	
 }
