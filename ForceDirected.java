@@ -47,8 +47,7 @@ class ForceDirected
 	
 	/**
 	 * <p>
-	 * The amount of iterations of the whole algorithm.<br>
-	 * An amount of 100 repetitions is recommended for most graphs.
+	 * The amount of iterations of the whole forceinduced relocation.
 	 * </p>
 	 */
 	int REPETITIONS = 50;
@@ -446,7 +445,7 @@ class ForceDirected
 								if((e.getStart().getIndex() == j & e.getEnd().getIndex() == k) || (e.getStart().getIndex() == k & e.getEnd().getIndex() == j))
 								{
 									
-									//calculate force between adjacent vertices
+									//calculate the negative force between adjacent vertices to repel them for a better representation
 									springForce = -1 * CONSTANTONE * Math.log(distance/CONSTANTTWO);
 									adjacent = true;
 								}
@@ -455,8 +454,8 @@ class ForceDirected
 						if(adjacent)
 						{
 							/* if  v.getX() is bigger than w.getX() then we have to 
-							 * reduce the x-coordinate of v to reduce the distance between v and w
-							 * for w we have to increase the x-coordinate to reduce the distance between v and w
+							 * increase the x-coordinate of v to increase the distance between v and w
+							 * for w we have to reduce the x-coordinate to increase the distance between v and w
 							 */
 							if(v.getX() > w.getX())
 							{
@@ -471,8 +470,8 @@ class ForceDirected
 							}
 							
 							/* if  v.getY() is bigger than w.getY() then we have to 
-							 * reduce the y-coordinate of v to reduce the distance between v and w
-							 * for w we have to increase the y-coordinate to reduce the distance between v and w
+							 * increase the y-coordinate of v to increase the distance between v and w
+							 * for w we have to reduce the y-coordinate to increase the distance between v and w
 							 */
 							if(v.getY() > w.getY())
 							{
