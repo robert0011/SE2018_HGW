@@ -1,0 +1,86 @@
+\documentclass{article}
+\usepackage{graphicx,hyperref,amsmath,natbib,bm,url}
+\usepackage{microtype,todonotes}
+\usepackage[american]{babel}
+\usepackage[a4paper,text={16.5cm,25.2cm},centering]{geometry}
+\usepackage[compact,small]{titlesec}
+\setlength{\parskip}{1.2ex}
+\setlength{\parindent}{0em}
+\clubpenalty = 10000
+\widowpenalty = 10000
+\usepackage{kpfonts}
+\usepackage[T1]{fontenc}
+\usepackage{float}
+
+\begin{document}
+\begin{center}
+	\textbf{\Huge{Software Requirements Specification}}
+\end{center}
+\section{Content of the product}
+The compressed directory contains the following files:
+\begin{itemize}
+\item .java files for all classes and tests
+\item The documentation of all files as .html
+\item Two UML class diagrams (one with variables and functions, one with classnames only) as .pdf files
+\item Documentation of the tests as .pdf file
+\item Background pictures for the GUI as .jpg files
+\item Some .txt files which can be selected by the user (some are also needed for tests)
+\end{itemize}
+
+
+\section{Definitions, acronyms and abbreviations}
+Since one functional requirement demands a proper graph layout via one force directed layout algorithm, we will now define an aesthetic layout for graphs. Such a layout has three main properties. First, an even vertex distribution is requested. As second property, the graph should be drawn as symmetrically (in regard to the representation of the graph) as possible. The last requested property is that all edges should be nearly of equal length. If a graph layout does fulfill more or rather better than an other layout, so is the first one more aesthetically pleasing than the last one. \\
+Above all cliques are separated in an aesthetic layout (if present). 
+
+\section{References}
+For the force directed algorithm we used the source "Force-Directed Drawing Algorithms" by Stephen G. Kobourov. More precisely, we adopted the core idea of the algorithms of Eades from p.385 and Fruchterman and Reingold p.387 figure 12.2.
+
+\section{Product perspective}
+The product is supposed to be open source. It is Java based and developed under the usage of the Java development kit jdk 1.8.0\_171 and the Java runtime environment jre 1.8.0\_171, both use the current Java 8 release. For the tests we chose JUnit 5 as the testing framework, which requires Java 8 as runtime environment. The software is developed for graph visualization and manipulation. Furthermore, the Dijkstra algorithm can be executed on the graph to find a shortest path between two given vertices (if such a path exists). The process of finding a path shall be displayed step-wisely. There shall also be the option to skip right to the last step of the algorithm after the fist step is done.
+
+
+The software contains following functionalities:
+\begin{itemize}
+\item Add vertices manually (not available after loading a graph)
+\item Remove a chosen vertex manually
+\item Add an edge between two chosen vertices. The weight of the edge can be chosen as a non-negative integer
+\item Remove an existing edge between two vertices
+\item Show/hide edgeweights
+\item Move a vertex (and also its incident edges)
+\item Find a shortest path between two vertices via Dijkstra algorithm
+\item Load a graph from a .txt file and adjust the layout via one force directed layout algorithm to get a more aesthetic layout
+\item Change the background picture
+\item Reset the draw panel (delete the drawn graph)
+\end{itemize}
+
+\section{User characteristics}
+This program is made for users with interests in graphs.
+
+\section{General constraints}
+\begin{itemize}
+\item The edge-weights are supposed to be non-negative, since the Dijkstra algorithm does not operate as intended on graphs that contain circles with negative weights. Therefore is neither the input of letters and symbols nor the input of negative integers possible at the setting of edge-weights.
+\item The amount of vertices in a .txt file, which can be drawn nicely, is limited by the screensize. Since every vertex is drawn as a circle with a radius of 10 pixels they start to overlap if too many vertices are drawn. Isolated vertices (those without any edges) start to pile up on the boundary of the force directed layout placement (which is the area 100 pixels from the maximal width and height of the used screen), since they only get repelled.
+\item The amount of manually drawable vertices is also only restricted by the screensize. When adding vertices manually, there is an invisible circle with a radius of 25 pixel, which inhibits the drawing of any further vertices to prevent overlapping. Hence it is possible that at some point there is no further vertex drawable, since the whole screen (except the draw-inhibtion-zone around every vertex) is already filled with vertices.
+\item The software only supports directed graphs. The software does not support multigraphs (in which multiple edges between two vertices can occur).
+\end{itemize}
+
+\section{User requirements}
+\textbf{Functional requirements} \\
+The software shall fulfill the following functional conditions:
+\begin{itemize}
+\item When left-clicking on the DrawPanel (this area is marked by the background picture), a new Vertex shall be displayed.
+\item 
+\end{itemize}  
+
+\textbf{Nonfunctional requirements} \\
+
+\section{System requirements}
+\textbf{Functional requirements} \\
+The software shall fulfill the following functional conditions:
+\begin{itemize}
+\item \item When left-clicking on the DrawPanel (this area is marked by the background picture), a new Vertex shall be displayed. The added vertices shall have indices that start with 0. (Starting with vertex 1) every vertex added shall have the index of the last added vertex +1.
+\end{itemize}  
+
+
+\textbf{Nonfunctional requirements}
+\end{document}
