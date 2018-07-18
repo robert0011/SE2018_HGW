@@ -7,17 +7,60 @@ import javax.swing.JOptionPane;
 
 class interSteps
 {
+	/**
+	 * <p>
+	 * A String which defines which algorithm shall be executed.
+	 * </p>
+	 */
 	private static String algorithm;
+	
+	/**
+	 * <p>
+	 * A drawpanel object on which the Dijkstra shall be executed.
+	 * </p>
+	 */
 	private DrawPanel d;
 	
-	// for the Dijkstra
+	/**
+	 * <p>
+	 * Startvertexnumber for the executed algorithm..
+	 * </p>
+	 */
 	public static int start = -1;
+	
+	/**
+	 * <p>
+	 * Endvertexnumber for the executed algorithm.
+	 * </p>
+	 */
 	public static int end;
+	
+	/**
+	 * <p>
+	 * An object from the Dijkstra constructor from the Dijkstra class, used to display the stepwise Dijkstra algorithm.
+	 * </p>
+	 */
 	Dijkstra testDijkstra;
+	
+	/**
+	 * <p>
+	 * Boolean which states whether the Dijkstra has reached the endvertex.<br>
+	 * Is true if the end is reached.
+	 * </p>
+	 */
 	private boolean reachedEnd = false;
 	
 	
-	
+	/**
+	 * <p>
+	 * Constructor for the interSteps object.
+	 * </p>
+	 * 
+	 * @param d An object of the drawpanel type.
+	 * @param alg String which contains the information, which algorithm shall be executed.
+	 * @param s Startvertex for the algorithm.
+	 * @param e Endvertex of the algorithm.
+	 */
 	public interSteps(DrawPanel d, String alg, int s, int e)
 	{
 		this.d = d;
@@ -32,122 +75,155 @@ class interSteps
 		reachedEnd = false;
 	}
 	
+	/**
+	 * <p>
+	 * Standardconstructor
+	 * </p>
+	 */
 	public interSteps()
 	{
-		//start = -1;
+		
 	}
 	
+	/**
+	 * <p>
+	 * Getter method, which returns used algorithm as String.
+	 * <p>
+	 * 
+	 * @return String with the name of the executed algorithm.
+	 */
 	public String getAlgorithm()
 	{
 		return algorithm;
 	}
 	
 	/**
+	 * <p>
+	 * Function for the stepwise execution of the Dijkstraalgorithm.
+	 * </p>
 	 * 
-	 * @param a
-	 * @return Returns true if Dijkstra is chosen and Dijkstra.checkParameters() returns true
+	 * @param a If this String contains the value "Dijkstra", the Dijkstraalgorithm will be executed stepwiseley.
 	 */
-	public boolean stepwise(String a)
+	public void stepwise(String a)
 	{
 		if(testDijkstra.steps == 0)
 		{
 			testDijkstra.setFinished(false);
 		}
 		
-		boolean toReturn = false;
 		if(this.getAlgorithm().equals("Dijkstra"))
 		{
-			toReturn = algDijkstra(start, end);
+			algDijkstra(start, end);
 		}
-		return toReturn;
 	}
 	
-	public boolean algDijkstra(int start, int end)
+	/**
+	 * <p>
+	 * Function which actual execute the Dijkstra algorithm using an Dijkstra object.
+	 * </p>
+	 * 
+	 * @param start Startvertex for the Dijkstra.
+	 * @param end Endvertex for the Dijkstra.
+	 */
+	public void algDijkstra(int start, int end)
 	{
-		boolean toReturn = false; 
-		// NEW
-		if(d.graph != null && d.graph.vertexSet != null && d.graph.vertexSet.containsKey(start) && d.graph.vertexSet.containsKey(end))
-		{
-			toReturn = testDijkstra.performAStep();
-		}
-		else
-		{
-			JOptionPane.showMessageDialog(null, "At least one of the vertices does not exist.");
-		}
+		testDijkstra.performAStep();
 		d.repaint();
 		if(testDijkstra.reachedEnd())
 		{
 			reachedEnd = true;
 		}
-		return toReturn;
 	
 	}
 	
-	public ArrayList<Dijkstravertex> skipDijkstraToEnd()
+	/**
+	 * <p>
+	 * Function to skip the stepwise representation of the Dijkstra to the final step after the first step was done. 
+	 * </p>
+	 */
+	public void skipDijkstraToEnd()
 	{
-		boolean ok = true;
-		while(!reachedEnd & ok)
+		while(!reachedEnd)
 		{
-			ok = stepwise("Dijkstra");
+			stepwise("Dijkstra");
 		}
-		
-		if(ok)
-		{
-			showPath();
-			return testDijkstra.getPath();
-		}
-		else
-		{
-			return new ArrayList<Dijkstravertex>();
-		}
-		
+		showPath();
 	}
 	
-	
-	
+	/**
+	 * 
+	 */
 	public void recolor()
 	{
 		testDijkstra.recolor();
 		d.repaint();
 	}
 	
+	/**
+	 * 
+	 * @param b
+	 */
 	public void setFinished(boolean b)
 	{
 		this.reachedEnd = b;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean isFinished()
 	{
 		return reachedEnd;
 	}
 	
+	/**
+	 * <p>
+	 * Setter method which sets the startvertex to the given.
+	 * </p>
+	 * 
+	 * @param s Index of the new startvertex.
+	 */
 	public void setStart(int s)
 	{
 		start =s;
 	}
 	
+	/**
+	 * <p>
+	 * Setter method which sets the endvertex to the given.
+	 * </p>
+	 * 
+	 * @param e Index of the new endvertex.
+	 */
 	public void setEnd(int e)
 	{
 		end = e;
 	}
 	
+	/**
+	 * <p>
+	 * Function which resets the Dijkstra object for the later reuse.
+	 * </p>
+	 */
 	public void destruct()
 	{
 		algorithm = new String();
 		start = -1;
 		end = -1;
-		testDijkstra.unvisitedHash = new Hashtable<Integer, Dijkstravertex>();
+		testDijkstra.unvisitedHash = new Hashtable<Integer, Dijkstravertex>();;
 	  	testDijkstra.visited = new ArrayList<Dijkstravertex>();
 		reachedEnd = false;
 		testDijkstra.steps = 0;
 		testDijkstra.startVertex = null;
 		testDijkstra.curVertex = null;
-		// if move or remove vertex was clicked and an algorithm is performed before the action is performed
-			// the blue vertex is recolored after call of this function
-		
-		d.blueVertex = new Vertex(0,0,0);
 	}
 	
+	/**
+	 * <p>
+	 * Function which shows the paths for the Dijkstra algorithm.
+	 * </p>
+	 */
 	public void showPath()
 	{
 		ArrayList<Dijkstravertex> path = testDijkstra.getPath();
