@@ -582,7 +582,9 @@ public class DrawPanel extends JPanel
 	}
 	
 	/**
-	 * 
+	 * <p>
+	 * Opens window for the question whether the chosen vertex shall be deleted.
+	 * </p>
 	 */
 	public void createRemoveVertexFrame()
 	{
@@ -669,7 +671,9 @@ public class DrawPanel extends JPanel
 	}
 	
 	/**
-	 * 
+	 * <p>
+	 * Opens window for the input of the edgeweight.
+	 * </p>
 	 */
 	public void createAddEdgeFrame()
 	{
@@ -768,7 +772,9 @@ public class DrawPanel extends JPanel
 	}
 	
 	/**
-	 * 
+	 * <p>
+	 * Function that actually draws the elements on the drawnpanel.
+	 * </p>
 	 */
 	@Override
     protected void paintComponent (Graphics g)
@@ -885,7 +891,14 @@ public class DrawPanel extends JPanel
 	}
 	
 	/**
+	 * <p>
+	 * Function that removes an edge by clicking two vertices.
+	 * </p>
 	 * 
+	 * @param a index of the first clicked vertex
+	 * @param b index of the second clicked vertex
+	 * 
+	 * @return true if the deletion was successful
 	 */
 	public boolean removeEdge(int a, int b)
 	{
@@ -907,7 +920,7 @@ public class DrawPanel extends JPanel
 	 * the newly constructed graph gets relocated by a force directed algorithm. 
 	 * </p>
 	 * 
-	 * @param path
+	 * @param path The filename of the file that shall be loaded
 	 * @return true if the file could be read in without any problems and returns false if a non- .txt file is chosen or if the path does not exist or if there are any inconsistencies in the file.
 	 * @throws FileNotFoundException
 	 */
@@ -1135,7 +1148,11 @@ public class DrawPanel extends JPanel
 		}	
 	}
 
-
+	/**
+	 * <p>
+	 * Function that opens a window with error messages if a incorrect file was tried to load.
+	 * </p>
+	 */
 	public void createInputErrorFrame()
 	{
 		JFrame frame = new JFrame();
@@ -1175,11 +1192,23 @@ public class DrawPanel extends JPanel
 		frame.setVisible(true);
 	}
 	
+	/**
+	 * <p>
+	 * Setter method to set the backgroundpicture.
+	 * </p>
+	 * 
+	 * @param b String with the name of the backgroundpicture
+	 */
 	public void setBackground(String b)
 	{
 		this.background = b;
 	}
 	
+	/**
+	 * <p>
+	 * Function to reset the booleans for later checks.
+	 * </p>
+	 */
 	public void resetBooleans()
 	{
 		menuDisabled = false;
