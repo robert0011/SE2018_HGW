@@ -1,4 +1,3 @@
-//import java.awt.BorderLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,28 +15,129 @@ import javax.swing.text.NumberFormatter;
 import java.awt.*;
 import java.awt.event.*;
 
-public class firstFrame {
-	
+/**
+ * The main method of the software.
+ * 
+ * @author C. Bruckmann, R. Wagner
+ */
+public class firstFrame 
+{
+	/**
+	 * <p>
+	 * interSteps object for the stepwise execution of the Dijkstra algorithm.
+	 * </p>
+	 */
 	public static interSteps testTheSteps = new interSteps();
+	
+	/**
+	 * <p>
+	 * The frame that contains the GUI.
+	 * </p>
+	 */
 	public JFrame frame;
+	
+	/**
+	 * <p>
+	 * The menubar object "Vertex".
+	 * </p>
+	 */
 	static JMenu mnVertex;
+	
+	/**
+	 * <p>
+	 * The menuitem of "Vertex" which triggers the function to move vertices by clicking.
+	 * </p>
+	 */
 	static JMenuItem mntmVertMove;
+	
+	/**
+	 * <p>
+	 * The menuitem of "Vertex" which triggers the function to remove vertices by clicking.
+	 * </p>
+	 */
 	static JMenuItem mntmVertRemove;
-	static JMenuItem mntmEdgeAdd ;
+	
+	/**
+	 * <p>
+	 * The menuitem of "Edge" which triggers the function to add an edge between two clicked vertices.
+	 * </p>
+	 */
+	static JMenuItem mntmEdgeAdd;
+	
+	/**
+	 * <p>
+	 * The menuitem of "Edge" which triggers the function to remove an edge between two clicked vertices.
+	 * </p>
+	 */
 	static JMenuItem mntmEdgeRemove;
+	
+	/**
+	 * <p>
+	 * The menuitem of "Load" which triggers the function to load the basic example of a loaded graph from a .txt file.
+	 * </p>
+	 */
 	static JMenuItem mntmExample;
+	
+	/**
+	 * <p>
+	 * The menuitem of "Load" which opens the window to open a .txt file from any local saved directory.
+	 * </p>
+	 */
 	static JMenuItem mntmFile;
+	
+	/**
+	 * <p>
+	 * The menuitem of "Algorithm" which triggers the Dijkstraalgorithm.
+	 * </p>
+	 */
 	static JMenuItem dijkstra;
+	
+	/**
+	 * <p>
+	 * The menuitem of "Settings" which triggers the function to change the backgroundpicture.
+	 * </p>
+	 */
 	static JMenuItem mntmBackground;
+	
+	/**
+	 * <p>
+	 * The menuitem of "Settings" which triggers the reset function to clear the drawpanel.
+	 * </p>
+	 */
 	static JMenuItem mntmReset;
 	
+	/**
+	 * <p>
+	 * The menubar object "Edge".
+	 * </p>
+	 */
 	static JMenu mnEdge;
+	
+	/**
+	 * <p>
+	 * The menubar object "Algorithm".
+	 * </p>
+	 */
 	static JMenu mnAlgorithm;
+	
+	/**
+	 * <p>
+	 * The menubar object "Load".
+	 * </p>
+	 */
 	static JMenu mnLoad;
+	
+	/**
+	 * <p>
+	 * The menubar object "Settings".
+	 * </p>
+	 */
 	static JMenu mnSettings;
 
 	/**
+	 * <p>
 	 * Launch the application.
+	 * </p>
 	 */
 	public static void main(String[] args) 
 	{
@@ -60,33 +160,39 @@ public class firstFrame {
 	}
 
 	/**
+	 * <p>
 	 * Create the application.
+	 * </p>
 	 */
 	public firstFrame()
 	{
 		initialize();
 	}
 	
+	/**
+	 * <p>
+	 * Create the drawpanel.
+	 * </p>
+	 */
 	private static DrawPanel drawPanel;
 
 	/**
+	 * <p>
 	 * Initialize the contents of the frame.
+	 * </p>
 	 */
 	private void initialize()
 	{
 		frame = new JFrame("Graph-Toolbox");
 		frame.getContentPane().setBackground(Color.BLACK);
 		frame.setBackground(new Color(184, 134, 11));
-		//frame.setBounds(50, 50, 1300, 800);
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
-		
+		frame.getContentPane().setLayout(null);		
 		
 		drawPanel = new DrawPanel();
 		drawPanel.setForeground(Color.BLACK);
-		drawPanel.lblMouseCoords.setText("COORD");
-		
+		drawPanel.lblMouseCoords.setText("COORD");	
 		
 		// new size
 		Toolkit tk = Toolkit.getDefaultToolkit();
@@ -99,8 +205,7 @@ public class firstFrame {
 		//create menu bar
 		JMenuBar menuBar = new JMenuBar();
 		menuBar.setBounds(0, 0, 426, 39);
-		frame.getContentPane().add(menuBar);
-		
+		frame.getContentPane().add(menuBar);	
 		
 		mnVertex = new JMenu("Vertex");
 		menuBar.add(mnVertex);
@@ -112,8 +217,6 @@ public class firstFrame {
 		menuBar.add(mnLoad);
 		mnSettings = new JMenu("Settings");
 		menuBar.add(mnSettings);
-		
-		
 		
 		//vertex menu items
 		mntmVertMove = new JMenuItem("move");
@@ -132,14 +235,11 @@ public class firstFrame {
 						drawPanel.addOrRemoveEdgeClicked = false;
 						drawPanel.addEdgeClicked = false;
 						drawPanel.marked = false;
-						//drawPanel.blueVertex = new Vertex(0,0,0);
 						drawPanel.menuDisabled = true;
 					}
 					else
 					{
-						//System.out.println("menu disabled");
 						JOptionPane.showMessageDialog(null, "Please finish your action.");
-						
 					}
 					
 				}		
@@ -160,20 +260,12 @@ public class firstFrame {
 					drawPanel.addEdgeClicked = false;
 					drawPanel.marked = false;
 					drawPanel.removeVertex();
-					drawPanel.menuDisabled = true;				}
+					drawPanel.menuDisabled = true;				
+				}
 				else
 				{
-					//System.out.println("menu disabled");
 					JOptionPane.showMessageDialog(null, "Please finish your action.");
 				}
-				
-				
-				//drawPanel.col = Color.CYAN;
-				//drawPanel.repaint();
-				
-				
-				
-				//drawPanel.blueVertex = new Vertex(0,0,0);
 			}
 		});
 		
@@ -209,12 +301,10 @@ public class firstFrame {
 					drawPanel.clickedMoveVertex = false;
 					drawPanel.clickedRemoveVertex = false;
 					drawPanel.marked = false;
-					//drawPanel.blueVertex = new Vertex(0,0,0);
 					drawPanel.menuDisabled = true;
 				}
 				else
 				{
-					//System.out.println("menu disabled");
 					JOptionPane.showMessageDialog(null, "Please finish your action.");
 				}
 				
@@ -233,14 +323,11 @@ public class firstFrame {
 					drawPanel.startgiven = false;
 					drawPanel.clickedMoveVertex = false;
 					drawPanel.clickedRemoveVertex = false;
-					//drawPanel.blueVertex = null;
 					drawPanel.marked = false;
-					//drawPanel.blueVertex = new Vertex(0,0,0);
 					drawPanel.menuDisabled = true;
 				}
 				else
 				{
-					//System.out.println("menu disabled");
 					JOptionPane.showMessageDialog(null, "Please finish your action.");
 				}
 				
@@ -255,11 +342,13 @@ public class firstFrame {
 			public void actionPerformed(ActionEvent loadingAction) 
 			{
 				drawPanel.reset();
-				try {
+				try 
+				{
 					drawPanel.loadFile(".\\EXgraph.txt");
-				} catch (FileNotFoundException e) {
+				} 
+				catch (FileNotFoundException e)
+				{
 					// problems with the file are handled in the class DrawPanel
-					//System.out.println("EXgraph.txt could not be found.");
 				}
 				drawPanel.repaint();
 			}
@@ -273,12 +362,13 @@ public class firstFrame {
 				drawPanel.reset();
 				OeffnenDialogClass odc = new OeffnenDialogClass();
 		        String file = odc.oeffnen();
-		        //System.out.println(file);
-		        try {
+		        try
+		        {
 					drawPanel.loadFile(file);
-				} catch (FileNotFoundException e) {
+				} 
+		        catch (FileNotFoundException e)
+		        {
 					// problems with the file are handled in the class DrawPanel
-					//System.out.println("Your file could not be found.");
 				}
 		        drawPanel.repaint();
 			}
@@ -299,7 +389,6 @@ public class firstFrame {
 				createDijkstraFrame();
 			}
 		});
-		
 		
 		//settings menu items
 		mntmReset = new JMenuItem("reset");
@@ -322,18 +411,26 @@ public class firstFrame {
 		});
 	}
 	
+	/**
+	 * <p>
+	 * Function which enables the menubar after the completition of the Dijkstra.
+	 * </p>
+	 */
 	public static void enable()
 	{
 		mnVertex.setEnabled(true);
 		mnEdge.setEnabled(true);
 		mnAlgorithm.setEnabled(true);
 		mnLoad.setEnabled(true);
-		mnSettings.setEnabled(true);
-		
+		mnSettings.setEnabled(true);	
 		drawPanel.resetBooleans();
-		//drawPanel.menuDisabled = false;
 	}
 	
+	/**
+	 * <p>
+	 * Function which enables the menuitems of the menubar after the completition of the Dijkstra.
+	 * </p>
+	 */
 	public static void enableItems(boolean b)
 	{
 		mntmVertMove.setEnabled(b);
@@ -344,13 +441,10 @@ public class firstFrame {
 		mntmFile.setEnabled(b);
 		dijkstra.setEnabled(b);
 		mntmBackground.setEnabled(b);
-		mntmReset.setEnabled(b);
-		
+		mntmReset.setEnabled(b);	
 	}
 	
-	
-
-	public static void createRemoveEdgeFrame() 
+	/*public static void createRemoveEdgeFrame() 
 	{
 		JFrame frame = new JFrame();
 		frame.setBounds(350, 200, 225, 80);
@@ -389,17 +483,20 @@ public class firstFrame {
 		frame.getContentPane().add(btnCancel);
 		frame.getContentPane().add(btnRemoveEdge);
 		frame.setVisible(true);
-	}
+	}*/
 	
+	/**
+	 * <p>
+	 * Function which opens the window of the Dijkstra algorithm for the input of the start and end vertex.<br>
+	 * Also displays the window for the "next step" or "skip to the end" options of the stepwise approach.
+	 * </p>
+	 */
 	public static void createDijkstraFrame() 
 	{
 		JFrame frame = new JFrame();
 		frame.setBounds(350, 250, 275, 150);
-		//frame.setSize(200, 80);
 		frame.getContentPane().setLayout(null);
-		
-		/*JTextField txtC1 = new JTextField(1);
-		JTextField txtC2 = new JTextField(1);*/
+
 		JLabel txt = new JLabel();
 		txt.setText("Please enter two vertices.");
 		txt.setBounds(0, 0, 300, 20);
@@ -434,10 +531,7 @@ public class firstFrame {
 				drawPanel.showVertexWeights = true;
 				
 				if(testTheSteps == null || testTheSteps.start == -1)
-				{
-					//System.out.println("testTheSteps = null");
-					//System.out.println("");
-					
+				{	
 					if(field1.getValue() != null & field2.getValue() != null)
 					{
 							
@@ -448,37 +542,28 @@ public class firstFrame {
 						if(!success)
 						{
 							frame.dispose();
-							// NEW
 							testTheSteps.destruct();
-							
 							enable();
-						}
-							
-						
-						
+						}						
 					}
 					else
 					{
 						JOptionPane.showMessageDialog(null, "You did not fill in the vertices.");
 						frame.dispose();
 						enable();
-					}
-					
-					
+					}					
 				}
 				else
 				{
 					testTheSteps.stepwise("Dijkstra");
-				}
-				
+				}			
 				
 				if(testTheSteps.isFinished())
 				{
 					btnNext.setEnabled(false);
 					btnSkip.setEnabled(false);
 					testTheSteps.showPath();
-				}
-				
+				}	
 			}
 		});
 		
@@ -499,18 +584,11 @@ public class firstFrame {
 				  	enable();
 				  	if(testTheSteps != null && testTheSteps.testDijkstra != null && testTheSteps.testDijkstra.curVertex != null)
 				  	{
-				  		//ArrayList<Dijkstravertex> p = testTheSteps.testDijkstra.getPath();
-					  	/*if(p != null)
-					  	{
-					  		createPathFrame();
-					  	}*/
 					  	drawPanel.showVertexWeights = false;
 					  	testTheSteps.recolor();
 					  	testTheSteps.destruct();
-					  	// really NEW
 					  	testTheSteps = new interSteps();
-				  	}
-				  	
+				  	}			  	
 				  	frame.dispose();
 					
 			  }
@@ -522,8 +600,12 @@ public class firstFrame {
 		frame.getContentPane().add(field2);
 		frame.setVisible(true);
 	}
-	
-	
+
+	/**
+	 * <p>
+	 * Function to create and display the window for the backgroundpicture selection.
+	 * </p>
+	 */
 	public static void createBackgroundFrame() 
 	{
 		JFrame frame = new JFrame();
@@ -666,19 +748,4 @@ public class firstFrame {
 		frame.getContentPane().add(btnD);
 		frame.setVisible(true);		
 	}
-	
-	/*public static void createPathFrame()
-	{
-		ArrayList<Dijkstravertex> p = testTheSteps.testDijkstra.getPath();
-		//System.out.println("");
-		//System.out.println("Path:");
-		if(p != null && p.size()!=0)
-		{
-			for(Dijkstravertex i : p)
-			{
-				System.out.print(i.getVertex().getIndex() + ", ");
-			}
-		}
-		System.out.println("");
-	}*/
 }
