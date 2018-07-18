@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016/W32TeX) (preloaded format=xelatex 2016.10.28)  18 JUL 2018 21:50
+This is XeTeX, Version 3.14159265-2.6-0.99996 (TeX Live 2016/W32TeX) (preloaded format=xelatex 2016.10.28)  18 JUL 2018 22:17
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1114,17 +1114,17 @@ Package microtype Info: Loading generic settings for font family
  [1
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 75--76
+Underfull \hbox (badness 10000) in paragraph at lines 78--79
 
  []
 
-[2]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 86.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 86.
+[2] [3]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 94.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 94.
  (./Software_requirements_specification.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 86.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 86.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 86.
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 94.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 94.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 94.
  ) 
 Here is how much of TeX's memory you used:
  23085 strings out of 493589
@@ -1133,6 +1133,6 @@ Here is how much of TeX's memory you used:
  26171 multiletter control sequences out of 15000+600000
  25750 words of font info for 21 fonts, out of 8000000 for 9000
  1347 hyphenation exceptions out of 8191
- 62i,5n,67p,744b,349s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 62i,5n,67p,744b,408s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on Software_requirements_specification.pdf (2 pages).
+Output written on Software_requirements_specification.pdf (3 pages).

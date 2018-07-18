@@ -69,7 +69,10 @@ This program is made for users with interests in graphs.
 The software shall fulfill the following functional conditions:
 \begin{itemize}
 \item When left-clicking on the DrawPanel (this area is marked by the background picture), a new Vertex shall be displayed.
-\item 
+\item The user shall be able to move vertices in the DrawPanel. This can be done with two clicks in the DrawPanel: After the first click, the selected vertex is colored blue. The second click specifies where the user wants the blue vertex to be. After the second click the blue vertex shall be moved to the specified position.
+\item There shall be the option to remove vertices by clicking on the vertex the user wants to be removed. Afterwards the selected vertex shall be marked and a frame shall open which asks the user if he is sure he wants to remove that vertex.
+\item There shall be the option to add an edge to the graph via clicking twice on the drawPanel: with the first click the start vertex is selected and with the second click the end vertex is selected. Ater the second click a frame shall open which asks the user to input a weight for the edge. It shall only be possible to input a non-negative integer for the weight.
+\item It shall be possible to choose whether the edge-weights are displayed or not.( Via clicking on the menu "Edges" there shall be the option"show weights".) 
 \end{itemize}  
 
 \textbf{Nonfunctional requirements} \\
@@ -78,7 +81,12 @@ The software shall fulfill the following functional conditions:
 \textbf{Functional requirements} \\
 The software shall fulfill the following functional conditions:
 \begin{itemize}
-\item \item When left-clicking on the DrawPanel (this area is marked by the background picture), a new Vertex shall be displayed. The added vertices shall have indices that start with 0. (Starting with vertex 1) every vertex added shall have the index of the last added vertex +1.
+\item When left-clicking on the DrawPanel (this area is marked by the background picture), a new Vertex shall be displayed. The added vertices shall have indices that start with 0. (Starting with vertex 1) every vertex added shall have the index of the last added vertex +1.
+\item If the user wants to remove a vertex when there are no vertices displayed, an error message shall be shown.
+\item If the user wants to add an edge when there are no vertices displayed, an error message shall be shown.
+\item It shall not be possible for the user to input letters or symbols as edge-weights. Negative edge-weights shall be forbidden as well.
+\item If the user wants to remove an edge when there are no vertices displayed, an error message shall be shown.
+
 \end{itemize}  
 
 
