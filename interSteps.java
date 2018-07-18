@@ -77,16 +77,6 @@ class interSteps
 	
 	/**
 	 * <p>
-	 * Standardconstructor
-	 * </p>
-	 */
-	public interSteps()
-	{
-		
-	}
-	
-	/**
-	 * <p>
 	 * Getter method, which returns used algorithm as String.
 	 * <p>
 	 * 
@@ -151,7 +141,9 @@ class interSteps
 	}
 	
 	/**
-	 * 
+	 * <p>
+	 * Function for the coloring and recoloring of the paths during the Dijkstra algorithm
+	 * </p>
 	 */
 	public void recolor()
 	{
@@ -160,6 +152,9 @@ class interSteps
 	}
 	
 	/**
+	 * <p>
+	 * Setter method, to set the boolean which states if the Dijkstra is finished or not.
+	 * </p>
 	 * 
 	 * @param b
 	 */
@@ -169,8 +164,10 @@ class interSteps
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * <p>
+	 * Getter method which returns the boolean which states if the Dijkstra is finished or not.
+	 * </p>
+	 * @return true if the Dijkstra is finished.
 	 */
 	public boolean isFinished()
 	{

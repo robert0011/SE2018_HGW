@@ -9,21 +9,107 @@ import java.util.Queue;
 
 import javax.swing.JOptionPane;
 
+/**
+ * <p>
+ * The Dijkstra algorithm calculates the shortest path between two vertices, if such a path exists.
+ * </p>
+ * 
+ * @author C. Bruckmann, R. Wagner
+ *
+ */
 class Dijkstra
 {
+	/**
+	 * <p>
+	 * Boolean for the state of completition of the algorithm.
+	 * </p>
+	 */
 	public static boolean finished = false;
+	
+	/**
+	 * <p>
+	 * Integer that defines the startingpoint of this algorithm.
+	 * </p>
+	 */
 	public static int start;
+	
+	/**
+	 * <p>
+	 * 
+	 * </p>
+	 */
 	public static List<Edge> startEdges = new ArrayList<Edge>();
+	
+	/**
+	 * <ü>
+	 * An Dijkstravertex which contains the current vertex.
+	 * </p>
+	 */
 	public static Dijkstravertex curVertex;
+	
+	/**
+	 * <p>
+	 * 
+	 * </p>
+	 */
 	private static int end;
+	
+	/**
+	 * <p>
+	 * 
+	 * </p>
+	 */
 	public static Hashtable<Integer, Dijkstravertex> unvisitedHash;
+	
+	/**
+	 * <p>
+	 * 
+	 * </p>
+	 */
 	public static List<Dijkstravertex> visited;
+	
+	/**
+	 * 
+	 */
 	public int steps = 0;
+	
+	/**
+	 * <p>
+	 * 
+	 * </p>
+	 */
 	public Vertex startVertex;
+	
+	/**
+	 * <p>
+	 * 
+	 * </p>
+	 */
 	private Queue<Dijkstravertex> unvisited = new PriorityQueue<>(distanceComparator);
+	
+	/**
+	 * <p>
+	 * 
+	 * </p>
+	 */
 	public static boolean graphRead = true;
+	
+	/**
+	 * <p>
+	 * 
+	 * </p>
+	 */
 	public static boolean startAndEndInG = false;
 	
+	/**
+	 * <p>
+	 * 
+	 * </p>
+	 *
+	 * @param s Index of the startvertex
+	 * @param e Index of the endvertex
+	 * @param g Graph on which the Dijkstra shall be executed
+	 */
 	public Dijkstra(int s, int e, Graph g)
 	{
 		start = s;
@@ -82,11 +168,7 @@ class Dijkstra
 
 				}
 			}
-		}
-
-		
-		
-		
+		}	
 	}
 	
 	/**
