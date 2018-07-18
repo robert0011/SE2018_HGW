@@ -35,75 +35,77 @@ class Dijkstra
 	
 	/**
 	 * <p>
-	 * 
+	 * List of edges from the startingpoint of the algorithm.
 	 * </p>
 	 */
 	public static List<Edge> startEdges = new ArrayList<Edge>();
 	
 	/**
-	 * <ü>
-	 * An Dijkstravertex which contains the current vertex.
+	 * <p>
+	 * A Dijkstravertex which contains the current vertex.
 	 * </p>
 	 */
 	public static Dijkstravertex curVertex;
 	
 	/**
 	 * <p>
-	 * 
+	 * Current vertex.
 	 * </p>
 	 */
 	private static int end;
 	
 	/**
 	 * <p>
-	 * 
+	 * A hashtable of integers and unvisited Dijkstravertices
 	 * </p>
 	 */
 	public static Hashtable<Integer, Dijkstravertex> unvisitedHash;
 	
 	/**
 	 * <p>
-	 * 
+	 * List for already visited Dijkstravertices.
 	 * </p>
 	 */
 	public static List<Dijkstravertex> visited;
 	
 	/**
-	 * 
+	 * <p>
+	 * Counter for the amount of steps taken.
+	 * </p>
 	 */
 	public int steps = 0;
 	
 	/**
 	 * <p>
-	 * 
+	 * The startvertex of the Dijkstra.
 	 * </p>
 	 */
 	public Vertex startVertex;
 	
 	/**
 	 * <p>
-	 * 
+	 * Queue with unvisited Dijkstravertices.
 	 * </p>
 	 */
 	private Queue<Dijkstravertex> unvisited = new PriorityQueue<>(distanceComparator);
 	
 	/**
 	 * <p>
-	 * 
+	 * Boolean that 
 	 * </p>
 	 */
 	public static boolean graphRead = true;
 	
 	/**
 	 * <p>
-	 * 
+	 * Boolean that checks whether the start and endvertex are one and the same vertex.
 	 * </p>
 	 */
 	public static boolean startAndEndInG = false;
 	
 	/**
 	 * <p>
-	 * 
+	 * Constructor for the Dijkstra object.
 	 * </p>
 	 *
 	 * @param s Index of the startvertex
@@ -221,6 +223,9 @@ class Dijkstra
 
 	
 	/**
+	 * <p>
+	 * Actual calculation of one step of the Dijkstra.
+	 * </p>
 	 * @return Returns true if the graph exists and contains start and end. So it returns checkParameters()
 	 */
 	public boolean performAStep()
@@ -272,19 +277,6 @@ class Dijkstra
 			
 			if(curVertex == null || curVertex.getVertex().getDistance() == (int) Double.POSITIVE_INFINITY || curVertex.getVertex().getIndex() == end)
 			{
-				/*System.out.println("reached the end 1!");
-				if(curVertex == null)
-				{
-					System.out.println("curVertex is null!");
-				}
-				if(curVertex.getVertex().getDistance() == (int) Double.POSITIVE_INFINITY)
-				{
-					System.out.println("Distance is infinity!");
-				}
-				if(curVertex.getVertex().getIndex() == end)
-				{
-					System.out.println("Actually reached the end!");
-				}*/
 				finished = true;
 				if(curVertex != null && curVertex.getVertex().getIndex() == end && curVertex.getVertex().getDistance() != (int) Double.POSITIVE_INFINITY)
 				{
@@ -304,13 +296,11 @@ class Dijkstra
 						List<Edge> edgesToCheck = curVertex.getEdges();
 						if(edgesToCheck == null | edgesToCheck.size() == 0)
 						{
-							//System.out.println("no edges to check.");
 							// the current vertex has no more edges, do nothing
 						}
 						else
 						{
-							//System.out.println("current vertex: "+curVertex.getVertex().getIndex());
-							//System.out.println("number of edges to check: "+edgesToCheck.size());
+
 							for(int i = 0; i<=edgesToCheck.size()-1; i=i+1)
 							{
 								if(edgesToCheck.size() != 0)
