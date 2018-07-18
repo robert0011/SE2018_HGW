@@ -72,7 +72,12 @@ The software shall fulfill the following functional conditions:
 \item The user shall be able to move vertices in the DrawPanel. This can be done with two clicks in the DrawPanel: After the first click, the selected vertex is colored blue. The second click specifies where the user wants the blue vertex to be. After the second click the blue vertex shall be moved to the specified position.
 \item There shall be the option to remove vertices by clicking on the vertex the user wants to be removed. Afterwards the selected vertex shall be marked and a frame shall open which asks the user if he is sure he wants to remove that vertex.
 \item There shall be the option to add an edge to the graph via clicking twice on the drawPanel: with the first click the start vertex is selected and with the second click the end vertex is selected. Ater the second click a frame shall open which asks the user to input a weight for the edge. It shall only be possible to input a non-negative integer for the weight.
-\item It shall be possible to choose whether the edge-weights are displayed or not.( Via clicking on the menu "Edges" there shall be the option"show weights".) 
+\item It shall be possible to choose whether the edge-weights are displayed or not.( Via clicking on the menu "Edges" there shall be the option"show weights".)
+\item The user shall be able to remove edges by clicking first on the start vertex of the edge and clicking on the end vertex afterwards. 
+
+\item It shall be possible to read in a graph as a .txt file. The format shall be as follows:
+The first line has to give the number of vertices \\
+
 \end{itemize}  
 
 \textbf{Nonfunctional requirements} \\
@@ -86,6 +91,13 @@ The software shall fulfill the following functional conditions:
 \item If the user wants to add an edge when there are no vertices displayed, an error message shall be shown.
 \item It shall not be possible for the user to input letters or symbols as edge-weights. Negative edge-weights shall be forbidden as well.
 \item If the user wants to remove an edge when there are no vertices displayed, an error message shall be shown.
+\item When the user wants to move a vertex, the vertex shall be the one with the closest distance to the point the user selected.
+\item When the user wants to add an edge, the start and end vertex shall be the ones with the closest distance to the points the user selected.
+\item When the user wants to remove an edge, the start and end vertex shall be the ones with the closest distance to the points the user selected.
+
+
+
+\item The program shall be terminated by clicking on the red "x" in the upper right corner.
 
 \end{itemize}  
 
