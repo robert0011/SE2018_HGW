@@ -33,46 +33,179 @@ import javax.swing.JPanel;
 import javax.swing.text.NumberFormatter;
 import javax.swing.JOptionPane;
 
+/**
+ * 
+ * @author C. Bruckmann, R. Wagner
+ */
 public class DrawPanel extends JPanel 
 {
-	// for removing one special circle
+	/**
+	 * 
+	 */
 	public static Vertex blueVertex;
+	
+	/**
+	 * 
+	 */
 	public static Vertex edgestart;
+	
+	/**
+	 * 
+	 */
 	public static Vertex edgeend;
 	
+	/**
+	 * 
+	 */
 	public static boolean menuDisabled = false;
+	
+	/**
+	 * 
+	 */
 	static boolean loadedFile = false;
+	
+	/**
+	 * 
+	 */
 	public static boolean clickedRemoveVertex = false;
+	
+	/**
+	 * 
+	 */
 	public static boolean clickedMoveVertex = false;
+	
+	/**
+	 * 
+	 */
 	public static boolean marked = false;
+	
+	/**
+	 * 
+	 */
 	public static boolean moved = true;
+	
+	/**
+	 * 
+	 */
 	public boolean addOrRemoveEdgeClicked = false;
+	
+	/**
+	 * 
+	 */
 	public static boolean addEdgeClicked = false;
+	
+	/**
+	 * 
+	 */
 	public static boolean startgiven = false;
+	
+	/**
+	 * Boolean
+	 */
 	public static boolean showWeights = false;
+	
+	/**
+	 * 
+	 */
 	public static boolean showVertexWeights = false; //for Dijkstra
+	
+	/**
+	 * <p>
+	 * 
+	 * </p>
+	 */
 	Font vertexWFont = new Font ("Chalkboard", 1, 15);
+	
+	/**
+	 * 
+	 */
 	Color col = Color.BLACK;
+	
+	/**
+	 * <p>
+	 * String that contains the start backgroundpicture of the drawpanel.
+	 * </p>
+	 */
 	public String background = ".\\img\\backgroundImage.jpg";
 	
+	/**
+	 * <p>
+	 * 
+	 * </p>
+	 */
 	public static Graph graph = new Graph();
-	//public static int circleindex = 0;
 	
+	/**
+	 * <p>
+	 * Integer for the number of vertices of a loaded .txt file
+	 * </p>
+	 */
 	int numberOfVertices;
+	
+	/**
+	 * <p>
+	 * Integer for the number of edges of a loaded .txt file
+	 * </p>
+	 */
 	int numberOfEdges;
+	
+	/**
+	 * 
+	 */
 	public static int currrentNumberOfEdges;
+	
+	/**
+	 * 
+	 */
 	public static boolean couldNotReadAnEdge = false;
+	
+	/**
+	 * Boolean that returns true, if a loaded .txt file contains a duplicated edge
+	 */
 	public static boolean duplicateEdge = false;
+	
+	/**
+	 * 
+	 */
 	public static boolean missingNV = false;
+	
+	/**
+	 * 
+	 */
 	public static boolean missingNE = false; 
+	
+	/**
+	 * 
+	 */
 	int start;
+	
+	/**
+	 * 
+	 */
 	int end;
+	
+	/**
+	 * <p>
+	 * Double value for the calculation of smallest distance to later find the nearest vertex for a clicked position on the drawpanel.
+	 * </p>
+	 */
 	double smallestDistance;
 	
+	/**
+	 * <p>
+	 * Integer for the coordinate of the position of the cursor.
+	 * <p>
+	 */
 	public int mouseX, mouseY; 
+	
+	/**
+	 * 
+	 */
 	public JLabel lblMouseCoords;
 	
-	
+	/**
+	 * 
+	 */
 	public DrawPanel() 
 	{
 		
@@ -82,17 +215,18 @@ public class DrawPanel extends JPanel
 		this.setBorder(BorderFactory.createLineBorder(Color.black, 2, false));	
 		this.addMouseMotionListener(new MouseMotionListener() 
 		{
-
+			// mouse event that is triggered if mouse is dragged (click and hold then move the mouse)
 			@Override
 			public void mouseDragged(MouseEvent e)
 			{
-				// TODO Auto-generated method stub
-				
+				// TODO Auto-generated method stub	
 			}
-
+			
+			// mouse event that is triggered if the cursor is moved
 			@Override
 			public void mouseMoved(MouseEvent e) 
 			{
+				// get the actual position of the cursor on the drawpanel
 				mouseX = e.getX();
 				mouseY = e.getY();
 				
@@ -319,16 +453,14 @@ public class DrawPanel extends JPanel
                         			marked = true;
                         			// the vertex hat not been moved yet
                         			moved = false;
-                				}
-                				
+                				}	
                 			}
                 			else
                 			{
                 				// in this case the vertexSet is empty and the action does not make sense
                 				resetBooleans();
                 				JOptionPane.showMessageDialog(null, "This action does not make sense.");
-                			}
-                			
+                			}	
                 		}
             			repaint();
             			col = Color.CYAN;
@@ -367,16 +499,14 @@ public class DrawPanel extends JPanel
                     				}
                     			}
                     			startgiven = true;
-            				}
-            				
+            				}	
             			}
             			else
             			{
             				// in this case the vertexSet is empty and the action does not make sense
             				resetBooleans();
             				JOptionPane.showMessageDialog(null, "This action does not make sense.");
-            			}
-            			
+            			}	
             		}
             		else
             		{
@@ -401,8 +531,7 @@ public class DrawPanel extends JPanel
                     					edgeend = curVertex;
                     				}
                     			}
-            				}
-            				
+            				}	
             			}
             			else
             			{
@@ -431,6 +560,7 @@ public class DrawPanel extends JPanel
             	}          	
             }
 
+            // mouse event that is triggered if the mouse is released after a mousepress 
             @Override
             public void mouseReleased(MouseEvent e) 
             {
@@ -439,18 +569,22 @@ public class DrawPanel extends JPanel
         });
 	}
 	
-	
+	/**
+	 * 
+	 */
 	public void createRemoveVertexFrame()
 	{
 		JFrame frame = new JFrame();
 		frame.setBounds(350, 200, 275, 95);
 		frame.getContentPane().setLayout(new FlowLayout());
 		
+		// open window which asks if the chosen vertex shall be deleted
 		JLabel txt = new JLabel();
 		txt.setText("Would you like to remove the blue Vertex?");
 		resetBooleans();
-		
+		// definition of the "ok" button in the new window
 		JButton ok = new JButton("OK");
+		// add listener to the button to add actions to the button
 		ok.addActionListener(new ActionListener() 
 		{
 			
@@ -492,10 +626,15 @@ public class DrawPanel extends JPanel
     			frame.dispose();
 			}
 		});
+		
+		//definition of the "cancel" button which closes the window if pressed
 		JButton btnCancel = new JButton("cancel");
+		// add listener to the button for the later action (for closing the window)
 		btnCancel.addActionListener(new ActionListener() 
 		{
-			
+			/* adds action which closes the window and reset the boolean which contains information
+			 * whether the remove vertex function was called or not. Also reset the color of a maybe already chosen vertex back to black
+			 */
 			@Override
 			public void actionPerformed(ActionEvent e) 
 			{
@@ -524,6 +663,9 @@ public class DrawPanel extends JPanel
 		frame.setVisible(true);	
 	}
 	
+	/**
+	 * 
+	 */
 	public void createAddEdgeFrame()
 	{
 		JFrame frame = new JFrame("adding an edge");
@@ -546,7 +688,6 @@ public class DrawPanel extends JPanel
 	    //field.setValue(1);
 	    field.setBounds(30, 30, 40, 25);
 
-		
 		JButton ok = new JButton("OK");
 		ok.setBounds(70, 30, 60, 25);
 		ok.addActionListener(new ActionListener() 
@@ -577,8 +718,6 @@ public class DrawPanel extends JPanel
 				{
 					JOptionPane.showMessageDialog(null, "The edge could not be added. Probably it already exists.");
 				}
-				
-    			
 			}
 		});
 		frame.getContentPane().add(txt);
@@ -588,6 +727,9 @@ public class DrawPanel extends JPanel
 
 	}
 	
+	/**
+	 * 
+	 */
 	public void removeVertex()
 	{
 		col = Color.GRAY;
@@ -596,6 +738,11 @@ public class DrawPanel extends JPanel
 	}
 	
 	// https://stackoverflow.com/questions/9417356/bufferedimage-resize
+	/**
+	 * 
+	 * 
+	 * @return
+	 */
 	public static BufferedImage scale(BufferedImage src, int w, int h)
 	{
 	    BufferedImage img = 
@@ -605,7 +752,9 @@ public class DrawPanel extends JPanel
 	    int hh = src.getHeight();
 	    int[] ys = new int[h];
 	    for (y = 0; y < h; y++)
+	    {
 	        ys[y] = y * hh / h;
+	    }
 	    for (x = 0; x < w; x++) 
 	    {
 	        int newX = x * ww / w;
@@ -617,7 +766,10 @@ public class DrawPanel extends JPanel
 	    }
 	    return img;
 	}
-		
+	
+	/**
+	 * 
+	 */
 	@Override
     protected void paintComponent (Graphics g)
 	{
@@ -697,6 +849,11 @@ public class DrawPanel extends JPanel
 		}
 	}
 	
+	/**
+	 * <p>
+	 * Method to reset the drawpanel and its properties.
+	 * </p>
+	 */
 	public void reset()
 	{
 		// resets graph sets
@@ -727,6 +884,10 @@ public class DrawPanel extends JPanel
 		repaint();
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	public boolean removeEdge(int a, int b)
 	{
 		boolean removed = false;
@@ -948,18 +1109,13 @@ public class DrawPanel extends JPanel
 				else
 				{
 					return true;
-				}
-				
-				
-					
+				}		
 			} 
 			catch (FileNotFoundException e) 
 			{
 				JOptionPane.showMessageDialog(null, "The file "+path+" does not exist.");
-				throw e;
-				
-			}
-			
+				throw e;	
+			}		
 		}	
 	}
 
@@ -985,7 +1141,8 @@ public class DrawPanel extends JPanel
 		
 		if(numberOfEdges != currrentNumberOfEdges)
 		{
-			frame.getContentPane().add(txt1);		}
+			frame.getContentPane().add(txt1);		
+		}
 		if(couldNotReadAnEdge)
 		{
 			frame.getContentPane().add(txt2);
@@ -998,16 +1155,20 @@ public class DrawPanel extends JPanel
 		{
 			frame.getContentPane().add(txt4);
 		}
-		
-		
 		frame.setVisible(true);
 	}
 	
+	/**
+	 * 
+	 */
 	public void setBackground(String b)
 	{
 		this.background = b;
 	}
 	
+	/**
+	 * 
+	 */
 	public void resetBooleans()
 	{
 		// for removing one special circle
@@ -1025,6 +1186,5 @@ public class DrawPanel extends JPanel
 		startgiven = false;
 		//public static boolean showWeights = false;
 	}
-	
 	
 }
