@@ -286,10 +286,12 @@ class ForceDirected
 							if(v.getX() >= w.getX())
 							{
 								newXCoordForV = (int) (newXCoordForV + (CONSTANTTHREE*repulsionOfTwoVertices));
+								newXCoordForW = (int) (w.getY() - (CONSTANTTHREE*repulsionOfTwoVertices));
 							}
 							else
 							{
-								newXCoordForV = (int) (newXCoordForV - (CONSTANTTHREE*repulsionOfTwoVertices));		
+								newXCoordForV = (int) (newXCoordForV - (CONSTANTTHREE*repulsionOfTwoVertices));	
+								newXCoordForW = (int) (w.getY() + (CONSTANTTHREE*repulsionOfTwoVertices));
 							}
 							/* if v.getY() is bigger than w.getY() then we have to 
 							 * increase the y-coordinate of v to rise the distance between v and w
@@ -297,10 +299,12 @@ class ForceDirected
 							if(v.getY() >= w.getY())
 							{
 								newYCoordForV = (int) (newYCoordForV + (CONSTANTTHREE*repulsionOfTwoVertices));
+								newYCoordForW = (int) (w.getY() - (CONSTANTTHREE*repulsionOfTwoVertices));
 							}
 							else
 							{
 								newYCoordForV = (int) (newYCoordForV - (CONSTANTTHREE*repulsionOfTwoVertices));
+								newYCoordForW = (int) (w.getY() + (CONSTANTTHREE*repulsionOfTwoVertices));
 							}
 						}
 						
